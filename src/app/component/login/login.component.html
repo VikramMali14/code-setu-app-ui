@@ -1,0 +1,70 @@
+<div class="bootstrap-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card-container">
+                    <mat-card class="login-card ">
+
+                        <mat-card-title class="text-center">
+                            Login Here
+                        </mat-card-title>
+
+                        <mat-card-content>
+                            <form (ngSubmit)="onSubmit()">
+
+                                <p class="text-center">
+                                    <mat-checkbox [(ngModel)]="loginWithEmail" name="loginWithEmail">
+                                        Login with Email
+                                    </mat-checkbox>
+                                </p>
+
+                                <mat-form-field class="full-width" *ngIf="!loginWithEmail">
+                                    <mat-label>Username</mat-label>
+
+                                    <input [(ngModel)]="creadential.userName" required="" matInput
+                                        type="text" name="userName">
+                                    
+                                </mat-form-field>
+
+                                <mat-form-field class="full-width" *ngIf="loginWithEmail">
+                                    <mat-label>Email</mat-label>
+                                    <input [(ngModel)]="creadential.email" matInput type="email" name="email">
+                                </mat-form-field>
+
+                                <mat-form-field class="full-width">
+                                    <mat-label>Password</mat-label>
+                                    <input [(ngModel)]="creadential.password" matInput [type]="hidePassword?'password':'text'" name="password">
+                                    <button mat-icon-button matSuffix type="button"
+                                        (click)="hidePassword = !hidePassword"
+                                        [attr.aria-label]="'Toggle password visibility'"
+                                        [attr.aria-pressed]="!hidePassword">
+
+                                        <mat-icon>
+                                            {{ hidePassword ? 'visibility_off' : 'visibility' }}
+                                        </mat-icon>
+
+                                    </button>
+                                </mat-form-field>
+
+                                <mat-card-actions class="text-center">
+                                    <button mat-raised-button color="primary" type="submit">
+                                        Submit
+                                    </button>
+                                     <button mat-raised-button color="primary" type="reset">
+                                        Reset
+                                    </button>
+                                </mat-card-actions>
+                            </form>
+
+
+                        </mat-card-content>
+
+
+
+                    </mat-card>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

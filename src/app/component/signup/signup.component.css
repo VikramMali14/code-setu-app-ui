@@ -1,0 +1,10 @@
+.full-width{
+    width: 100%;
+}
+/* body{
+    background-image: url("src/assets/images/background.jpg");
+} */
+body {
+    background-image: url("/assets/images/background.jpg");
+}
+

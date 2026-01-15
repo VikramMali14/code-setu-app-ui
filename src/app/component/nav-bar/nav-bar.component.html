@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+    <a mat-button routerLink="/">
+        <h1>Cargo-Setu
+        </h1>
+    </a>
+
+    <a mat-button routerLink="/">Home</a>
+
+    <a mat-button routerLink="/dashboard">Dashboard</a>
+    <a mat-button routerLink="/services">Services</a>
+    <a mat-button routerLink="/about">About</a>
+    <a mat-button routerLink="/contactus">Contact Us</a>
+
+
+    <span class="example-spacer"></span>
+    <a *ngIf="!loggedIn" mat-button routerLink="/signup">Sign Up</a>
+    <a *ngIf="!loggedIn" mat-button routerLink="/login">Login</a>
+
+    <a *ngIf="loggedIn" mat-button>User</a>
+    <a *ngIf="loggedIn" mat-button (click)="logoutUser()" routerLink="/login">
+        Logout
+    </a>
+</mat-toolbar>

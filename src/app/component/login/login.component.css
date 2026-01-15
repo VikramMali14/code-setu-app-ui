@@ -1,0 +1,40 @@
+.full-width{
+    width: 100%;
+}
+.btn-gap{
+    margin: 0 15px;
+}
+.body {
+  background-image: url('/assets/images/background.jpg');
+}
+.login-card {
+  margin-top: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20240919/pngtree-a-background-of-orange-blue-and-yellow-gradients-with-gritty-appearance-image_16233934.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5; /* background only */
+  z-index: 0;
+}
+
+.login-card > * {
+  position: relative;
+  z-index: 1;
+
+}
+.login-card {
+  width: 320px;
+  height: 350px;        /* controls vertical shape */
+  max-width: 100%;
+  margin: 60px auto;  /* centers horizontally */
+}
+
+
