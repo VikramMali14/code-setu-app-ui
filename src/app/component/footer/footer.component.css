@@ -1,0 +1,31 @@
+/* :host {
+  display: block;
+  min-height: 100vh;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 64px); 
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+}
+
+ */
+
+ :host {
+  min-height: 100vh;          /* full viewport height */
+  display: flex;
+  flex-direction: column;
+}
+
+.app-layout {
+  flex: 1;                   /* takes remaining space */
+}
+
+.app-footer {
+  padding: 16px;
+  border-top: 1px solid #ddd;
+}

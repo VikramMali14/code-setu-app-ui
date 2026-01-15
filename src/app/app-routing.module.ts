@@ -8,6 +8,7 @@ import { ServicesComponent } from './component/services/services.component';
 import { AboutComponent } from './component/about/about.component';
 import { ContectUsComponent } from './component/contect-us/contect-us.component';
 import { AuthGuard } from './services/guard/auth.guard';
+import { FooterComponent } from './component/footer/footer.component';
 
 const routes: Routes = [
   {
@@ -44,7 +45,7 @@ const routes: Routes = [
   },
    {
     path: 'contactus',
-    component: ContectUsComponent,
+    component: FooterComponent,
     pathMatch: 'full'
   },
    {
