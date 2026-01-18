@@ -23,7 +23,6 @@ export class JwttokenService {
     if (!token) return false;
 
     try {
-      localStorage.setItem('token', token);
 
       const decoded: JwtPayload = jwtDecode<JwtPayload>(token);
       console.log('Decoded Token:', decoded);
@@ -33,7 +32,7 @@ export class JwttokenService {
         this.logout();
         return false;
       }
-
+localStorage.setItem('token', token);
       this.loggedInSubject.next(true);
       return true;
 
