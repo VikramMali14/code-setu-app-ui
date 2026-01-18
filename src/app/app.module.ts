@@ -24,8 +24,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './component/footer/footer.component';
+import { StaffuserComponent } from './component/staffuser/staffuser.component';
+import { AuthInterceptor } from './services/guard/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,13 @@ import { FooterComponent } from './component/footer/footer.component';
     HttpClientModule,
     MatIconModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+providers:[
+    {
+    provide:HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+      multi: true
+    }
+
+  ],  bootstrap: [AppComponent]
 })
 export class AppModule { }
