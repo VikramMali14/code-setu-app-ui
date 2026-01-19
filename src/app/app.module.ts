@@ -28,6 +28,8 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './component/footer/footer.component';
 import { StaffuserComponent } from './component/staffuser/staffuser.component';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { UpdateroleComponent } from './component/updaterole/updaterole.component';
+import { RolesDetailsComponent } from './roles-details/roles-details.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
     ServicesComponent,
     AboutComponent,
     ContectUsComponent,
-    FooterComponent
+    FooterComponent,
+    UpdateroleComponent,
+    RolesDetailsComponent
   ],
   imports: [
     BrowserModule,

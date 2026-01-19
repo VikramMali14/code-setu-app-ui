@@ -10,55 +10,22 @@ import { ContectUsComponent } from './component/contect-us/contect-us.component'
 import { AuthGuard } from './services/guard/auth.guard';
 import { FooterComponent } from './component/footer/footer.component';
 import { RoleComponent } from './component/component/role/role.component';
+import { UpdateroleComponent } from './component/updaterole/updaterole.component';
+import { RolesDetailsComponent } from './roles-details/roles-details.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: HomeComponent,
-    pathMatch: 'full',
+  {path: '',component: HomeComponent,pathMatch: 'full'},
+  {path: 'login',component: LoginComponent,pathMatch: "full"},
+  { path: 'dashboard', component: DashboardComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'signup', component: SignupComponent, pathMatch: 'full' },
+  { path: 'services', component: ServicesComponent, pathMatch: 'full' },
+  { path: 'about', component: AboutComponent, pathMatch: 'full' },
+  { path: 'contactus', component: FooterComponent, pathMatch: 'full' },
+  { path: 'home', component: HomeComponent, pathMatch: 'full' },
+  { path: 'createrole', component: RoleComponent, pathMatch: 'full' },
+  { path: 'updaterole', component: UpdateroleComponent, pathMatch: 'full' },
+  { path: 'roles', component: RolesDetailsComponent, pathMatch: 'full' }
 
-  },
-  {
-    path: 'login',
-    component: LoginComponent,
-    pathMatch: "full"
-  },
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-    pathMatch: 'full',
-    canActivate:[AuthGuard]
-  },
-   {
-    path: 'signup',
-    component: SignupComponent,
-    pathMatch: 'full'
-  },
-   {
-    path: 'services',
-    component: ServicesComponent,
-    pathMatch: 'full'
-  },
-   {
-    path: 'about',
-    component: AboutComponent,
-    pathMatch: 'full'
-  },
-   {
-    path: 'contactus',
-    component: FooterComponent,
-    pathMatch: 'full'
-  },
-   {
-    path: 'home',
-    component: HomeComponent,
-    pathMatch: 'full'
-  },
-   {
-    path: 'role',
-    component: RoleComponent,
-    pathMatch: 'full'
-  }
 
 ];
 

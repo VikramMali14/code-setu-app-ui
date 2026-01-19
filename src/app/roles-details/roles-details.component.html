@@ -1,0 +1,36 @@
+<h2>Employee List</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Role</th>
+      <th>Roles Code</th>
+      <th>Discription</th>
+      <th>Scopr</th>
+      <th>Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let role of role">
+      <td>{{ role.roleName }}</td>
+      <td>{{ role.code }}</td>
+      <td>{{ role.discription }}</td>
+      <td>{{ role.scope }}</td>
+      <td>{{ role.permissions }}</td>
+      <td>
+        <button (click)="updaterole(role.rolesId)" class="btn btn-info">
+          Update
+        </button>
+      </td>
+      <td>
+        <button (click)="deleteRole(role.rolesId)" class="btn btn-danger ">
+          Delete
+        </button>
+      </td>
+      <td>
+        <button (click)="fetchRoleDetails(role.rolesId)" class="btn btn-success">
+          View
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
