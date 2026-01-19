@@ -1,18 +1,11 @@
-.example-form {
-  max-width: 500px;
-  margin: auto;
+.permissions-dropdown {
+  max-height: 220px;
+  overflow-y: auto;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.example-full-width {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-.permissions-box {
-  margin: 16px 0;
-}
-
-.hint-text {
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 13px;
+.dropdown-toggle::after {
+  float: right;
+  margin-top: 8px;
 }

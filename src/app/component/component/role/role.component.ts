@@ -4,6 +4,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { RoleserviceService } from 'src/app/services/role/roleservice.service';
+import { PERMISSIONS } from 'src/app/models/permission';
 
 @Component({
   selector: 'app-role',
@@ -19,7 +20,7 @@ import { RoleserviceService } from 'src/app/services/role/roleservice.service';
 
 })
 export class RoleComponent implements OnInit {
-
+  permissionsList = PERMISSIONS;
   private fb = inject(FormBuilder);
 
   roleForm = this.fb.group({
@@ -28,11 +29,12 @@ export class RoleComponent implements OnInit {
     discription: [''],
     scope: [''],
     // Nested permissions group
-    permissions: this.fb.group({
-      // Replace with actual Permission class fields
-      canRead: [false],
-      canWrite: [false]
-    })
+   permissions: this.fb.group({
+        CREATE_USER: [false],
+        EDIT_USER: [false],
+        DELETE_USER: [false],
+        VIEW_REPORTS: [false]
+      })
   });
 
   constructor(private roleservice: RoleserviceService) { }
