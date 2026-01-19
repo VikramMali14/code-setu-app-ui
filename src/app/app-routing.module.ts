@@ -9,6 +9,7 @@ import { AboutComponent } from './component/about/about.component';
 import { ContectUsComponent } from './component/contect-us/contect-us.component';
 import { AuthGuard } from './services/guard/auth.guard';
 import { FooterComponent } from './component/footer/footer.component';
+import { RoleComponent } from './component/component/role/role.component';
 
 const routes: Routes = [
   {
@@ -51,6 +52,11 @@ const routes: Routes = [
    {
     path: 'home',
     component: HomeComponent,
+    pathMatch: 'full'
+  },
+   {
+    path: 'role',
+    component: RoleComponent,
     pathMatch: 'full'
   }
 

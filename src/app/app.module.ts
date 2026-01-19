@@ -46,7 +46,7 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatButtonModule, 
+    MatButtonModule,
     MatToolbarModule,
     MatFormFieldModule,
     MatInputModule,

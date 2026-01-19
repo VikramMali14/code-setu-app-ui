@@ -1,0 +1,18 @@
+.example-form {
+  max-width: 500px;
+  margin: auto;
+}
+
+.example-full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.permissions-box {
+  margin: 16px 0;
+}
+
+.hint-text {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+}
