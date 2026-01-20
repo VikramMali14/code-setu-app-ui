@@ -21,16 +21,16 @@ export class RoleserviceService {
       .pipe(map(response => response.data))
   }
 
-  updaterols(role: Role): Observable<Object> {
+  updaterole(role: Role): Observable<Object> {
+    return this.http.put(this.BASE_URL + "/role/"+role.rolesId, role);
+  }
+  updateRole(role: Role): Observable<Object> {
     return this.http.put(this.BASE_URL + "/update", role);
   }
-  updateEmployee(role: Role): Observable<Object> {
-    return this.http.put(this.BASE_URL + "/update", role);
+  deleteRole(id: number): Observable<Object> {
+    return this.http.delete(this.BASE_URL + "/role/" + id);
   }
-  deleteEmployee(id: number): Observable<Object> {
-    return this.http.delete(this.BASE_URL + "/delete" + "?id=" + id);
-  }
-  getEmployee(): Observable<Role[]> {
-    return this.http.get<Role[]>(`${this.BASE_URL + "/getAll"}`)
+  getRole(): Observable<Role[]> {
+    return this.http.get<Role[]>(`${this.BASE_URL + "/role"}`)
   }
 }

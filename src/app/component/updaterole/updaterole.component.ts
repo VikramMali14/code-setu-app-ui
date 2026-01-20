@@ -19,12 +19,12 @@ export class UpdateroleComponent implements OnInit {
 
   onSubmit() {
     console.log(this.role);
-    this.updateEmployee();
+    this.updateRole();
 
   }
-  updateEmployee() {
+  updateRole() {
     this.roleservice
-      .updaterols(this.role)
+      .updaterole(this.role)
       .subscribe(data => {
         this.gotoService(),
           console.log(this.role);

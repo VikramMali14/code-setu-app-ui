@@ -17,11 +17,11 @@ export class RolesDetailsComponent implements OnInit {
   ngOnInit(): void {
   }
   updaterole(id: number) {
-    this.router.navigate(['update-employee', id]);
+    this.router.navigate(['updaterole', id]);
   }
   deleteRole(id: number) {
-    this.roleService.deleteEmployee(id).subscribe(data => {
-      this.roleService.getEmployee();
+    this.roleService.deleteRole(id).subscribe(data => {
+      this.roleService.getRole();
     })
   }
 
