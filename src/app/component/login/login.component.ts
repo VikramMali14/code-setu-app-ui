@@ -1,61 +1,72 @@
-import { Component, OnInit } from '@angular/core';
-import { EmailValidator } from '@angular/forms';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { error } from 'console';
 import { LoginService } from 'src/app/services/login.service';
-import { StaffuserComponent } from '../staffuser/staffuser.component';
-import { JwttokenService } from 'src/app/services/jwttoken.service';
-import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  animations: [
+    trigger('cardAnim', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('300ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ])
+  ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
-
-  creadential = {
+  credential = {
+    email: '',
     userName: '',
-    password: '',
-    email: ''
-  }
+    password: ''
+  };
+
   hidePassword = true;
-  constructor(private loginservice: LoginService,
-    private router: Router,
-    private stafffuserservice: StaffuserServiceService,
-    private jwtDecode: JwttokenService
+
+  constructor(
+    private loginService: LoginService,
+    private router: Router
   ) { }
-  loginWithEmail = false;
-  ngOnInit(): void {
-  }
 
+  otp = {
+    mobile: '',
+    code: ''
+  };
+  otpSent = false;
 
-  onSubmit() {
-    // Check if credentials exist
-    const identifier = this.loginWithEmail ? this.creadential.email : this.creadential.userName;
-
-    if (!identifier || !this.creadential.password) {
-      alert("Please fill in all fields");
+  loginWithEmail() {
+    if (!this.credential.email || !this.credential.password) {
+      alert('Missing fields');
       return;
     }
-    this.loginservice.generateToken(this.creadential).subscribe({
-      next: (response: any) => {
-      if (response?.accessToken) {
-        this.loginservice.loginAndFetchUser(response.accessToken).subscribe({
-          next:(staffId : any) =>{
-             console.log('Staff Data Loaded:', staffId);
-            this.router.navigate(['/dashboard']);
-          }
-        })
-          this.loginservice.loginUser(response.accessToken);          
-        } else {
-          console.error("Token missing in response", response);
-        }
-      },
-      error: (err) => {
-        console.error("Login failed (Check CORS or Credentials):", err);
-      }
+
+    this.loginService.generateToken(this.credential).subscribe(res => {
+      // this.loginService.loginUser(res.);
+      this.router.navigate(['/dashboard']);
     });
   }
+  verifyOtp() {
+    if (!this.otp.code || this.otp.code.length !== 6) {
+      alert('Invalid OTP');
+      return;
+    }
+
+
+    // CALL BACKEND HERE
+    console.log('OTP sent to', this.otp.mobile);
+    this.otpSent = true;
+    
+  }
+  sendOtp() {
+      if (!this.otp.mobile) {
+        alert('Enter mobile number');
+        return;
+      }
+    }
 }
+
+

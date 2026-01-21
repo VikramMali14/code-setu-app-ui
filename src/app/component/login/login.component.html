@@ -1,70 +1,85 @@
-<div class="bootstrap-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card-container">
-                    <mat-card class="login-card ">
+<div class="login-page">
+  <mat-card class="login-card" [@cardAnim]>
 
-                        <mat-card-title class="text-center">
-                            Login Here
-                        </mat-card-title>
-
-                        <mat-card-content>
-                            <form (ngSubmit)="onSubmit()">
-
-                                <p class="text-center">
-                                    <mat-checkbox [(ngModel)]="loginWithEmail" name="loginWithEmail">
-                                        Login with Email
-                                    </mat-checkbox>
-                                </p>
-
-                                <mat-form-field class="full-width" *ngIf="!loginWithEmail">
-                                    <mat-label>Username</mat-label>
-
-                                    <input [(ngModel)]="creadential.userName" required="" matInput
-                                        type="text" name="userName">
-                                    
-                                </mat-form-field>
-
-                                <mat-form-field class="full-width" *ngIf="loginWithEmail">
-                                    <mat-label>Email</mat-label>
-                                    <input [(ngModel)]="creadential.email" matInput type="email" name="email">
-                                </mat-form-field>
-
-                                <mat-form-field class="full-width">
-                                    <mat-label>Password</mat-label>
-                                    <input [(ngModel)]="creadential.password" matInput [type]="hidePassword?'password':'text'" name="password">
-                                    <button mat-icon-button matSuffix type="button"
-                                        (click)="hidePassword = !hidePassword"
-                                        [attr.aria-label]="'Toggle password visibility'"
-                                        [attr.aria-pressed]="!hidePassword">
-
-                                        <mat-icon>
-                                            {{ hidePassword ? 'visibility_off' : 'visibility' }}
-                                        </mat-icon>
-
-                                    </button>
-                                </mat-form-field>
-
-                                <mat-card-actions class="text-center">
-                                    <button mat-raised-button color="primary" type="submit">
-                                        Submit
-                                    </button>
-                                     <button mat-raised-button color="primary" type="reset">
-                                        Reset
-                                    </button>
-                                </mat-card-actions>
-                            </form>
-
-
-                        </mat-card-content>
-
-
-
-                    </mat-card>
-                </div>
-
-            </div>
-        </div>
+    <!-- HEADER -->
+    <div class="login-header">
+      <img src="assets\images\LOGO2.png" />
+      <p>Transport Business, Ab Digital!!</p>
     </div>
+
+    <mat-tab-group mat-stretch-tabs>
+
+      <!-- EMAIL LOGIN -->
+      <mat-tab label="Email">
+        <form (ngSubmit)="loginWithEmail()" class="form">
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Email</mat-label>
+            <input matInput [(ngModel)]="credential.email" name="email" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="credential.password"
+              name="password" required>
+            <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" class="btn">Login</button>
+        </form>
+      </mat-tab>
+
+      <!-- OTP LOGIN -->
+      <mat-tab label="OTP">
+
+        <!-- STEP 1: MOBILE -->
+        <form *ngIf="!otpSent" (ngSubmit)="sendOtp()" class="form">
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Mobile Number</mat-label>
+            <input matInput type="tel" [(ngModel)]="otp.mobile" name="mobile" required>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" class="btn">
+            Send OTP
+          </button>
+        </form>
+
+        <!-- STEP 2: OTP VERIFY -->
+        <form *ngIf="otpSent" (ngSubmit)="verifyOtp()" class="form fade-in">
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Enter OTP</mat-label>
+            <input matInput maxlength="6" [(ngModel)]="otp.code" name="otp" required>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" class="btn">
+            Verify & Login
+          </button>
+
+          <a class="resend" (click)="sendOtp()">Resend OTP</a>
+
+        </form>
+        <!-- BELOW LOGIN BUTTON -->
+        <div class="divider">
+          <span>OR</span>
+        </div>
+
+        <!-- <button mat-stroked-button class="google-btn" type="button">
+          <img src="assets/images/google.svg" alt="Google">
+          Continue with Google
+        </button> -->
+        <button class="mat-mdc-stroked-button google-btn">
+          <span class="mdc-button__label">
+            <img> Continue with Google
+          </span>
+        </button>
+
+
+      </mat-tab>
+
+    </mat-tab-group>
+  </mat-card>
 </div>

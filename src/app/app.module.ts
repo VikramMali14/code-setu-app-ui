@@ -11,6 +11,9 @@ import { MatToolbarModule } from '@angular/material/toolbar'; // Fixed 'Bar' to 
 import {MatFormFieldModule} from '@angular/material/form-field'
 import {MatInputModule} from '@angular/material/input'
 import {FormsModule} from '@angular/forms'
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 import { LoginComponent } from './component/login/login.component';
 import { HomeComponent } from './component/home/home.component';
@@ -58,7 +61,9 @@ import { RolesDetailsComponent } from './roles-details/roles-details.component';
     MatCardModule,
     MatCheckboxModule,
     HttpClientModule,
-    MatIconModule
+    MatIconModule,
+    MatTabsModule,
+    MatProgressSpinnerModule
   ],
 providers:[
     {
