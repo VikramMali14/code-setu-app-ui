@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ENV } from 'src/assets/env';
 
 @Injectable({
@@ -7,9 +8,13 @@ import { ENV } from 'src/assets/env';
 })
 export class StaffuserServiceService {
 
- constructor(private http: HttpClient ) { }
-  
+  constructor(private http: HttpClient) { }
+
   private BASE_URL = ENV.CARGO_SETU;
   getStaffById(staffId: any) {
-  return this.http.get(`${this.BASE_URL}/api/v2/cargosetu/staff/${staffId}`);
-}}
+    return this.http.get(`${this.BASE_URL}/api/v2/cargosetu/staff/${staffId}`);
+  }
+  createStaff(payload: any): Observable<any> {
+    return this.http.post(`${this.BASE_URL}/auth/user/register`, payload);
+  }
+}

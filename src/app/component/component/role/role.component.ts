@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { RoleserviceService } from 'src/app/services/role/roleservice.service';
 import { PERMISSIONS } from 'src/app/models/permission';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-role',
@@ -15,6 +16,7 @@ import { PERMISSIONS } from 'src/app/models/permission';
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
+    CommonModule
   ],
   styleUrls: ['./role.component.css',]
 

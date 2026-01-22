@@ -13,7 +13,10 @@ import {MatInputModule} from '@angular/material/input'
 import {FormsModule} from '@angular/forms'
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { LoginComponent } from './component/login/login.component';
 import { HomeComponent } from './component/home/home.component';
@@ -63,7 +66,11 @@ import { RolesDetailsComponent } from './roles-details/roles-details.component';
     HttpClientModule,
     MatIconModule,
     MatTabsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    CommonModule
   ],
 providers:[
     {
