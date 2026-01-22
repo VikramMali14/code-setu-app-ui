@@ -28,7 +28,8 @@ import { AboutComponent } from './component/about/about.component';
 import { ContectUsComponent } from './component/contect-us/contect-us.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './component/footer/footer.component';
@@ -36,6 +37,8 @@ import { StaffuserComponent } from './component/staffuser/staffuser.component';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { UpdateroleComponent } from './component/updaterole/updaterole.component';
 import { RolesDetailsComponent } from './roles-details/roles-details.component';
+import { DepartmentComponent } from './component/component/department/department.component';
+import { DepartmentDialogComponent } from './component/department-dialog/department-dialog.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +53,9 @@ import { RolesDetailsComponent } from './roles-details/roles-details.component';
     ContectUsComponent,
     FooterComponent,
     UpdateroleComponent,
-    RolesDetailsComponent
+    RolesDetailsComponent,
+    DepartmentComponent,
+    DepartmentDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +75,9 @@ import { RolesDetailsComponent } from './roles-details/roles-details.component';
     MatSelectModule,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    MatTableModule,
+    MatDialogModule
   ],
 providers:[
     {

@@ -12,6 +12,8 @@ import { FooterComponent } from './component/footer/footer.component';
 import { RoleComponent } from './component/component/role/role.component';
 import { UpdateroleComponent } from './component/updaterole/updaterole.component';
 import { RolesDetailsComponent } from './roles-details/roles-details.component';
+import { DepartmentDialogComponent } from './component/department-dialog/department-dialog.component';
+import { DepartmentComponent } from './component/component/department/department.component';
 
 const routes: Routes = [
   {path: '',component: HomeComponent,pathMatch: 'full'},
@@ -24,7 +26,9 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, pathMatch: 'full' },
   { path: 'createrole', component: RoleComponent, pathMatch: 'full' },
   { path: 'updaterole', component: UpdateroleComponent, pathMatch: 'full' },
-  { path: 'roles', component: RolesDetailsComponent, pathMatch: 'full' }
+  { path: 'roles', component: RolesDetailsComponent, pathMatch: 'full' },
+    { path: 'department', component: DepartmentComponent, pathMatch: 'full',    canActivate: [AuthGuard] },
+    // { path: 'department-dialog', component: DepartmentDialogComponent, pathMatch: 'full',    canActivate: [AuthGuard] }
 
 
 ];
