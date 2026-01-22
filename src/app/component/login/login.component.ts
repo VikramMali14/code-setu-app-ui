@@ -1,6 +1,7 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthResponse } from 'src/app/models/authresponse';
 import { LoginService } from 'src/app/services/login.service';
 
 @Component({
@@ -38,17 +39,31 @@ export class LoginComponent {
   };
   otpSent = false;
 
-  loginWithEmail() {
-    if (!this.credential.email || !this.credential.password) {
-      alert('Missing fields');
-      return;
-    }
-
-    this.loginService.generateToken(this.credential).subscribe(res => {
-      // this.loginService.loginUser(res.);
-      this.router.navigate(['/dashboard']);
-    });
+loginWithEmail() {
+  if (!this.credential.email || !this.credential.password) {
+    alert('Missing fields');
+    return;
   }
+
+  this.loginService.generateToken(this.credential).subscribe({
+    next: (response: AuthResponse) => {
+      console.log('Login response:', response);
+
+      const success = this.loginService.loginUser(response.accessToken);
+
+      if (success) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        alert('Login failed: invalid token');
+      }
+    },
+    error: (err) => {
+      console.error('Login API error', err);
+      alert('Invalid credentials');
+    }
+  });
+}
+
   verifyOtp() {
     if (!this.otp.code || this.otp.code.length !== 6) {
       alert('Invalid OTP');

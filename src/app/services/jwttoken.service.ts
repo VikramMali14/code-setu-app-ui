@@ -47,17 +47,17 @@ localStorage.setItem('token', token);
     this.loggedInSubject.next(false);
   }
 
-  getDecodedToken(): JwtPayload | null {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
+getDecodedToken(): JwtPayload | null {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
 
-    try {
-      return jwtDecode<JwtPayload>(token);
-    } catch {
-      return null;
-    }
+  try {
+    return jwtDecode<JwtPayload>(token);
+  } catch {
+    return null;
   }
-  printTokenValues(token: string): void {
+}
+printTokenValues(token: string): void {
   try {
     const decoded: JwtPayload = jwtDecode<JwtPayload>(token);
 

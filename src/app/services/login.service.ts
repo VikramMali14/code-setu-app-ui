@@ -7,6 +7,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { StaffuserServiceService } from './staffuser-service';
 import { tap } from 'rxjs/operators'; // Required to use tap in .pipe()
 import { ENV } from 'src/assets/env';
+import { AuthResponse } from '../models/authresponse';
 
 // import { url } from 'inspector';
 
@@ -29,7 +30,7 @@ export class LoginService {
   }
 
   generateToken(creadential: any) {
-    return this.http.post(`${this.BASE_URL}/auth/login`, creadential);
+    return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/login`, creadential);
   }
 
   // loginUser(token: string) {
