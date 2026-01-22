@@ -28,6 +28,7 @@ import { AboutComponent } from './component/about/about.component';
 import { ContectUsComponent } from './component/contect-us/contect-us.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatStepperModule } from '@angular/material/stepper';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -70,7 +71,8 @@ import { RolesDetailsComponent } from './roles-details/roles-details.component';
     MatSelectModule,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    MatStepperModule
   ],
 providers:[
     {
