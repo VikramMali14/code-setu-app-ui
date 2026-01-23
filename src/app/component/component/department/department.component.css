@@ -1,0 +1,53 @@
+.doc-grid {
+  display: grid;
+  grid-template-columns: 3.5fr 1.2fr;
+  gap: 20px;
+  align-items: start;
+}
+
+table {
+  width: 100%;
+}
+
+mat-card {
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.full {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+  padding: 14px 18px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background: #2e7d32;
+  color: #fff;
+}
+
+.status-badge.inactive {
+  background: #c62828;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .doc-grid {
+    grid-template-columns: 1fr;
+  }
+}

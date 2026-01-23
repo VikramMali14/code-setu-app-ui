@@ -17,6 +17,8 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDatepickerModule  } from '@angular/material/datepicker';
+
 
 import { LoginComponent } from './component/login/login.component';
 import { HomeComponent } from './component/home/home.component';
@@ -28,7 +30,11 @@ import { AboutComponent } from './component/about/about.component';
 import { ContectUsComponent } from './component/contect-us/contect-us.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatNativeDateModule } from '@angular/material/core'; 
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -37,6 +43,7 @@ import { StaffuserComponent } from './component/staffuser/staffuser.component';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { UpdateroleComponent } from './component/updaterole/updaterole.component';
 import { RolesDetailsComponent } from './roles-details/roles-details.component';
+import { DepartmentComponent } from './component/component/department/department.component';
 
 @NgModule({
   declarations: [
@@ -51,8 +58,9 @@ import { RolesDetailsComponent } from './roles-details/roles-details.component';
     ContectUsComponent,
     FooterComponent,
     UpdateroleComponent,
-    RolesDetailsComponent
-  ],
+    RolesDetailsComponent,
+    DepartmentComponent
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -72,7 +80,11 @@ import { RolesDetailsComponent } from './roles-details/roles-details.component';
     MatSlideToggleModule,
     ReactiveFormsModule,
     CommonModule,
-    MatStepperModule
+    MatTableModule,
+    MatDialogModule,
+    MatStepperModule,
+    MatDatepickerModule,
+    MatNativeDateModule,MatPaginatorModule
   ],
 providers:[
     {

@@ -9,8 +9,8 @@
     <mat-horizontal-stepper linear>
 
       <!-- STEP 1 -->
-     <mat-step [stepControl]="basicInfoForm">
-    <form [formGroup]="basicInfoForm">
+      <mat-step [stepControl]="basicInfoForm">
+        <form [formGroup]="basicInfoForm">
           <h3>Basic Information</h3>
 
           <mat-form-field class="full">
@@ -32,6 +32,18 @@
             <mat-label>Email</mat-label>
             <input matInput formControlName="email">
           </mat-form-field>
+          
+          <mat-form-field class="full">
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+          </mat-form-field>
+
+          <mat-form-field class="full">
+            <mat-label>DOB</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="dob">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
 
           <button mat-raised-button color="primary" matStepperNext>
             Next
@@ -41,7 +53,7 @@
 
       <!-- STEP 2 -->
       <mat-step [stepControl]="addressInfoForm">
-    <form [formGroup]="addressInfoForm">
+        <form [formGroup]="addressInfoForm">
           <h3>Address Details</h3>
 
           <mat-form-field class="full">
@@ -78,14 +90,10 @@
 
       <!-- STEP 3 -->
       <mat-step [stepControl]="otherInfoForm">
-    <form [formGroup]="otherInfoForm">
+        <form [formGroup]="otherInfoForm">
           <h3>Other Details</h3>
 
-          <mat-form-field class="full">
-            <mat-label>Password</mat-label>
-            <input matInput [type]="hidePassword ? 'password' : 'text'"
-                   formControlName="password">
-          </mat-form-field>
+
 
           <mat-form-field class="full">
             <mat-label>Mobile Number</mat-label>
@@ -111,8 +119,7 @@
           </mat-slide-toggle>
 
           <button mat-button matStepperPrevious>Back</button>
-          <button mat-raised-button color="primary"
-                  (click)="submit()" [disabled]="submitting">
+          <button mat-raised-button color="primary" (click)="submit()" [disabled]="submitting">
             Create Staff
           </button>
         </form>
