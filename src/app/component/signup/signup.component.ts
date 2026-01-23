@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { debounce } from 'rxjs';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 
 @Component({
@@ -16,7 +17,7 @@ export class SignupComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private staffService: StaffuserServiceService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.staffForm = this.fb.group({
@@ -26,6 +27,8 @@ export class SignupComponent implements OnInit {
         userName: ['', Validators.required],
         firstName: ['', Validators.required],
         lastName: ['', Validators.required],
+        password: ['', Validators.required],
+        dob: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]]
       }),
 
@@ -40,7 +43,6 @@ export class SignupComponent implements OnInit {
 
       // STEP 3
       otherInfo: this.fb.group({
-        password: ['', Validators.required],
         mobileCode: ['+91', Validators.required],
         mobileNumber: [
           '',
@@ -88,15 +90,15 @@ export class SignupComponent implements OnInit {
     });
   }
   get basicInfoForm(): FormGroup {
-  return this.staffForm.get('basicInfo') as FormGroup;
-}
+    return this.staffForm.get('basicInfo') as FormGroup;
+  }
 
-get addressInfoForm(): FormGroup {
-  return this.staffForm.get('addressInfo') as FormGroup;
-}
+  get addressInfoForm(): FormGroup {
+    return this.staffForm.get('addressInfo') as FormGroup;
+  }
 
-get otherInfoForm(): FormGroup {
-  return this.staffForm.get('otherInfo') as FormGroup;
-}
+  get otherInfoForm(): FormGroup {
+    return this.staffForm.get('otherInfo') as FormGroup;
+  }
 
 }

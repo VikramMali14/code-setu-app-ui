@@ -1,0 +1,42 @@
+.doc-page {
+  padding: 24px;
+  background: #eeeeee;
+}
+
+.doc-header {
+  margin-bottom: 16px;
+}
+
+.doc-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.doc-header p {
+  margin: 4px 0 0;
+  color: #666;
+}
+
+.doc-actions {
+  margin: 16px 0;
+}
+
+.doc-card {
+  padding: 16px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background-color: #28a745;
+}
+
+.status-badge.inactive {
+  background-color: #dc3545;
+}

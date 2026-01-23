@@ -17,6 +17,8 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDatepickerModule  } from '@angular/material/datepicker';
+
 
 import { LoginComponent } from './component/login/login.component';
 import { HomeComponent } from './component/home/home.component';
@@ -31,6 +33,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatNativeDateModule } from '@angular/material/core'; 
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -80,7 +83,9 @@ import { DepartmentDialogComponent } from './component/department-dialog/departm
     CommonModule,
     MatTableModule,
     MatDialogModule,
-    MatStepperModule
+    MatStepperModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
 providers:[
     {

@@ -33,4 +33,5 @@ export class Staff {
   departmentId!: number;
   staffType!: 'ADMIN' | 'STAFF' | 'DRIVER';
   isActive!: boolean;
+  dob!: Date;
 }
