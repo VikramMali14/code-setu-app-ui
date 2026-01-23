@@ -1,0 +1,38 @@
+/* styles.css or component-specific .css file */
+
+.dashboard-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    height: 150px; /* Uniform height for all cards */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.dashboard-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-content i {
+    font-size: 48px;
+    color: #0d47a1; /* A shade of blue for the icons */
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* These classes manage spacing when using Materialize's grid system */
+.row .col {
+    margin-bottom: 20px; 
+}
+
+.dashboard-row {
+    margin-bottom: 20px; 
+}
