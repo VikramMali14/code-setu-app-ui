@@ -1,3 +1,26 @@
 .example-spacer{
     flex: 1 1 auto;
 }
+.nav-link:hover {
+    background-color: #ffd740 !important; /* Material Accent Color */
+    color: #000 !important;
+}
+.mat-toolbar a[mat-button] {
+    position: relative;
+}
+
+.mat-toolbar a[mat-button]::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 5px;
+    left: 50%;
+    background-color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+.mat-toolbar a[mat-button]:hover::after {
+    width: 80%;
+    left: 10%;
+}

@@ -7,7 +7,19 @@
     <a mat-button routerLink="/">Home</a>
 
     <a mat-button routerLink="/dashboard">Dashboard</a>
-    <a mat-button routerLink="/services">Services</a>
+    <!-- <a mat-button routerLink="/services" class="nav-link">Services</a> -->
+    <a mat-button routerLink="/services" #servicesTrigger="matMenuTrigger" [matMenuTriggerFor]="servicesMenu"
+        (mouseenter)="servicesTrigger.openMenu()">
+        Services
+    </a>
+    <mat-menu #servicesMenu="matMenu" [overlapTrigger]="false">
+        <div (mouseleave)="servicesTrigger.closeMenu()">
+            <button mat-menu-item routerLink="/services/shipping">Shipping</button>
+            <button mat-menu-item routerLink="/services/tracking">Tracking</button>
+            <button mat-menu-item routerLink="/services/shipping">Shipping</button>
+            <button mat-menu-item routerLink="/services/tracking">Tracking</button>
+        </div>
+    </mat-menu>
     <a mat-button routerLink="/about">About</a>
     <a mat-button routerLink="/contactus">Contact Us</a>
 

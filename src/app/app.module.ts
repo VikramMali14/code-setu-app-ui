@@ -18,6 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule  } from '@angular/material/datepicker';
+import { MatMenuModule } from '@angular/material/menu'; // 1. Import it
 
 
 import { LoginComponent } from './component/login/login.component';
@@ -83,7 +84,7 @@ import { DepartmentComponent } from './component/component/department/department
     MatTableModule,
     MatDialogModule,
     MatStepperModule,
-    MatDatepickerModule,
+    MatDatepickerModule,MatMenuModule,
     MatNativeDateModule,MatPaginatorModule
   ],
 providers:[
