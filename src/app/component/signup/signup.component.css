@@ -55,3 +55,11 @@
     display: none; /* Hide image on mobile for better UX */
   }
 }
+.signup-logo {
+    /* Adjust height to fit standard Angular Material Toolbar height */
+    height: 200px; 
+    /* Maintain aspect ratio */
+    width: auto;
+    /* Optional: Add slight margin to align vertically if needed */
+    vertical-align: middle; 
+}

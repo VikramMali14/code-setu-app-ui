@@ -140,3 +140,12 @@
   line-height: 1;
   padding: 0 6px;
 }
+.navbar-logo {
+    /* Adjust height to fit standard Angular Material Toolbar height */
+    height: 200px; 
+    /* Maintain aspect ratio */
+    width: auto;
+    /* Optional: Add slight margin to align vertically if needed */
+    vertical-align: middle; 
+    align-items: center;
+}

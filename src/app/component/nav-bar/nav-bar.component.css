@@ -24,3 +24,11 @@
     width: 80%;
     left: 10%;
 }
+.navbar-logo {
+    /* Adjust height to fit standard Angular Material Toolbar height */
+    height: 90px; 
+    /* Maintain aspect ratio */
+    width: auto;
+    /* Optional: Add slight margin to align vertically if needed */
+    vertical-align: middle; 
+}
