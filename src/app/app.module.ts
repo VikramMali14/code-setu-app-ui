@@ -34,6 +34,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatNativeDateModule } from '@angular/material/core'; 
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -85,7 +86,7 @@ import { DepartmentDialogComponent } from './component/department-dialog/departm
     MatDialogModule,
     MatStepperModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,MatPaginatorModule
   ],
 providers:[
     {

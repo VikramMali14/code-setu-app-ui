@@ -44,7 +44,7 @@ save(): void {
   const payload = this.form.value;
 
   const request$ = this.isEdit
-    ? this.deptService.updatedepartmen(this.data!.id!, payload)
+    ? this.deptService.updatedepartment( payload)
     : this.deptService.createdepartment(payload);
 
   // FIXED: Removed '.Observable'

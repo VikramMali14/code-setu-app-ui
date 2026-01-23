@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Department } from 'src/app/models/department';
-import { DepartmentDialogComponent } from '../../department-dialog/department-dialog.component';
 import { DepartmentService } from 'src/app/services/department.service';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-department',
@@ -15,28 +13,82 @@ export class DepartmentComponent implements OnInit {
 
   displayedColumns = ['name', 'description', 'isActive', 'actions'];
   departments: Department[] = [];
+
   dataSource = new MatTableDataSource<Department>();
+
+  departmentForm!: FormGroup;
+  isEditMode = false;
+  selectedDepartmentId?: number;
+
   constructor(
     private deptService: DepartmentService,
-    private dialog: MatDialog
+    private fb: FormBuilder
   ) { }
 
   ngOnInit(): void {
+    this.initForm();
     this.loadDepartments();
   }
-loadDepartments(): void {
-  this.deptService.getAll().subscribe(res => {
-    this.departments = res.dataList; // ✅ THIS IS THE ARRAY
-  });
-}
 
+  private initForm(): void {
+    this.departmentForm = this.fb.group({
+      name: ['', Validators.required],
+      code: ['', Validators.required],
 
-  openCreate(): void {
-    this.openDialog();
+      description: [''],
+      isActive: [true, Validators.required]
+    });
   }
 
+  loadDepartments(): void {
+    this.deptService.getAll().subscribe(res => {
+      this.departments = res.dataList;
+      this.dataSource.data = this.departments;
+    });
+  }
+
+  /** CREATE */
+  openCreate(): void {
+    this.isEditMode = false;
+    this.selectedDepartmentId = undefined;
+    this.departmentForm.reset({ isActive: true });
+  }
+
+  /** EDIT */
   openEdit(dept: Department): void {
-    this.openDialog(dept);
+    this.isEditMode = true;
+    this.selectedDepartmentId = dept.id;
+
+    this.departmentForm.patchValue({
+      name: dept.name,
+      description: dept.description,
+      isActive: dept.isActive
+    });
+  }
+
+  /** SAVE (CREATE or UPDATE) */
+  submit(): void {
+    if (this.departmentForm.invalid) return;
+
+    const payload: Department = {
+      ...this.departmentForm.value,
+      id: this.selectedDepartmentId
+    };
+
+    const api$ = this.isEditMode
+      ? this.deptService.updatedepartment(payload)
+      : this.deptService.createdepartment(payload);
+
+    api$.subscribe(() => {
+      this.loadDepartments();
+      this.reset();
+    });
+  }
+
+  reset(): void {
+    this.isEditMode = false;
+    this.selectedDepartmentId = undefined;
+    this.departmentForm.reset({ isActive: true });
   }
 
   delete(id: number): void {
@@ -46,18 +98,4 @@ loadDepartments(): void {
       this.loadDepartments();
     });
   }
-
-  private openDialog(dept?: Department): void {
-    const dialogRef = this.dialog.open(DepartmentDialogComponent, {
-      width: '400px',
-      data: dept ?? null
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadDepartments();
-      }
-    });
-  }
-
 }

@@ -1,42 +1,45 @@
-.doc-page {
-  padding: 24px;
-  background: #eeeeee;
+.doc-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: start;
 }
 
-.doc-header {
-  margin-bottom: 16px;
+.form-card {
+  min-height: 100%;
 }
 
-.doc-header h1 {
-  margin: 0;
-  font-size: 24px;
+.full {
+  width: 100%;
 }
 
-.doc-header p {
-  margin: 4px 0 0;
-  color: #666;
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
 }
 
-.doc-actions {
-  margin: 16px 0;
-}
-
-.doc-card {
-  padding: 16px;
-}
-
+/* Status badges */
 .status-badge {
   padding: 4px 12px;
-  border-radius: 14px;
+  border-radius: 20px;
   font-size: 12px;
-  color: #fff;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .status-badge.active {
-  background-color: #28a745;
+  background: #2e7d32;
+  color: #fff;
 }
 
 .status-badge.inactive {
-  background-color: #dc3545;
+  background: #c62828;
+  color: #fff;
+}
+
+/* Responsive fallback */
+@media (max-width: 900px) {
+  .doc-grid {
+    grid-template-columns: 1fr;
+  }
 }

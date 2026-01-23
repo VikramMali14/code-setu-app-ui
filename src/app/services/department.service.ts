@@ -33,9 +33,9 @@ export class DepartmentService {
     return this.http.post<Department>(`${this.BASE_URL}/api/v2/cargosetu/department`, payload);
   }
 
-  updatedepartmen(id: number, payload: any) {
+  updatedepartment( payload: Department) {
     return this.http.put<Department>(
-      `${this.BASE_URL}/api/v2/cargosetu/department/`+id,
+      `${this.BASE_URL}/api/v2/cargosetu/department/`+payload.id,
       payload
     );
   }
