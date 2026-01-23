@@ -3,17 +3,17 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Department } from 'src/app/models/department';
 import { DepartmentService } from 'src/app/services/department.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from "@angular/material/form-field"; // ✅ Import this
 
 @Component({
   selector: 'app-department',
   templateUrl: './department.component.html',
-  styleUrls: ['./department.component.css']
+  styleUrls: ['./department.component.css'],
 })
 export class DepartmentComponent implements OnInit {
 
-  displayedColumns = ['name', 'description', 'isActive', 'actions'];
-  departments: Department[] = [];
-
+  displayedColumns = ['name', 'code', 'isActive', 'actions'];
   dataSource = new MatTableDataSource<Department>();
 
   departmentForm!: FormGroup;
@@ -23,79 +23,56 @@ export class DepartmentComponent implements OnInit {
   constructor(
     private deptService: DepartmentService,
     private fb: FormBuilder
-  ) { }
+  ) {}
 
-  ngOnInit(): void {
-    this.initForm();
-    this.loadDepartments();
-  }
+ ngOnInit(): void {
+  this.departmentForm = this.fb.group({
+    name: ['', Validators.required],
+    code: ['', Validators.required],
+    description: [''],
+    isActive: [true]
+  });
 
-  private initForm(): void {
-    this.departmentForm = this.fb.group({
-      name: ['', Validators.required],
-      code: ['', Validators.required],
+  this.reset();          // 👈 IMPORTANT
+  this.loadDepartments();
+}
 
-      description: [''],
-      isActive: [true, Validators.required]
-    });
-  }
 
   loadDepartments(): void {
     this.deptService.getAll().subscribe(res => {
-      this.departments = res.dataList;
-      this.dataSource.data = this.departments;
+      this.dataSource.data = res.dataList;
     });
   }
-
-  /** CREATE */
-  openCreate(): void {
-    this.isEditMode = false;
-    this.selectedDepartmentId = undefined;
-    this.departmentForm.reset({ isActive: true });
+  deleteDepartment(id:number){
+    this.deptService.delete(id);
   }
-
-  /** EDIT */
   openEdit(dept: Department): void {
     this.isEditMode = true;
     this.selectedDepartmentId = dept.id;
-
-    this.departmentForm.patchValue({
-      name: dept.name,
-      description: dept.description,
-      isActive: dept.isActive
-    });
+    this.departmentForm.patchValue(dept);
   }
 
-  /** SAVE (CREATE or UPDATE) */
   submit(): void {
     if (this.departmentForm.invalid) return;
 
-    const payload: Department = {
+    const payload = {
       ...this.departmentForm.value,
       id: this.selectedDepartmentId
     };
 
-    const api$ = this.isEditMode
-      ? this.deptService.updatedepartment(payload)
+    const req$ = this.isEditMode
+      ? this.deptService.updatedepartment(payload.id,payload)
       : this.deptService.createdepartment(payload);
 
-    api$.subscribe(() => {
+    req$.subscribe(() => {
       this.loadDepartments();
       this.reset();
     });
   }
 
   reset(): void {
+    this.departmentForm.reset({ isActive: true });
     this.isEditMode = false;
     this.selectedDepartmentId = undefined;
-    this.departmentForm.reset({ isActive: true });
-  }
-
-  delete(id: number): void {
-    if (!confirm('Delete this department?')) return;
-
-    this.deptService.delete(id).subscribe(() => {
-      this.loadDepartments();
-    });
   }
 }

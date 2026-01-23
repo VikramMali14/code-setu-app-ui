@@ -44,7 +44,6 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { UpdateroleComponent } from './component/updaterole/updaterole.component';
 import { RolesDetailsComponent } from './roles-details/roles-details.component';
 import { DepartmentComponent } from './component/component/department/department.component';
-import { DepartmentDialogComponent } from './component/department-dialog/department-dialog.component';
 
 @NgModule({
   declarations: [
@@ -60,9 +59,8 @@ import { DepartmentDialogComponent } from './component/department-dialog/departm
     FooterComponent,
     UpdateroleComponent,
     RolesDetailsComponent,
-    DepartmentComponent,
-    DepartmentDialogComponent
-  ],
+    DepartmentComponent
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,

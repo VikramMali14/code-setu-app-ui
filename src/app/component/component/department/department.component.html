@@ -1,106 +1,83 @@
-<div class="doc-page">
+<div class="doc-grid">
 
-  <!-- PAGE TITLE -->
-  <div class="doc-header">
-    <h1>Department Management</h1>
-    <p>
-      This section allows administrators to view, edit, and manage departments.
-    </p>
-  </div>
+  <!-- LEFT : TABLE -->
+  <mat-card>
+    <mat-card-title>Departments</mat-card-title>
 
-  <!-- TWO COLUMN GRID -->
-  <div class="doc-grid">
+    <table mat-table [dataSource]="dataSource">
 
-    <!-- LEFT : DEPARTMENT LIST -->
-    <mat-card class="doc-card">
-      <mat-card-title>Departments</mat-card-title>
-      <mat-card-subtitle>
-        List of all configured departments with current status.
-      </mat-card-subtitle>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let d">{{ d.name }}</td>
+      </ng-container>
 
-      <table mat-table [dataSource]="departments" class="mat-elevation-z2">
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef>Code</th>
+        <td mat-cell *matCellDef="let d">{{ d.code }}</td>
+      </ng-container>
 
-        <!-- NAME -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let d">{{ d.name }}</td>
-        </ng-container>
+      <ng-container matColumnDef="isActive">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let d">
+          <span [class.active]="d.isActive" [class.inactive]="!d.isActive">
+            {{ d.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+      </ng-container>
 
-        <!-- DESCRIPTION -->
-        <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef>Description</th>
-          <td mat-cell *matCellDef="let d">{{ d.description }}</td>
-        </ng-container>
-
-        <!-- STATUS -->
-        <ng-container matColumnDef="isActive">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let d">
-            <span class="status-badge active" *ngIf="d.isActive">Active</span>
-            <span class="status-badge inactive" *ngIf="!d.isActive">Inactive</span>
-          </td>
-        </ng-container>
-
-        <!-- ACTIONS -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let d">
-            <button mat-icon-button color="primary" (click)="openEdit(d)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="delete(d.id!)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-      </table>
-    </mat-card>
-
-    <!-- RIGHT : CREATE / EDIT FORM -->
-    <mat-card class="doc-card form-card">
-
-      <mat-card-title>Create Department</mat-card-title>
-
-      <form [formGroup]="departmentForm" (ngSubmit)="submit()">
-
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Department Name</mat-label>
-          <input matInput formControlName="name" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Department Code</mat-label>
-          <input matInput formControlName="code" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Description</mat-label>
-          <textarea matInput rows="3" formControlName="description"></textarea>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Status</mat-label>
-          <mat-select formControlName="isActive">
-            <mat-option [value]="true">Active</mat-option>
-            <mat-option [value]="false">Inactive</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit">
-            Save Department
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let d">
+          <button mat-icon-button (click)="openEdit(d)">
+            <mat-icon>edit</mat-icon>
           </button>
-          <!-- <button mat-stroked-button type="button" (click)="reset()">
-            Clear
-          </button> -->
-        </div>
+          <button mat-icon-button color="warn" (click)="deleteDepartment(d.id!)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
 
-      </form>
-    </mat-card>
+        </td>
+      </ng-container>
 
-  </div>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card>
+
+  <!-- RIGHT : FORM -->
+  <mat-card>
+    <mat-card-title>
+      {{ isEditMode ? 'Edit Department' : 'Create Department' }}
+    </mat-card-title>
+
+    <form [formGroup]="departmentForm" (ngSubmit)="submit()">
+
+      <mat-form-field class="full">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name">
+      </mat-form-field>
+
+      <mat-form-field class="full">
+        <mat-label>Department Code</mat-label>
+        <input matInput formControlName="code">
+      </mat-form-field>
+
+      <mat-form-field class="full">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+
+      <mat-slide-toggle formControlName="isActive">
+        Active
+      </mat-slide-toggle>
+
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </button>
+        <button mat-button type="button" (click)="reset()">Clear</button>
+      </div>
+
+    </form>
+  </mat-card>
+
 </div>

@@ -1,12 +1,17 @@
 .doc-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 3.5fr 1.2fr;
   gap: 20px;
   align-items: start;
 }
 
-.form-card {
-  min-height: 100%;
+table {
+  width: 100%;
+}
+
+mat-card {
+  padding: 16px;
+  overflow-x: auto;
 }
 
 .full {
@@ -19,7 +24,11 @@
   margin-top: 20px;
 }
 
-/* Status badges */
+th.mat-header-cell,
+td.mat-cell {
+  padding: 14px 18px;
+}
+
 .status-badge {
   padding: 4px 12px;
   border-radius: 20px;
@@ -37,7 +46,6 @@
   color: #fff;
 }
 
-/* Responsive fallback */
 @media (max-width: 900px) {
   .doc-grid {
     grid-template-columns: 1fr;
