@@ -30,6 +30,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatStepperModule } from '@angular/material/stepper';
+
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './component/footer/footer.component';
@@ -77,7 +79,8 @@ import { DepartmentDialogComponent } from './component/department-dialog/departm
     ReactiveFormsModule,
     CommonModule,
     MatTableModule,
-    MatDialogModule
+    MatDialogModule,
+    MatStepperModule
   ],
 providers:[
     {
