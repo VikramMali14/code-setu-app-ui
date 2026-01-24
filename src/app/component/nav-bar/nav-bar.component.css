@@ -19,7 +19,13 @@
     background-color: white;
     transition: all 0.3s ease-in-out;
 }
-
+.mat-toolbar {
+    /* Linear gradient from primary blue to a lighter shade */
+    background: linear-gradient(90deg, #3f51b5 0%, #2196f3 100%) !important;
+    /* Optional: Add a slight shadow for depth */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    color: white;
+}
 .mat-toolbar a[mat-button]:hover::after {
     width: 80%;
     left: 10%;

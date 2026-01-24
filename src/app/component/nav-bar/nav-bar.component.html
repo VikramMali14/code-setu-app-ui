@@ -1,9 +1,9 @@
 <mat-toolbar color="primary">
-  <a mat-button routerLink="/">
-    <h1>          
-        <img src="assets/images/logo-with-name.png" alt="Cargo-Setu Logo" class="navbar-logo" />
-    </h1>
-</a>
+    <a mat-button routerLink="/">
+        <h1>
+            <img src="assets/images/logo-with-name.png" alt="Cargo-Setu Logo" class="navbar-logo" />
+        </h1>
+    </a>
 
 
     <a mat-button routerLink="/">Home</a>
@@ -27,11 +27,21 @@
 
 
     <span class="example-spacer"></span>
-    <a *ngIf="!loggedIn" mat-button routerLink="/signup">Sign Up</a>
-    <a *ngIf="!loggedIn" mat-button routerLink="/login">Login</a>
 
-    <a *ngIf="loggedIn" mat-button>User</a>
-    <a *ngIf="loggedIn" mat-button (click)="logoutUser()" routerLink="/login">
-        Logout
+    <a *ngIf="!loggedIn" mat-button routerLink="/signup">
+        <mat-icon>person_add</mat-icon> Sign Up
     </a>
+    <a *ngIf="!loggedIn" mat-button routerLink="/login">
+        <mat-icon>login</mat-icon> Login
+    </a>
+
+    <!-- Added icons for User and Logout -->
+    <a *ngIf="loggedIn" mat-button>
+        <mat-icon aria-hidden="false">person</mat-icon> User
+    </a>
+
+    <a *ngIf="loggedIn" mat-button (click)="logoutUser()" routerLink="/login">
+        <mat-icon aria-hidden="false">logout</mat-icon> Logout
+    </a>
+
 </mat-toolbar>

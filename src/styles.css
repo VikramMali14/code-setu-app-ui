@@ -10,3 +10,11 @@ body { margin: 0;
 .mt{
     margin-top: 10;
 }
+.btn {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-2px); /* Moves the button slightly up */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+}
