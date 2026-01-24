@@ -18,3 +18,11 @@ body { margin: 0;
   transform: translateY(-2px); /* Moves the button slightly up */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
 }
+html {
+  scroll-behavior: smooth;
+}
+
+.home-contact-wrapper {
+  padding: 60px 0; /* Adds breathing room between home content and the form */
+  background-color: #fafafa; /* Matches the contact page background */
+}

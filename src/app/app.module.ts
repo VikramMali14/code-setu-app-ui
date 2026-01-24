@@ -8,17 +8,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Corrected Imports
 import { MatButtonModule } from '@angular/material/button'; // Fixed 'Buttom' to 'Button'
 import { MatToolbarModule } from '@angular/material/toolbar'; // Fixed 'Bar' to 'bar'
-import {MatFormFieldModule} from '@angular/material/form-field'
-import {MatInputModule} from '@angular/material/input'
-import {FormsModule} from '@angular/forms'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
+import { FormsModule } from '@angular/forms'
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatDatepickerModule  } from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMenuModule } from '@angular/material/menu'; // 1. Import it
+import { Router, Routes } from '@angular/router';
 
 
 import { LoginComponent } from './component/login/login.component';
@@ -48,23 +49,22 @@ import { UpdateroleComponent } from './component/updaterole/updaterole.component
 import { RolesDetailsComponent } from './roles-details/roles-details.component';
 import { DepartmentComponent } from './component/component/department/department.component';
 import { LoaderComponent } from './component/loader/loader.component';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent,
     NavBarComponent,
     DashboardComponent,
     SignupComponent,
     ServicesComponent,
     AboutComponent,
-    ContectUsComponent,
     FooterComponent,
     UpdateroleComponent,
     RolesDetailsComponent,
     DepartmentComponent,
-    ],
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -87,9 +87,11 @@ import { LoaderComponent } from './component/loader/loader.component';
     MatTableModule,
     MatDialogModule,
     MatStepperModule,
-    MatDatepickerModule,MatMenuModule,LoaderComponent,
-    MatNativeDateModule,MatPaginatorModule,
-    MatAutocompleteModule
+    ContectUsComponent,HomeComponent,
+    MatDatepickerModule, MatMenuModule, LoaderComponent,
+    MatNativeDateModule, MatPaginatorModule,
+    MatAutocompleteModule,
+
   ],
 providers:[
     {

@@ -31,7 +31,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      // This enables jumping to the #id in the URL
+      anchorScrolling: 'enabled', 
+      // This ensures the page starts at the top when changing routes
+      scrollPositionRestoration: 'enabled',
+      // Optional: adds a smooth scroll effect
+      scrollOffset: [0, 64] 
+    })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
