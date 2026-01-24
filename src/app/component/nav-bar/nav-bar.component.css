@@ -32,3 +32,27 @@
     /* Optional: Add slight margin to align vertically if needed */
     vertical-align: middle; 
 }
+/* .bento-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; Space between dots and text
+}
+
+Create the 9 dots using a radial gradient
+.bento-button::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  opacity: 0; Hidden by default
+  transition: opacity 0.3s ease;
+  
+  This creates a 3x3 grid of dots
+  background-image: radial-gradient(circle, currentColor 1.5px, transparent 1.5px);
+  background-size: 4px 4px; 
+}
+
+Show the dots on hover
+.bento-button:hover::before {
+  opacity: 1;
+} */

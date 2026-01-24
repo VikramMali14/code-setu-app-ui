@@ -45,6 +45,7 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { UpdateroleComponent } from './component/updaterole/updaterole.component';
 import { RolesDetailsComponent } from './roles-details/roles-details.component';
 import { DepartmentComponent } from './component/component/department/department.component';
+import { LoaderComponent } from './component/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,7 @@ import { DepartmentComponent } from './component/component/department/department
     FooterComponent,
     UpdateroleComponent,
     RolesDetailsComponent,
-    DepartmentComponent
+    DepartmentComponent,
     ],
   imports: [
     BrowserModule,
@@ -84,7 +85,7 @@ import { DepartmentComponent } from './component/component/department/department
     MatTableModule,
     MatDialogModule,
     MatStepperModule,
-    MatDatepickerModule,MatMenuModule,
+    MatDatepickerModule,MatMenuModule,LoaderComponent,
     MatNativeDateModule,MatPaginatorModule
   ],
 providers:[
