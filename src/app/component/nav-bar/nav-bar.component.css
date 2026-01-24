@@ -1,10 +1,12 @@
 .example-spacer{
     flex: 1 1 auto;
 }
+
 .nav-link:hover {
     background-color: #ffd740 !important; /* Material Accent Color */
     color: #000 !important;
 }
+
 .mat-toolbar a[mat-button] {
     position: relative;
 }
@@ -19,7 +21,8 @@
     background-color: white;
     transition: all 0.3s ease-in-out;
 }
-/* Navbar with matching gradient from contact section */
+
+/* Sticky Navbar - Fixed at top */
 .mat-toolbar {
     /* Purple gradient matching the contact/pricing sections */
     background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #E94E77 100%) !important;
@@ -32,6 +35,11 @@
     
     /* Smooth transition */
     transition: all 0.3s ease;
+    
+    /* Make navbar sticky */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 /* Optional: Add a subtle backdrop blur effect for modern look */
@@ -81,6 +89,7 @@
     width: 80%;
     left: 10%;
 }
+
 .navbar-logo {
     /* Adjust height to fit standard Angular Material Toolbar height */
     height: 90px; 
