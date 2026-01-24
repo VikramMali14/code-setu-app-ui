@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent, pathMatch: 'full' },
   { path: 'services', component: ServicesComponent, pathMatch: 'full' },
   { path: 'about', component: AboutComponent, pathMatch: 'full' },
-  { path: 'contactus', component: FooterComponent, pathMatch: 'full' },
+  { path: 'contactus', component: ContectUsComponent, pathMatch: 'full' },
   { path: 'home', component: HomeComponent, pathMatch: 'full' },
   { path: 'createrole', component: RoleComponent, pathMatch: 'full' },
   { path: 'updaterole', component: UpdateroleComponent, pathMatch: 'full' },

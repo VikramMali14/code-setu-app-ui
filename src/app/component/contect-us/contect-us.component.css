@@ -1,0 +1,103 @@
+.contact-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: auto;
+    background-color: #fafafa;
+}
+
+/* Form Card Styling */
+.form-section {
+    flex: 1.2;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.submit-btn {
+    padding: 25px !important;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 8px !important;
+}
+
+/* Info Grid Layout (Right Side) */
+.info-grid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.small-info-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eee !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+}
+
+.small-info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.08) !important;
+}
+
+/* Icon Design */
+.icon-circle {
+    min-width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.icon-circle mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: white;
+}
+
+.location { background: #3f51b5; } /* Primary Blue */
+.phone { background: #4caf50; }    /* Success Green */
+.email { background: #ff9800; }    /* Warning Orange */
+
+/* Text inside small cards */
+.small-info-card h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.small-info-card p {
+    margin: 0;
+    color: #666;
+    line-height: 1.4;
+    font-size: 0.95rem;
+}
+
+/* Responsive adjustment */
+@media (max-width: 900px) {
+    .contact-page-container {
+        flex-direction: column;
+    }
+    .info-grid {
+        width: 100%;
+    }
+}
