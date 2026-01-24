@@ -14,7 +14,8 @@ export class SignupComponent implements OnInit {
   currentStep = 1;
   citySuggestions: any[] = [];
   submitting = false;
-
+  hidePassword = true;
+  hideConfirmPassword=true;
   countryCodes = [
     { name: 'India', code: '+91' },
     { name: 'USA', code: '+1' },
