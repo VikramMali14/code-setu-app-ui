@@ -1,133 +1,150 @@
-<div class="login-page">
-  <!-- 1. New Wrapper for Split Screen -->
-  <div class="signup-container">
-    
-   <div class="info-side">
-  <div class="back-nav">
-    <a mat-button routerLink="/">
-      <mat-icon>arrow_back</mat-icon> Back to Home
-    </a>
-  </div>
-
-  <!-- Wrap content in a hero-content div -->
-  <div class="hero-content">
-    <h1>Join Cargo-Setu</h1>
-    <p>Manage your logistics and staff efficiently.</p>
-    <img src="assets/images/logo-with-name.png" alt="Logistics Illustration" class="hero-img" />
-  </div>
-</div>
-
-
-    <!-- RIGHT SIDE: Your existing Card -->
-    <div class="form-side">
-      <mat-card class="login-card">
-        <div class="login-header">
-          <img src="assets/images/logo-with-name.png" class="signup-logo"/>
-          <p>Create Staff Account</p>
-        </div>
-
-        <mat-horizontal-stepper linear>
-          <!-- STEP 1 -->
-          <mat-step [stepControl]="basicInfoForm">
-            <form [formGroup]="basicInfoForm">
-              <h3>Basic Information</h3>
-              <mat-form-field class="full">
-                <mat-label>Username</mat-label>
-                <input matInput formControlName="userName">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>First Name</mat-label>
-                <input matInput formControlName="firstName">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>Last Name</mat-label>
-                <input matInput formControlName="lastName">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>Email</mat-label>
-                <input matInput formControlName="email">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>Password</mat-label>
-                <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>DOB</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="dob">
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
-              <button mat-raised-button color="primary" class="btn" matStepperNext>Next</button>
-            </form>
-          </mat-step>
-
-          <!-- STEP 2 -->
-          <mat-step [stepControl]="addressInfoForm">
-            <form [formGroup]="addressInfoForm">
-              <h3>Address Details</h3>
-              <mat-form-field class="full">
-                <mat-label>Country</mat-label>
-                <input matInput formControlName="country">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>State</mat-label>
-                <input matInput formControlName="state">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>City</mat-label>
-                <input matInput formControlName="city">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>Address</mat-label>
-                <input matInput formControlName="address">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>Pincode</mat-label>
-                <input matInput formControlName="pincode">
-              </mat-form-field>
-              <button mat-button matStepperPrevious>Back</button>
-              <button mat-raised-button color="primary" class="btn" matStepperNext>Next</button>
-            </form>
-          </mat-step>
-
-          <!-- STEP 3 -->
-          <mat-step [stepControl]="otherInfoForm">
-            <form [formGroup]="otherInfoForm">
-              <h3>Other Details</h3>
-              <mat-form-field class="full">
-                <mat-label>Mobile Number</mat-label>
-                <input matInput type="number" formControlName="mobileNumber">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>Department</mat-label>
-                <input matInput type="number" formControlName="departmentId">
-              </mat-form-field>
-              <mat-form-field class="full">
-                <mat-label>Staff Type</mat-label>
-                <mat-select formControlName="staffType">
-                  <mat-option value="ADMIN">Admin</mat-option>
-                  <mat-option value="STAFF">Staff</mat-option>
-                  <mat-option value="DRIVER">Driver</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-slide-toggle formControlName="isActive">Active</mat-slide-toggle>
-              <br><br>
-              <button mat-button matStepperPrevious>Back</button>
-              <button mat-raised-button color="primary" (click)="submit()" [disabled]="submitting">
-                Create Staff
-              </button>
-            </form>
-          </mat-step>
-     
-        </mat-horizontal-stepper>
-              <button class="mat-mdc-stroked-button google-btn">
-          <span class="mdc-button__label">
-             <a href="/login">I already have accound</a>
-          </span>
-        </button>
-      </mat-card>
-      
+<div class="signup-container">
+  <div class="signup-left">
+    <div class="back-nav" style="margin-bottom: 20px;">
+        <a routerLink="/" style="text-decoration: none; color: #64748b; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
     </div>
 
+    <div class="logo-container">
+      <img src="assets/images/logo-with-name.png" alt="CargoSetu" width="100px">
+      <span class="logo-text">CargoSetu</span>
+    </div>
+
+    <div class="header-section">
+      <h1>Create your account</h1>
+      <p>Streamline your logistics operations today.</p>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-steps">
+        <div class="progress-line"></div>
+        <div class="progress-line-active" [style.width.%]="(currentStep - 1) / 3 * 100"></div>
+
+        <div class="step" [ngClass]="getStepClass(1)"><div class="step-circle">1</div><div class="step-label">Account</div></div>
+        <div class="step" [ngClass]="getStepClass(2)"><div class="step-circle">2</div><div class="step-label">Contact</div></div>
+        <div class="step" [ngClass]="getStepClass(3)"><div class="step-circle">3</div><div class="step-label">Address</div></div>
+        <div class="step" [ngClass]="getStepClass(4)"><div class="step-circle">4</div><div class="step-label">Security</div></div>
+      </div>
+    </div>
+
+    <form [formGroup]="staffForm">
+      <div class="form-step" [class.active]="currentStep === 1" formGroupName="basicInfo">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name <span class="required">*</span></label>
+            <div class="input-wrapper"><i class="fas fa-user input-icon"></i>
+              <input type="text" class="form-input" formControlName="firstName" placeholder="John">
+            </div>
+            <small class="error-msg" *ngIf="isInvalid('basicInfo', 'firstName')">First name is required</small>
+          </div>
+          <div class="form-group">
+            <label>Last Name <span class="required">*</span></label>
+            <div class="input-wrapper"><i class="fas fa-user input-icon"></i>
+              <input type="text" class="form-input" formControlName="lastName" placeholder="Doe">
+            </div>
+            <small class="error-msg" *ngIf="isInvalid('basicInfo', 'lastName')">Last name is required</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address <span class="required">*</span></label>
+          <div class="input-wrapper"><i class="fas fa-envelope input-icon"></i>
+            <input type="email" class="form-input" formControlName="email" placeholder="john@example.com">
+          </div>
+          <small class="error-msg" *ngIf="isInvalid('basicInfo', 'email')">Valid email is required</small>
+        </div>
+      </div>
+
+      <div class="form-step" [class.active]="currentStep === 2" formGroupName="otherInfo">
+        <div class="form-group">
+          <label>Mobile Number <span class="required">*</span></label>
+          <div class="mobile-input-group">
+            <select class="form-input code-select" formControlName="mobileCode">
+              <option *ngFor="let c of countryCodes" [value]="c.code">{{c.code}} ({{c.name}})</option>
+            </select>
+            <div class="input-wrapper">
+              <i class="fas fa-phone input-icon"></i>
+              <input type="tel" class="form-input" formControlName="mobileNumber" placeholder="9876543210">
+            </div>
+          </div>
+          <small class="error-msg" *ngIf="isInvalid('otherInfo', 'mobileNumber')">10-digit mobile number required</small>
+        </div>
+      </div>
+
+      <div class="form-step" [class.active]="currentStep === 3" formGroupName="addressInfo">
+        <div class="form-group">
+          <label>City <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <i class="fas fa-city input-icon"></i>
+            <input type="text" class="form-input" formControlName="city" placeholder="Search City..." autocomplete="off">
+            <div class="autocomplete-results" *ngIf="citySuggestions.length > 0">
+              <div class="autocomplete-item" *ngFor="let city of citySuggestions" (click)="selectCity(city)">
+                <strong>{{city.properties.name}}</strong>
+                <small>{{city.properties.state}}, {{city.properties.country}}</small>
+              </div>
+            </div>
+          </div>
+          <small class="error-msg" *ngIf="isInvalid('addressInfo', 'city')">City is required</small>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>State <span class="required">*</span></label>
+            <div class="input-wrapper"><i class="fas fa-map-marker-alt input-icon"></i>
+              <input type="text" class="form-input" formControlName="state" placeholder="State">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Pincode <span class="required">*</span></label>
+            <div class="input-wrapper"><i class="fas fa-map-pin input-icon"></i>
+              <input type="text" class="form-input" formControlName="pincode" placeholder="400001">
+            </div>
+            <small class="error-msg" *ngIf="isInvalid('addressInfo', 'pincode')">6-digit pincode required</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-step" [class.active]="currentStep === 4" formGroupName="securityInfo">
+        <div class="form-group">
+          <label>Password <span class="required">*</span></label>
+          <div class="input-wrapper"><i class="fas fa-lock input-icon"></i>
+            <input type="password" class="form-input" formControlName="password" placeholder="••••••••">
+          </div>
+          <small class="error-msg" *ngIf="isInvalid('securityInfo', 'password')">Minimum 6 characters required</small>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password <span class="required">*</span></label>
+          <div class="input-wrapper"><i class="fas fa-check-circle input-icon"></i>
+            <input type="password" class="form-input" formControlName="confirmPassword" placeholder="••••••••">
+          </div>
+          <small class="error-msg" *ngIf="staffForm.get('securityInfo')?.hasError('passwordMismatch')">Passwords do not match</small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="prevStep()" *ngIf="currentStep > 1">Back</button>
+        <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="submitting">
+          {{ currentStep === 4 ? (submitting ? 'Creating...' : 'Create Account') : 'Next' }}
+          <i class="fas fa-arrow-right" *ngIf="currentStep < 4"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="signup-right">
+    <h2>Why CargoSetu?</h2>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="fas fa-truck"></i></div>
+      <div class="feature-content">
+        <h3>Live Tracking</h3>
+        <p>Real-time GPS updates for every shipment.</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+      <div class="feature-content">
+        <h3>Secure Payments</h3>
+        <p>Fully encrypted and automated invoicing.</p>
+      </div>
+    </div>
   </div>
 </div>

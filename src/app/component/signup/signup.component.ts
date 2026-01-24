@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { debounce } from 'rxjs';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { debounceTime, switchMap, of, filter } from 'rxjs';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 
 @Component({
@@ -9,96 +10,152 @@ import { StaffuserServiceService } from 'src/app/services/staffuser-service';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
-
   staffForm!: FormGroup;
-  hidePassword = true;
+  currentStep = 1;
+  citySuggestions: any[] = [];
   submitting = false;
+
+  countryCodes = [
+    { name: 'India', code: '+91' },
+    { name: 'USA', code: '+1' },
+    { name: 'UK', code: '+44' },
+    { name: 'UAE', code: '+971' }
+  ];
 
   constructor(
     private fb: FormBuilder,
+    private http: HttpClient,
     private staffService: StaffuserServiceService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.staffForm = this.fb.group({
-
-      // STEP 1
+      // STEP 1: Basic Info (No password here)
       basicInfo: this.fb.group({
-        userName: ['', Validators.required],
         firstName: ['', Validators.required],
         lastName: ['', Validators.required],
-        password: ['', Validators.required],
-        dob: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]]
+        email: ['', [Validators.required, Validators.email]],
+        userName: [''],
+        dob: [new Date()]
       }),
 
-      // STEP 2
-      addressInfo: this.fb.group({
-        country: ['', Validators.required],
-        state: ['', Validators.required],
-        city: ['', Validators.required],
-        address: ['', Validators.required],
-        pincode: ['', Validators.required]
-      }),
-
-      // STEP 3
+      // STEP 2: Contact Info
       otherInfo: this.fb.group({
+        mobileNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
         mobileCode: ['+91', Validators.required],
-        mobileNumber: [
-          '',
-          [Validators.required, Validators.pattern('^[0-9]{10}$')]
-        ],
-        departmentId: [null, Validators.required],
-        staffType: ['', Validators.required],
-        isActive: [true],
+        staffType: ['STAFF'],
+        departmentId: [1],
+        isActive: [true]
+      }),
 
-        // future-proof
-        dob: [null],
-        gender: ['']
-      })
+      // STEP 3: Address Info
+      addressInfo: this.fb.group({
+        city: ['', Validators.required],
+        state: ['', Validators.required],
+        pincode: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]],
+        country: ['India'],
+        address: ['Default Address']
+      }),
+
+      // STEP 4: Security Info (Password moved here)
+      securityInfo: this.fb.group({
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', Validators.required]
+      }, { validators: this.passwordMatchValidator })
+    });
+
+    this.setupCitySearch();
+  }
+
+  // Password matching logic
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const pass = control.get('password')?.value;
+    const confirm = control.get('confirmPassword')?.value;
+    return pass && confirm && pass !== confirm ? { passwordMismatch: true } : null;
+  }
+
+  // Helper for HTML error messages
+  isInvalid(groupName: string, controlName: string): boolean {
+    const control = this.staffForm.get(`${groupName}.${controlName}`);
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+
+  setupCitySearch() {
+    this.staffForm.get('addressInfo.city')?.valueChanges.pipe(
+      debounceTime(400),
+      filter(val => typeof val === 'string'),
+      switchMap(val => val?.length > 2 ? this.http.get(`https://photon.komoot.io/api/?q=${val}`) : of(null))
+    ).subscribe((data: any) => {
+      this.citySuggestions = data ? data.features : [];
     });
   }
 
-  submit(): void {
-    if (this.staffForm.invalid) {
-      this.staffForm.markAllAsTouched();
-      return;
-    }
+  getStepClass(stepNum: number) {
+    if (this.currentStep > stepNum) return 'step completed';
+    if (this.currentStep === stepNum) return 'step active';
+    return 'step';
+  }
 
-    const payload = {
-      ...this.staffForm.value.basicInfo,
-      ...this.staffForm.value.addressInfo,
-      ...this.staffForm.value.otherInfo,
-    };
+  nextStep() {
+    const currentGroup = this.getGroupForStep(this.currentStep);
 
-    console.log('FINAL PAYLOAD', payload);
-
-    this.submitting = true;
-
-    this.staffService.createStaff(payload).subscribe({
-      next: (res) => {
-        console.log('STAFF CREATED', res);
-        this.staffForm.reset({
-          otherInfo: { isActive: true, mobileCode: '+91' }
-        });
-        this.submitting = false;
-      },
-      error: (err) => {
-        console.error('CREATE STAFF FAILED', err);
-        this.submitting = false;
+    if (currentGroup?.valid) {
+      if (this.currentStep < 4) {
+        this.currentStep++;
+      } else {
+        this.submit();
       }
-    });
-  }
-  get basicInfoForm(): FormGroup {
-    return this.staffForm.get('basicInfo') as FormGroup;
-  }
-
-  get addressInfoForm(): FormGroup {
-    return this.staffForm.get('addressInfo') as FormGroup;
+    } else {
+      currentGroup?.markAllAsTouched();
+      console.log(`Step ${this.currentStep} validation failed`);
+    }
   }
 
-  get otherInfoForm(): FormGroup {
-    return this.staffForm.get('otherInfo') as FormGroup;
+  getGroupForStep(step: number): AbstractControl | null {
+    switch(step) {
+      case 1: return this.staffForm.get('basicInfo');
+      case 2: return this.staffForm.get('otherInfo');
+      case 3: return this.staffForm.get('addressInfo');
+      case 4: return this.staffForm.get('securityInfo');
+      default: return null;
+    }
   }
 
+  prevStep() {
+    if (this.currentStep > 1) this.currentStep--;
+  }
+
+  selectCity(city: any) {
+    const props = city.properties;
+    this.staffForm.get('addressInfo')?.patchValue({
+      city: props.name,
+      state: props.state || '',
+    }, { emitEvent: false });
+    this.citySuggestions = [];
+  }
+
+  submit() {
+    if (this.staffForm.valid) {
+      const payload = {
+        ...this.staffForm.value.basicInfo,
+        ...this.staffForm.value.otherInfo,
+        ...this.staffForm.value.addressInfo,
+        password: this.staffForm.value.securityInfo.password
+      };
+
+      this.submitting = true;
+      this.staffService.createStaff(payload).subscribe({
+        next: () => {
+          alert('Staff Account Created Successfully!');
+          this.submitting = false;
+        },
+        error: (err) => {
+          console.error(err);
+          this.submitting = false;
+        }
+      });
+    } else {
+      this.staffForm.markAllAsTouched();
+    }
+  }
 }

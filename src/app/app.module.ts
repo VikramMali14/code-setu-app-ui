@@ -34,8 +34,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MatNativeDateModule } from '@angular/material/core'; 
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
+
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -86,7 +88,8 @@ import { LoaderComponent } from './component/loader/loader.component';
     MatDialogModule,
     MatStepperModule,
     MatDatepickerModule,MatMenuModule,LoaderComponent,
-    MatNativeDateModule,MatPaginatorModule
+    MatNativeDateModule,MatPaginatorModule,
+    MatAutocompleteModule
   ],
 providers:[
     {
