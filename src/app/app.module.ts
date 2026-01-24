@@ -52,6 +52,7 @@ import { LoaderComponent } from './component/loader/loader.component';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { PlanscreenComponent } from './component/planscreen/planscreen.component';
 import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
+// import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,6 @@ import { DownloadscreenComponent } from './component/downloadscreen/downloadscre
     UpdateroleComponent,
     RolesDetailsComponent,
     DepartmentComponent,
-    DownloadscreenComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,8 +90,8 @@ import { DownloadscreenComponent } from './component/downloadscreen/downloadscre
     MatTableModule,
     MatDialogModule,
     MatStepperModule,PlanscreenComponent,
-    ContectUsComponent,HomeComponent,
-    MatDatepickerModule, MatMenuModule, LoaderComponent,
+    ContectUsComponent,HomeComponent, DownloadscreenComponent, LoaderComponent,
+    MatDatepickerModule, MatMenuModule,
     MatNativeDateModule, MatPaginatorModule,
     MatAutocompleteModule,
 

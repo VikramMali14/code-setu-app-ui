@@ -19,15 +19,62 @@
     background-color: white;
     transition: all 0.3s ease-in-out;
 }
+/* Navbar with matching gradient from contact section */
 .mat-toolbar {
-    /* Three-color gradient: Soft Lavender -> Light Blue -> Pale Cyan */
-    background: linear-gradient(90deg, #e1e2ff 0%, #bbdefb 50%, #b2ebf2 100%) !important;
+    /* Purple gradient matching the contact/pricing sections */
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #E94E77 100%) !important;
     
-    /* Ensuring text is dark for readability on light backgrounds */
-    color: #333333 !important;
+    /* White text for readability on dark gradient */
+    color: #ffffff !important;
     
-    /* Subtle shadow for depth */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    /* Enhanced shadow for depth */
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    
+    /* Smooth transition */
+    transition: all 0.3s ease;
+}
+
+/* Optional: Add a subtle backdrop blur effect for modern look */
+.mat-toolbar.glass-effect {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 50%, rgba(233, 78, 119, 0.95) 100%) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Navbar links/buttons styling */
+.mat-toolbar a,
+.mat-toolbar button {
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+}
+
+.mat-toolbar a:hover,
+.mat-toolbar button:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transform: translateY(-2px);
+}
+
+/* Active link indicator */
+.mat-toolbar a.active {
+    position: relative;
+    font-weight: 600;
+}
+
+.mat-toolbar a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: white;
+    border-radius: 2px;
+}
+
+/* Scrolled navbar - slightly transparent */
+.mat-toolbar.scrolled {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 50%, rgba(233, 78, 119, 0.98) 100%) !important;
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
 }
 
 .mat-toolbar a[mat-button]:hover::after {
