@@ -1,0 +1,421 @@
+/* pricing.component.scss
+.price-large {
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin: 15px 0;
+}
+
+.price-duration {
+  font-size: 1rem;
+  font-weight: 400;
+  color: grey;
+}
+
+.feature-list {
+  list-style-type: none;
+  margin: 20px 0;
+  padding: 0;
+
+  li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  i {
+    margin-right: 10px;
+  }
+}
+
+.btn {
+    width: 100%;
+} */
+
+
+/* Pricing Page Wrapper */
+.pricing-wrapper {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Header Section */
+.pricing-header {
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.pricing-header h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 0 15px 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  letter-spacing: -1px;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.pricing-header p {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  font-weight: 300;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Container */
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.row {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.col {
+  flex: 1;
+  min-width: 320px;
+  max-width: 400px;
+}
+
+/* Card Design with Enhanced Styling */
+.card {
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  animation: cardSlideIn 0.6s ease-out both;
+}
+
+.col:nth-child(1) .card {
+  animation-delay: 0.1s;
+}
+
+.col:nth-child(2) .card {
+  animation-delay: 0.2s;
+  transform: scale(1.05);
+  border: 2px solid #667eea;
+  box-shadow: 0 25px 70px rgba(102, 126, 234, 0.3);
+}
+
+.col:nth-child(3) .card {
+  animation-delay: 0.3s;
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+}
+
+.col:nth-child(2) .card:hover {
+  transform: translateY(-12px) scale(1.07);
+  box-shadow: 0 35px 90px rgba(102, 126, 234, 0.4);
+}
+
+/* Popular Badge for Middle Plan */
+.col:nth-child(2) .card::after {
+  content: 'MOST POPULAR';
+  position: absolute;
+  top: 20px;
+  right: -35px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  padding: 8px 40px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transform: rotate(45deg);
+  box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+}
+
+/* Card Content */
+.card-content {
+  padding: 40px 30px;
+  text-align: center;
+}
+
+.card-title {
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 20px !important;
+  display: block;
+}
+
+/* Price Styling */
+.price-large {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #2d3748;
+  margin: 20px 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.price-duration {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #718096;
+  align-self: flex-end;
+  margin-bottom: 8px;
+}
+
+/* Divider */
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+  margin: 30px 0;
+  border: none;
+}
+
+/* Feature List */
+.feature-list {
+  list-style-type: none;
+  margin: 25px 0;
+  padding: 0;
+  text-align: left;
+}
+
+.feature-list li {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: #4a5568;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.feature-list li:hover {
+  color: #667eea;
+  transform: translateX(5px);
+}
+
+.feature-list i {
+  margin-right: 12px;
+  font-size: 1.4rem;
+  color: #48bb78 !important;
+  flex-shrink: 0;
+}
+
+/* Card Action Section */
+.card-action {
+  padding: 0 30px 40px;
+  background: transparent;
+  border-top: none;
+}
+
+/* Button Styling */
+.btn {
+  width: 100%;
+  padding: 16px 30px !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4) !important;
+  transition: all 0.3s ease !important;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5) !important;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:active {
+  transform: translateY(-1px);
+}
+
+/* Special styling for middle card button */
+.col:nth-child(2) .btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+  box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4) !important;
+}
+
+.col:nth-child(2) .btn:hover {
+  box-shadow: 0 12px 30px rgba(245, 87, 108, 0.5) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .pricing-header h1 {
+    font-size: 3rem;
+  }
+  
+  .col:nth-child(2) .card {
+    transform: scale(1);
+  }
+  
+  .col:nth-child(2) .card:hover {
+    transform: translateY(-12px) scale(1.02);
+  }
+}
+
+@media (max-width: 768px) {
+  .pricing-wrapper {
+    padding: 60px 0;
+  }
+  
+  .pricing-header {
+    margin-bottom: 40px;
+  }
+  
+  .pricing-header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .pricing-header p {
+    font-size: 1.1rem;
+  }
+  
+  .row {
+    gap: 25px;
+  }
+  
+  .col {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  
+  .card-content {
+    padding: 35px 25px;
+  }
+  
+  .price-large {
+    font-size: 3rem;
+  }
+  
+  .col:nth-child(2) .card::after {
+    top: 15px;
+    right: -40px;
+    padding: 6px 50px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricing-header h1 {
+    font-size: 2rem;
+  }
+  
+  .pricing-header p {
+    font-size: 1rem;
+  }
+  
+  .card-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .price-large {
+    font-size: 2.5rem;
+  }
+  
+  .feature-list li {
+    font-size: 0.95rem;
+  }
+  
+  .btn {
+    padding: 14px 25px !important;
+    font-size: 1rem !important;
+  }
+}

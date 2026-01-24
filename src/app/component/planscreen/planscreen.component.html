@@ -1,0 +1,58 @@
+<!-- pricing.component.html
+<div class="container">
+  <h1 class="center-align">Price/Subscription Plan</h1>
+  <div class="row">
+    Loop through plans using *ngFor
+    <div class="col s12 m4" *ngFor="let plan of plans">
+      <div class="card {{plan.colorClass}}">
+        <div class="card-content black-text">
+          <span class="card-title">{{ plan.name }}</span>
+          <p class="price-large">{{ plan.price }}<span class="price-duration">/ {{ plan.duration }}</span></p>
+          <div class="divider"></div>
+          <ul class="feature-list">
+            <li *ngFor="let feature of plan.features">
+              <i class="material-icons green-text text-accent-4">check_circle</i> {{ feature }}
+            </li>
+          </ul>
+        </div>
+        <div class="card-action">
+          <a class="waves-effect waves-light btn light-blue darken-1" href="#">{{ plan.buttonText }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+<div class="pricing-wrapper">
+  <div class="pricing-header">
+    <h1>Choose Your Perfect Plan</h1>
+    <p>Select the subscription that fits your needs</p>
+  </div>
+  
+  <div class="container">
+    <div class="row">
+      <!-- Loop through plans using *ngFor -->
+      <div class="col" *ngFor="let plan of plans; let i = index">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">{{ plan.name }}</span>
+            <p class="price-large">
+              {{ plan.price }}
+              <span class="price-duration">/ {{ plan.duration }}</span>
+            </p>
+            <div class="divider"></div>
+            <ul class="feature-list">
+              <li *ngFor="let feature of plan.features">
+                <i class="material-icons">check_circle</i> {{ feature }}
+              </li>
+            </ul>
+          </div>
+          <div class="card-action">
+            <a class="btn waves-effect waves-light" href="#">{{ plan.buttonText }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
