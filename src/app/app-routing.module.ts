@@ -14,6 +14,7 @@ import { UpdateroleComponent } from './component/updaterole/updaterole.component
 import { RolesDetailsComponent } from './roles-details/roles-details.component';
 import { DepartmentComponent } from './component/component/department/department.component';
 import { PlanscreenComponent } from './component/planscreen/planscreen.component';
+import { FeaturescreenComponent } from './component/featurescreen/featurescreen.component';
 
 const routes: Routes = [
   {path: '',component: HomeComponent,pathMatch: 'full'},
@@ -27,6 +28,8 @@ const routes: Routes = [
   { path: 'createrole', component: RoleComponent, pathMatch: 'full' },
   { path: 'updaterole', component: UpdateroleComponent, pathMatch: 'full' },
   { path: 'roles', component: RolesDetailsComponent, pathMatch: 'full' },
+    { path: 'feature', component: FeaturescreenComponent, pathMatch: 'full' },
+
     { path: 'department', component: DepartmentComponent, pathMatch: 'full',    canActivate: [AuthGuard] },
     { path: 'plan', component: PlanscreenComponent, pathMatch: 'full',    canActivate: [AuthGuard] }
 

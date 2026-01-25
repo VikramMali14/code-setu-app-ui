@@ -1,1 +1,20 @@
-<p>featurescreen works!</p>
+<div class="features-section-wrapper">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="features-header">
+      <h2><span class="gradient-text">Amazing Features</span> for You</h2>
+      <p>Built with modern design principles and cutting-edge technology</p>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="icon-container">
+          <i class="material-icons">{{ feature.icon }}</i>
+        </div>
+        <span class="card-title">{{ feature.title }}</span>
+        <p class="card-description">{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
