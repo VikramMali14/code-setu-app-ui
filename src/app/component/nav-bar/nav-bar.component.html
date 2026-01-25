@@ -16,10 +16,15 @@
     </a>
     <mat-menu #servicesMenu="matMenu" [overlapTrigger]="false">
         <div (mouseleave)="servicesTrigger.closeMenu()">
-            <button mat-menu-item routerLink="/services/shipping">Shipping</button>
-            <button mat-menu-item routerLink="/services/tracking">Tracking</button>
-            <button mat-menu-item routerLink="/services/shipping">Shipping</button>
-            <button mat-menu-item routerLink="/services/tracking">Tracking</button>
+            <button mat-menu-item routerLink="#">Generate Bilty</button>
+            <button mat-menu-item routerLink="#">Create Quatation</button>
+            <button mat-menu-item routerLink="#">Invoiceing</button>
+            <button mat-menu-item routerLink="#">Manage Staff</button>
+            <button mat-menu-item routerLink="#">Manage Vehicles</button>
+            <button mat-menu-item routerLink="#">Ops Documents</button>
+            <button mat-menu-item routerLink="#">Create Customer</button>
+            <button mat-menu-item routerLink="#">Pending Approvals</button>
+
         </div>
     </mat-menu>
     <a mat-button routerLink="/" fragment="app-about">About</a>

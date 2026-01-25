@@ -3,7 +3,9 @@ import { Router } from '@angular/router'; // Correctly imports the Router class
 
 @Component({
   selector: 'app-dashboard',
+  standalone:true,
   templateUrl: './dashboard.component.html',
+  
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
