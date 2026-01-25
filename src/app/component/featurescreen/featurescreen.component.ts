@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-featurescreen',
+  standalone:true,
   templateUrl: './featurescreen.component.html',
   styleUrls: ['./featurescreen.component.css']
 })

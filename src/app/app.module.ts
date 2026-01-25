@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -52,6 +52,7 @@ import { LoaderComponent } from './component/loader/loader.component';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { PlanscreenComponent } from './component/planscreen/planscreen.component';
 import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
+import { FeaturescreenComponent } from './component/featurescreen/featurescreen.component';
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
 @NgModule({
@@ -59,7 +60,6 @@ import { DownloadscreenComponent } from './component/downloadscreen/downloadscre
     AppComponent,
     LoginComponent,
     NavBarComponent,
-    DashboardComponent,
     SignupComponent,
     ServicesComponent,
     FooterComponent,
@@ -88,20 +88,28 @@ import { DownloadscreenComponent } from './component/downloadscreen/downloadscre
     CommonModule,
     MatTableModule,
     MatDialogModule,
-    MatStepperModule,PlanscreenComponent,
-    ContectUsComponent,HomeComponent, DownloadscreenComponent, LoaderComponent, AboutComponent,
+    MatStepperModule,
     MatDatepickerModule, MatMenuModule,
     MatNativeDateModule, MatPaginatorModule,
     MatAutocompleteModule,
 
+    // standaload Component
+    PlanscreenComponent,
+    ContectUsComponent,
+    HomeComponent,
+    DownloadscreenComponent,
+    LoaderComponent,
+    AboutComponent,
+    FeaturescreenComponent
+
   ],
-providers:[
+  providers: [
     {
-    provide:HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
       multi: true
     }
 
-  ],  bootstrap: [AppComponent]
+  ], bootstrap: [AppComponent]
 })
 export class AppModule { }
