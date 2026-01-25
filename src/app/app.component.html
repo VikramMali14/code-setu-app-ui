@@ -1,5 +1,8 @@
 <app-nav-bar></app-nav-bar>
-
+<!-- Scroll to Top Button -->
+<button mat-fab class="scroll-to-top" [class.show]="showScrollButton" (click)="scrollToTop()" aria-label="Scroll to top">
+  <mat-icon>arrow_upward</mat-icon>
+</button>
 <div class="page-wrapper">
   <router-outlet></router-outlet>
 </div>
