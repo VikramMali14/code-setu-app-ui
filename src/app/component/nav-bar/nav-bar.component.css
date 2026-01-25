@@ -1,16 +1,76 @@
-.example-spacer{
+/* Sticky Navbar */
+.mat-toolbar {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #E94E77 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 0 20px;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Logo Container */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo {
+    height: 50px;
+    width: auto;
+    vertical-align: middle;
+}
+
+/* Navigation Links Container */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    margin-left: 20px;
+}
+
+/* Spacer */
+.example-spacer {
     flex: 1 1 auto;
 }
 
-.nav-link:hover {
-    background-color: #ffd740 !important; /* Material Accent Color */
-    color: #000 !important;
+/* Auth Links Container */
+.auth-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.mat-toolbar a[mat-button] {
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+    display: none;
+    color: white !important;
+}
+
+/* All navbar links/buttons */
+.mat-toolbar a[mat-button],
+.mat-toolbar button[mat-button] {
+    color: #ffffff !important;
+    transition: all 0.3s ease;
     position: relative;
+    white-space: nowrap;
+    font-size: 0.95rem;
+    padding: 0 12px;
 }
 
+.mat-toolbar a[mat-button]:hover,
+.mat-toolbar button[mat-button]:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+/* Underline animation */
 .mat-toolbar a[mat-button]::after {
     content: '';
     position: absolute;
@@ -22,103 +82,165 @@
     transition: all 0.3s ease-in-out;
 }
 
-/* Sticky Navbar - Fixed at top */
-.mat-toolbar {
-    /* Purple gradient matching the contact/pricing sections */
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #E94E77 100%) !important;
-    
-    /* White text for readability on dark gradient */
-    color: #ffffff !important;
-    
-    /* Enhanced shadow for depth */
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-    
-    /* Smooth transition */
-    transition: all 0.3s ease;
-    
-    /* Make navbar sticky */
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-/* Optional: Add a subtle backdrop blur effect for modern look */
-.mat-toolbar.glass-effect {
-    background: linear-gradient(90deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 50%, rgba(233, 78, 119, 0.95) 100%) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-/* Navbar links/buttons styling */
-.mat-toolbar a,
-.mat-toolbar button {
-    color: #ffffff !important;
-    transition: all 0.3s ease;
-}
-
-.mat-toolbar a:hover,
-.mat-toolbar button:hover {
-    color: rgba(255, 255, 255, 0.8) !important;
-    transform: translateY(-2px);
-}
-
-/* Active link indicator */
-.mat-toolbar a.active {
-    position: relative;
-    font-weight: 600;
-}
-
-.mat-toolbar a.active::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: white;
-    border-radius: 2px;
-}
-
-/* Scrolled navbar - slightly transparent */
-.mat-toolbar.scrolled {
-    background: linear-gradient(90deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 50%, rgba(233, 78, 119, 0.98) 100%) !important;
-    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
-}
-
 .mat-toolbar a[mat-button]:hover::after {
     width: 80%;
     left: 10%;
 }
 
-.navbar-logo {
-    /* Adjust height to fit standard Angular Material Toolbar height */
-    height: 90px; 
-    /* Maintain aspect ratio */
-    width: auto;
-    /* Optional: Add slight margin to align vertically if needed */
-    vertical-align: middle; 
-}
-/* .bento-button {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px; Space between dots and text
+/* Active link indicator */
+.mat-toolbar a.active {
+    font-weight: 600;
 }
 
-Create the 9 dots using a radial gradient
-.bento-button::before {
-  content: "";
-  width: 12px;
-  height: 12px;
-  opacity: 0; Hidden by default
-  transition: opacity 0.3s ease;
-  
-  This creates a 3x3 grid of dots
-  background-image: radial-gradient(circle, currentColor 1.5px, transparent 1.5px);
-  background-size: 4px 4px; 
+.mat-toolbar a.active::after {
+    width: 80%;
+    left: 10%;
 }
 
-Show the dots on hover
-.bento-button:hover::before {
-  opacity: 1;
-} */
+/* Scrolled navbar effect */
+.mat-toolbar.scrolled {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 50%, rgba(233, 78, 119, 0.98) 100%) !important;
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Material Icons in buttons */
+.mat-toolbar mat-icon {
+    margin-right: 4px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Mobile Menu Styles */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    padding: 20px 0;
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    z-index: 999;
+}
+
+.mobile-menu.active {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mobile-menu a,
+.mobile-menu button {
+    display: block !important;
+    width: 100%;
+    text-align: left !important;
+    padding: 15px 30px !important;
+    color: white !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu a:hover,
+.mobile-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.mobile-menu .mat-icon {
+    vertical-align: middle;
+    margin-right: 12px;
+}
+
+/* Tablet and Small Desktop (1024px and below) */
+@media (max-width: 1024px) {
+    .mat-toolbar a[mat-button],
+    .mat-toolbar button[mat-button] {
+        padding: 0 8px;
+        font-size: 0.9rem;
+    }
+    
+    .nav-links {
+        gap: 4px;
+        margin-left: 10px;
+    }
+    
+    .auth-links {
+        gap: 4px;
+    }
+    
+    .navbar-logo {
+        height: 45px;
+    }
+}
+
+/* Mobile (768px and below) */
+@media (max-width: 768px) {
+    .mat-toolbar {
+        padding: 0 15px;
+    }
+    
+    /* Hide desktop navigation */
+    .nav-links,
+    .auth-links {
+        display: none;
+    }
+    
+    .example-spacer {
+        display: none;
+    }
+    
+    /* Show mobile menu toggle */
+    .mobile-menu-toggle {
+        display: flex !important;
+        margin-left: auto;
+    }
+    
+    .navbar-logo {
+        height: 40px;
+    }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+    .mat-toolbar {
+        padding: 0 10px;
+    }
+    
+    .navbar-logo {
+        height: 35px;
+    }
+    
+    .mobile-menu a,
+    .mobile-menu button {
+        padding: 12px 20px !important;
+        font-size: 0.95rem;
+    }
+}
+
+/* Menu Dropdown Styling */
+.mat-menu-panel {
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.mat-menu-item {
+    color: #2d3748 !important;
+    transition: all 0.3s ease;
+}
+
+.mat-menu-item:hover {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+    color: #667eea !important;
+}

@@ -1,53 +1,109 @@
 <mat-toolbar color="primary">
-    <a mat-button routerLink="/">
+    <!-- Logo -->
+    <a mat-button routerLink="/" class="logo-container">
         <h1>
             <img src="assets/images/logo-with-name.png" alt="Cargo-Setu Logo" class="navbar-logo" />
         </h1>
     </a>
 
-
-    <a mat-button routerLink="/">Home</a>
-
-    <a mat-button routerLink="/dashboard">Dashboard</a>
-    <!-- <a mat-button routerLink="/services" class="nav-link">Services</a> -->
-    <a mat-button routerLink="/services" #servicesTrigger="matMenuTrigger" [matMenuTriggerFor]="servicesMenu"
-        (mouseenter)="servicesTrigger.openMenu()">
-        Services
-    </a>
-    <mat-menu #servicesMenu="matMenu" [overlapTrigger]="false">
-        <div (mouseleave)="servicesTrigger.closeMenu()">
-            <button mat-menu-item routerLink="#">Generate Bilty</button>
-            <button mat-menu-item routerLink="#">Create Quatation</button>
-            <button mat-menu-item routerLink="#">Invoiceing</button>
-            <button mat-menu-item routerLink="#">Manage Staff</button>
-            <button mat-menu-item routerLink="#">Manage Vehicles</button>
-            <button mat-menu-item routerLink="#">Ops Documents</button>
-            <button mat-menu-item routerLink="#">Create Customer</button>
-            <button mat-menu-item routerLink="#">Pending Approvals</button>
-
-        </div>
-    </mat-menu>
-    <a mat-button routerLink="/" fragment="app-featurescreen">Features</a>
-    <a mat-button routerLink="/" fragment="app-about">About</a>
-    <a routerLink="/" fragment="contact-section">Contact Us</a>
-
+    <!-- Desktop Navigation Links -->
+    <div class="nav-links">
+        <a mat-button routerLink="/">Home</a>
+        <a mat-button routerLink="/dashboard">Dashboard</a>
+        
+        <a mat-button routerLink="/services" #servicesTrigger="matMenuTrigger" [matMenuTriggerFor]="servicesMenu"
+            (mouseenter)="servicesTrigger.openMenu()">
+            Services
+        </a>
+        <mat-menu #servicesMenu="matMenu" [overlapTrigger]="false">
+            <div (mouseleave)="servicesTrigger.closeMenu()">
+                <button mat-menu-item routerLink="#">Generate Bilty</button>
+                <button mat-menu-item routerLink="#">Create Quotation</button>
+                <button mat-menu-item routerLink="#">Invoicing</button>
+                <button mat-menu-item routerLink="#">Manage Staff</button>
+                <button mat-menu-item routerLink="#">Manage Vehicles</button>
+                <button mat-menu-item routerLink="#">Ops Documents</button>
+                <button mat-menu-item routerLink="#">Create Customer</button>
+                <button mat-menu-item routerLink="#">Pending Approvals</button>
+            </div>
+        </mat-menu>
+        
+        <a mat-button routerLink="/" fragment="app-featurescreen">Features</a>
+        <a mat-button routerLink="/" fragment="app-about">About</a>
+        <a mat-button routerLink="/" fragment="contact-section">Contact Us</a>
+    </div>
 
     <span class="example-spacer"></span>
 
-    <a *ngIf="!loggedIn" mat-button routerLink="/signup">
-        <mat-icon>person_add</mat-icon> Sign Up
-    </a>
-    <a *ngIf="!loggedIn" mat-button routerLink="/login">
-        <mat-icon>login</mat-icon> Login
-    </a>
+    <!-- Desktop Auth Links -->
+    <div class="auth-links">
+        <a *ngIf="!loggedIn" mat-button routerLink="/signup">
+            <mat-icon>person_add</mat-icon> Sign Up
+        </a>
+        <a *ngIf="!loggedIn" mat-button routerLink="/login">
+            <mat-icon>login</mat-icon> Login
+        </a>
+        <a *ngIf="loggedIn" mat-button>
+            <mat-icon>person</mat-icon> User
+        </a>
+        <a *ngIf="loggedIn" mat-button (click)="logoutUser()" routerLink="/login">
+            <mat-icon>logout</mat-icon> Logout
+        </a>
+    </div>
 
-    <!-- Added icons for User and Logout -->
-    <a *ngIf="loggedIn" mat-button>
-        <mat-icon aria-hidden="false">person</mat-icon> User
-    </a>
-
-    <a *ngIf="loggedIn" mat-button (click)="logoutUser()" routerLink="/login">
-        <mat-icon aria-hidden="false">logout</mat-icon> Logout
-    </a>
-
+    <!-- Mobile Menu Toggle -->
+    <button mat-icon-button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+        <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
 </mat-toolbar>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" [class.active]="mobileMenuOpen">
+    <a mat-button routerLink="/" (click)="closeMobileMenu()">
+        <mat-icon>home</mat-icon> Home
+    </a>
+    <a mat-button routerLink="/dashboard" (click)="closeMobileMenu()">
+        <mat-icon>dashboard</mat-icon> Dashboard
+    </a>
+    
+    <!-- Services in mobile menu -->
+    <a mat-button (click)="toggleServicesSubmenu()">
+        <mat-icon>{{ servicesSubmenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon> Services
+    </a>
+    <div *ngIf="servicesSubmenuOpen" style="background: rgba(0,0,0,0.1);">
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Generate Bilty</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create Quotation</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Invoicing</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage Staff</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage Vehicles</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Ops Documents</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create Customer</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Pending Approvals</a>
+    </div>
+    
+    <a mat-button routerLink="/" fragment="app-featurescreen" (click)="closeMobileMenu()">
+        <mat-icon>star</mat-icon> Features
+    </a>
+    <a mat-button routerLink="/" fragment="app-about" (click)="closeMobileMenu()">
+        <mat-icon>info</mat-icon> About
+    </a>
+    <a mat-button routerLink="/" fragment="contact-section" (click)="closeMobileMenu()">
+        <mat-icon>contact_mail</mat-icon> Contact Us
+    </a>
+    
+    <!-- Auth links in mobile menu -->
+    <div style="border-top: 2px solid rgba(255,255,255,0.2); margin-top: 10px; padding-top: 10px;">
+        <a *ngIf="!loggedIn" mat-button routerLink="/signup" (click)="closeMobileMenu()">
+            <mat-icon>person_add</mat-icon> Sign Up
+        </a>
+        <a *ngIf="!loggedIn" mat-button routerLink="/login" (click)="closeMobileMenu()">
+            <mat-icon>login</mat-icon> Login
+        </a>
+        <a *ngIf="loggedIn" mat-button>
+            <mat-icon>person</mat-icon> User
+        </a>
+        <a *ngIf="loggedIn" mat-button (click)="logoutUser(); closeMobileMenu()" routerLink="/login">
+            <mat-icon>logout</mat-icon> Logout
+        </a>
+    </div>
+</div>
