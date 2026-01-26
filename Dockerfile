@@ -8,7 +8,7 @@ RUN npm ci
 
 COPY . .
 
-RUN npx ng build cargo-set-ui --configuration production --fonts false
+RUN npx ng build cargo-set-ui --configuration production
 
 # ---------- Stage 2: Serve with Nginx ----------
 FROM nginx:stable-alpine
