@@ -20,6 +20,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMenuModule } from '@angular/material/menu'; // 1. Import it
 import { Router, Routes } from '@angular/router';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 import { LoginComponent } from './component/login/login.component';
@@ -91,7 +92,7 @@ import { FeaturescreenComponent } from './component/featurescreen/featurescreen.
     MatStepperModule,
     MatDatepickerModule, MatMenuModule,
     MatNativeDateModule, MatPaginatorModule,
-    MatAutocompleteModule,
+    MatAutocompleteModule,MatSnackBarModule,
 
     // standaload Component
     PlanscreenComponent,

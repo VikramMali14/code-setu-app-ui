@@ -34,3 +34,108 @@ html {
   padding: 60px 0; /* Adds breathing room between home content and the form */
   background-color: #fafafa; /* Matches the contact page background */
 }
+/* Success - Green */
+.pop-success {
+  --mdc-snackbar-container-color: #2e7d32 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  background-color: #2e7d32 !important;
+  color: white !important;
+  border-left: 6px solid #1b5e20 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4) !important;
+  min-width: 320px !important;
+}
+
+.pop-success .mdc-snackbar__surface {
+  background-color: #2e7d32 !important;
+}
+
+.pop-success .mdc-snackbar__label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.pop-success .mat-mdc-button {
+  color: white !important;
+}
+
+/* Error/Fail - Red */
+.pop-error {
+  --mdc-snackbar-container-color: #d32f2f !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  background-color: #d32f2f !important;
+  color: white !important;
+  border-left: 6px solid #b71c1c !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4) !important;
+  min-width: 320px !important;
+}
+
+.pop-error .mdc-snackbar__surface {
+  background-color: #d32f2f !important;
+}
+
+.pop-error .mdc-snackbar__label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.pop-error .mat-mdc-button {
+  color: white !important;
+}
+
+/* Info - Blue */
+.pop-info {
+  --mdc-snackbar-container-color: #0288d1 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  background-color: #0288d1 !important;
+  color: white !important;
+  border-left: 6px solid #01579b !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(2, 136, 209, 0.4) !important;
+  min-width: 320px !important;
+}
+
+.pop-info .mdc-snackbar__surface {
+  background-color: #0288d1 !important;
+}
+
+.pop-info .mdc-snackbar__label {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.pop-info .mat-mdc-button {
+  color: white !important;
+}
+
+/* Optional: Add icons before text */
+.pop-success .mdc-snackbar__label::before {
+  content: '✓ ';
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+.pop-error .mdc-snackbar__label::before {
+  content: '✕ ';
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+.pop-info .mdc-snackbar__label::before {
+  content: 'ℹ ';
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+/* Animation */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

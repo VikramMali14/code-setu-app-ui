@@ -15,6 +15,10 @@ import { AuthResponse } from '../models/authresponse';
   providedIn: 'root'
 })
 export class LoginService {
+  signupLogin(email: any, password: any) {
+    throw new Error('Method not implemented.');
+  }
+  
 
   private loggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   loggedIn$ = this.loggedInSubject.asObservable();

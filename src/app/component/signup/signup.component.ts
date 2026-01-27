@@ -3,6 +3,11 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors }
 import { HttpClient } from '@angular/common/http';
 import { debounceTime, switchMap, of, filter } from 'rxjs';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
+import { Route, Router } from '@angular/router';
+import { ShowpopupService } from 'src/app/services/showpopup.service';
+import { GenericDataDTO } from 'src/app/models/generic-data-dto';
+import { LoginService } from 'src/app/services/login.service';
+import { AuthResponse } from 'src/app/models/authresponse';
 
 @Component({
   selector: 'app-signup',
@@ -15,19 +20,29 @@ export class SignupComponent implements OnInit {
   citySuggestions: any[] = [];
   submitting = false;
   hidePassword = true;
-  hideConfirmPassword=true;
+  hideConfirmPassword = true;
   countryCodes = [
     { name: 'India', code: '+91' },
     { name: 'USA', code: '+1' },
     { name: 'UK', code: '+44' },
     { name: 'UAE', code: '+971' }
   ];
+  isLoading = false; // Add this property
+
+  credential = {
+    email: '',
+    userName: '',
+    password: ''
+  };
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private staffService: StaffuserServiceService
-  ) {}
+    private staffService: StaffuserServiceService,
+    private router: Router,
+    private showpopupservice: ShowpopupService,
+    private loginService: LoginService
+  ) { }
 
   ngOnInit(): void {
     this.staffForm = this.fb.group({
@@ -113,7 +128,7 @@ export class SignupComponent implements OnInit {
   }
 
   getGroupForStep(step: number): AbstractControl | null {
-    switch(step) {
+    switch (step) {
       case 1: return this.staffForm.get('basicInfo');
       case 2: return this.staffForm.get('otherInfo');
       case 3: return this.staffForm.get('addressInfo');
@@ -136,27 +151,60 @@ export class SignupComponent implements OnInit {
   }
 
   submit() {
-    if (this.staffForm.valid) {
-      const payload = {
-        ...this.staffForm.value.basicInfo,
-        ...this.staffForm.value.otherInfo,
-        ...this.staffForm.value.addressInfo,
-        password: this.staffForm.value.securityInfo.password
-      };
-
-      this.submitting = true;
-      this.staffService.createStaff(payload).subscribe({
-        next: () => {
-          alert('Staff Account Created Successfully!');
-          this.submitting = false;
-        },
-        error: (err) => {
-          console.error(err);
-          this.submitting = false;
-        }
-      });
-    } else {
+    if (!this.staffForm.valid) {
       this.staffForm.markAllAsTouched();
+      return;
     }
+
+    const payload = {
+      ...this.staffForm.value.basicInfo,
+      ...this.staffForm.value.otherInfo,
+      ...this.staffForm.value.addressInfo,
+      password: this.staffForm.value.securityInfo.password
+    };
+
+    const email = this.staffForm.value.basicInfo.email;
+    const password = this.staffForm.value.securityInfo.password;
+
+    this.submitting = true;
+
+    this.staffService.createStaff(payload).pipe(
+      switchMap((response: GenericDataDTO) => {
+
+        this.showpopupservice.showResponsePopup(
+          response.responseMessege,
+          response.responseCode
+        );
+
+        if (response.responseCode !== 200 && response.responseCode !== 201) {
+          throw new Error('Signup failed');
+        }
+
+        // 👉 Auto login after successful signup
+        return this.loginService.generateToken({ email, password });
+      })
+    ).subscribe({
+      next: (authResponse: AuthResponse) => {
+        const success = this.loginService.loginUser(authResponse.accessToken);
+
+        if (!success) {
+          throw new Error('Token storage failed');
+        }
+
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        console.error('Signup/Login flow error', err);
+      },
+      complete: () => {
+        this.submitting = false;
+      }
+    });
   }
+
+
+  private autoLogin(email: string, password: string) {
+    return this.loginService.generateToken({ email, password });
+  }
+
 }
