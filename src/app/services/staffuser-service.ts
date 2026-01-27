@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ENV } from 'src/assets/env';
 
 @Injectable({
@@ -17,4 +17,20 @@ export class StaffuserServiceService {
   createStaff(payload: any): Observable<any> {
     return this.http.post(`${this.BASE_URL}/auth/user/register`, payload);
   }
+  // staff.service.ts
+  private staffDetailsSubject = new BehaviorSubject<any>(null);
+  staffDetails$ = this.staffDetailsSubject.asObservable(); // Components subscribe to this
+
+  setStaffDetails(details: any) {
+    this.staffDetailsSubject.next(details);
+  }
+  // staff.service.ts
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  public isLoading$ = this.loadingSubject.asObservable();
+
+  setLoading(state: boolean) {
+    this.loadingSubject.next(state);
+  }
+
+
 }

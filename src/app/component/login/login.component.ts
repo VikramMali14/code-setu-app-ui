@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { AuthResponse } from 'src/app/models/authresponse';
 import { LoginService } from 'src/app/services/login.service';
 import { LoaderComponent } from '../loader/loader.component';
+import { switchMap, tap } from 'rxjs';
+import { StaffuserServiceService } from 'src/app/services/staffuser-service';
+import { JwttokenService } from 'src/app/services/jwttoken.service';
 
 @Component({
   selector: 'app-login',
@@ -32,7 +35,9 @@ export class LoginComponent {
 
   constructor(
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private staffuserservice: StaffuserServiceService,
+    private jwtDecode: JwttokenService
   ) { }
 
   otp = {
@@ -46,33 +51,38 @@ export class LoginComponent {
       alert('Missing fields');
       return;
     }
-    this.isLoading = true; // Start loader
+    this.isLoading = true;
 
+    this.loginService.generateToken(this.credential).pipe(
+      // 1. Success: Store the token first
+      tap((response: AuthResponse) => {
+        this.loginService.loginUser(response.accessToken);
+        this.router.navigate(['/dashboard']);
 
-    this.loginService.generateToken(this.credential).subscribe({
-      next: (response: AuthResponse) => {
-        console.log('Login response:', response);
+      }),
+      // 2. Switch to the next API call (getById)
+      switchMap((response: AuthResponse) => {
+        const decode = this.jwtDecode.getDecodedToken();
 
-        const success = this.loginService.loginUser(response.accessToken);
-
-        if (success) {
-          this.router.navigate(['/dashboard']);
-        } else {
-          alert('Login failed: invalid token');
-        }
+        // Pass the userId (adjust property name based on your API)
+        return this.staffuserservice.getStaffById(decode?.sub);
+      })
+    ).subscribe({
+      next: (userDetails) => {
+        console.log('User Details fetched:', userDetails);
       },
       error: (err) => {
-        console.error('Login API error', err);
-        alert('Invalid credentials');
-        this.isLoading = false; // Hide loader on error
+        console.error('API Error:', err);
+        alert('Login or Profile fetch failed');
+        this.isLoading = false;
       },
       complete: () => {
-        // This ensures the loader hides if navigation doesn't happen immediately
-        this.isLoading = false; 
+        this.isLoading = false;
       }
-
     });
   }
+
+
 
   verifyOtp() {
     if (!this.otp.code || this.otp.code.length !== 6) {

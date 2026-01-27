@@ -10,11 +10,10 @@ import { MatButtonModule } from '@angular/material/button'; // Fixed 'Buttom' to
 import { MatToolbarModule } from '@angular/material/toolbar'; // Fixed 'Bar' to 'bar'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
-import { FormsModule } from '@angular/forms'
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule ,FormGroup,FormsModule} from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -55,6 +54,7 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { PlanscreenComponent } from './component/planscreen/planscreen.component';
 import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 import { FeaturescreenComponent } from './component/featurescreen/featurescreen.component';
+import { StaffDetailsComponent } from './component/staff-details/staff-details.component';
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
 @NgModule({
@@ -68,6 +68,8 @@ import { FeaturescreenComponent } from './component/featurescreen/featurescreen.
     UpdateroleComponent,
     RolesDetailsComponent,
     DepartmentComponent,
+    StaffuserComponent,
+    StaffDetailsComponent,
   ],
   imports: [
     BrowserModule,
@@ -93,8 +95,9 @@ import { FeaturescreenComponent } from './component/featurescreen/featurescreen.
     MatStepperModule,
     MatDatepickerModule, MatMenuModule,
     MatNativeDateModule, MatPaginatorModule,
-    MatAutocompleteModule,MatSnackBarModule,MatDividerModule,
-
+    MatAutocompleteModule, MatSnackBarModule, MatDividerModule,
+    FormsModule,
+    FormsModule,
     // standaload Component
     PlanscreenComponent,
     ContectUsComponent,

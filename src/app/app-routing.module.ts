@@ -15,10 +15,12 @@ import { RolesDetailsComponent } from './roles-details/roles-details.component';
 import { DepartmentComponent } from './component/component/department/department.component';
 import { PlanscreenComponent } from './component/planscreen/planscreen.component';
 import { FeaturescreenComponent } from './component/featurescreen/featurescreen.component';
+import { StaffDetailsComponent } from './component/staff-details/staff-details.component';
+import { StaffuserComponent } from './component/staffuser/staffuser.component';
 
 const routes: Routes = [
-  {path: '',component: HomeComponent,pathMatch: 'full'},
-  {path: 'login',component: LoginComponent,pathMatch: "full"},
+  { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: 'login', component: LoginComponent, pathMatch: "full" },
   { path: 'dashboard', component: DashboardComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'signup', component: SignupComponent, pathMatch: 'full' },
   { path: 'services', component: ServicesComponent, pathMatch: 'full' },
@@ -28,10 +30,12 @@ const routes: Routes = [
   { path: 'createrole', component: RoleComponent, pathMatch: 'full' },
   { path: 'updaterole', component: UpdateroleComponent, pathMatch: 'full' },
   { path: 'roles', component: RolesDetailsComponent, pathMatch: 'full' },
-    { path: 'feature', component: FeaturescreenComponent, pathMatch: 'full' },
+  { path: 'feature', component: FeaturescreenComponent, pathMatch: 'full' },
+  { path: 'staffdetails', component: StaffDetailsComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'staffuser', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard] },
 
-    { path: 'department', component: DepartmentComponent, pathMatch: 'full',    canActivate: [AuthGuard] },
-    { path: 'plan', component: PlanscreenComponent, pathMatch: 'full',    canActivate: [AuthGuard] }
+  { path: 'department', component: DepartmentComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'plan', component: PlanscreenComponent, pathMatch: 'full', canActivate: [AuthGuard] }
 
 ];
 
@@ -39,11 +43,11 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       // This enables jumping to the #id in the URL
-      anchorScrolling: 'enabled', 
+      anchorScrolling: 'enabled',
       // This ensures the page starts at the top when changing routes
       scrollPositionRestoration: 'enabled',
       // Optional: adds a smooth scroll effect
-      scrollOffset: [0, 64] 
+      scrollOffset: [0, 64]
     })
   ],
   exports: [RouterModule]
