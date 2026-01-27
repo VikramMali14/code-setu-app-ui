@@ -244,3 +244,143 @@
     background-color: rgba(102, 126, 234, 0.1) !important;
     color: #667eea !important;
 }
+
+/* Profile Button */
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-name {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.dropdown-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Profile Menu */
+.profile-menu {
+  margin-top: 8px;
+  min-width: 280px;
+}
+
+/* Profile Header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 16px !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  cursor: default !important;
+  gap: 12px;
+}
+
+.profile-header:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.avatar-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-circle mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: white;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.user-name-header {
+  font-weight: 600;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-id {
+  font-size: 11px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.user-email {
+  font-size: 12px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Menu Items */
+::ng-deep .profile-menu .mat-mdc-menu-item {
+  min-height: 44px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+::ng-deep .profile-menu .mat-mdc-menu-item mat-icon {
+  color: #666;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+::ng-deep .profile-menu .mat-mdc-menu-item span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+::ng-deep .profile-menu .mat-mdc-menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+::ng-deep .profile-menu .mat-mdc-menu-item:hover mat-icon {
+  color: #667eea;
+}
+
+/* Logout Button */
+::ng-deep .profile-menu .logout-button {
+  color: #d32f2f;
+}
+
+::ng-deep .profile-menu .logout-button mat-icon {
+  color: #d32f2f !important;
+}
+
+::ng-deep .profile-menu .logout-button:hover {
+  background-color: #ffebee;
+}
+
+/* Divider */
+::ng-deep .profile-menu .mat-divider {
+  margin: 8px 0;
+}

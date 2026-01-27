@@ -10,7 +10,7 @@
     <div class="nav-links">
         <a mat-button routerLink="/">Home</a>
         <a mat-button routerLink="/dashboard">Dashboard</a>
-        
+
         <a mat-button routerLink="/services" #servicesTrigger="matMenuTrigger" [matMenuTriggerFor]="servicesMenu"
             (mouseenter)="servicesTrigger.openMenu()">
             Services
@@ -27,7 +27,7 @@
                 <button mat-menu-item routerLink="#">Pending Approvals</button>
             </div>
         </mat-menu>
-        
+
         <a mat-button routerLink="/" fragment="app-featurescreen">Features</a>
         <a mat-button routerLink="/" fragment="app-about">About</a>
         <a mat-button routerLink="/" fragment="contact-section">Contact Us</a>
@@ -43,12 +43,15 @@
         <a *ngIf="!loggedIn" mat-button routerLink="/login">
             <mat-icon>login</mat-icon> Login
         </a>
-        <a *ngIf="loggedIn" mat-button>
-            <mat-icon>person</mat-icon> User
+
+        <!-- FIXED: Profile Menu Button for Desktop -->
+        <a *ngIf="loggedIn" mat-button [matMenuTriggerFor]="profileMenuDesktop" class="profile-button">
+            <mat-icon>person</mat-icon>
+            <span class="user-name">{{ username }}</span>
+            <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
         </a>
         <a *ngIf="loggedIn" mat-button (click)="logoutUser()" routerLink="/login">
-            <mat-icon>logout</mat-icon> Logout
-        </a>
+            <mat-icon>logout</mat-icon> </a>
     </div>
 
     <!-- Mobile Menu Toggle -->
@@ -56,6 +59,65 @@
         <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
     </button>
 </mat-toolbar>
+
+<!-- Desktop Profile Menu (Outside toolbar) -->
+<mat-menu #profileMenuDesktop="matMenu" class="profile-menu" xPosition="before">
+    <!-- User Info Header -->
+    <div class="profile-header" mat-menu-item disabled>
+        <div class="avatar-circle">
+            <mat-icon>account_circle</mat-icon>
+        </div>
+        <div class="user-info">
+            <div class="user-name-header">{{ username }}</div>
+            <div class="user-id">ID: {{ userId }}</div>
+            <!-- <div class="user-email">{{ userEmail }}</div> -->
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Profile -->
+    <button mat-menu-item (click)="goToProfile()">
+        <mat-icon>person</mat-icon>
+        <span>My Profile</span>
+    </button>
+
+    <!-- Edit Profile -->
+    <button mat-menu-item (click)="goToEditProfile()">
+        <mat-icon>edit</mat-icon>
+        <span>Edit Profile</span>
+    </button>
+
+    <mat-divider></mat-divider>
+
+    <!-- Settings -->
+    <button mat-menu-item (click)="goToSettings()">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+    </button>
+
+    <!-- Security -->
+    <button mat-menu-item (click)="goToSecurity()">
+        <mat-icon>shield</mat-icon>
+        <span>Security</span>
+    </button>
+
+    <!-- Privacy -->
+    <button mat-menu-item (click)="goToPrivacy()">
+        <mat-icon>lock</mat-icon>
+        <span>Privacy</span>
+    </button>
+
+    <mat-divider></mat-divider>
+
+    <!-- Logout -->
+    <button *ngIf="loggedIn" mat-menu-item (click)="logoutUser()" class="logout-button" routerLink="/login">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+    </button>
+
+
+</mat-menu>
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" [class.active]="mobileMenuOpen">
@@ -65,22 +127,28 @@
     <a mat-button routerLink="/dashboard" (click)="closeMobileMenu()">
         <mat-icon>dashboard</mat-icon> Dashboard
     </a>
-    
+
     <!-- Services in mobile menu -->
     <a mat-button (click)="toggleServicesSubmenu()">
         <mat-icon>{{ servicesSubmenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon> Services
     </a>
     <div *ngIf="servicesSubmenuOpen" style="background: rgba(0,0,0,0.1);">
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Generate Bilty</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create Quotation</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Generate
+            Bilty</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create
+            Quotation</a>
         <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Invoicing</a>
         <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage Staff</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage Vehicles</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Ops Documents</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create Customer</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Pending Approvals</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage
+            Vehicles</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Ops
+            Documents</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create
+            Customer</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Pending
+            Approvals</a>
     </div>
-    
+
     <a mat-button routerLink="/" fragment="app-featurescreen" (click)="closeMobileMenu()">
         <mat-icon>star</mat-icon> Features
     </a>
@@ -90,7 +158,7 @@
     <a mat-button routerLink="/" fragment="contact-section" (click)="closeMobileMenu()">
         <mat-icon>contact_mail</mat-icon> Contact Us
     </a>
-    
+
     <!-- Auth links in mobile menu -->
     <div style="border-top: 2px solid rgba(255,255,255,0.2); margin-top: 10px; padding-top: 10px;">
         <a *ngIf="!loggedIn" mat-button routerLink="/signup" (click)="closeMobileMenu()">
@@ -99,11 +167,69 @@
         <a *ngIf="!loggedIn" mat-button routerLink="/login" (click)="closeMobileMenu()">
             <mat-icon>login</mat-icon> Login
         </a>
-        <a *ngIf="loggedIn" mat-button>
-            <mat-icon>person</mat-icon> User
+
+        <!-- Profile Menu for Mobile -->
+        <a *ngIf="loggedIn" mat-button [matMenuTriggerFor]="profileMenuMobile" class="profile-button">
+            <mat-icon>person</mat-icon>
+            <span class="user-name">{{ username }}</span>
+            <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
         </a>
-        <a *ngIf="loggedIn" mat-button (click)="logoutUser(); closeMobileMenu()" routerLink="/login">
-            <mat-icon>logout</mat-icon> Logout
-        </a>
+
     </div>
 </div>
+
+<!-- Mobile Profile Menu -->
+<mat-menu #profileMenuMobile="matMenu" class="profile-menu" xPosition="before">
+    <!-- User Info Header -->
+    <div class="profile-header" mat-menu-item disabled>
+        <div class="avatar-circle">
+            <mat-icon>account_circle</mat-icon>
+        </div>
+        <div class="user-info">
+            <div class="user-name-header">{{ username }}</div>
+            <div class="user-id">ID: {{ userId }}</div>
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Profile -->
+    <button mat-menu-item (click)="goToProfile(); closeMobileMenu()">
+        <mat-icon>person</mat-icon>
+        <span>My Profile</span>
+    </button>
+
+    <!-- Edit Profile -->
+    <button mat-menu-item (click)="goToEditProfile(); closeMobileMenu()">
+        <mat-icon>edit</mat-icon>
+        <span>Edit Profile</span>
+    </button>
+
+    <mat-divider></mat-divider>
+
+    <!-- Settings -->
+    <button mat-menu-item (click)="goToSettings(); closeMobileMenu()">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+    </button>
+
+    <!-- Security -->
+    <button mat-menu-item (click)="goToSecurity(); closeMobileMenu()">
+        <mat-icon>shield</mat-icon>
+        <span>Security</span>
+    </button>
+
+    <!-- Privacy -->
+    <button mat-menu-item (click)="goToPrivacy(); closeMobileMenu()">
+        <mat-icon>lock</mat-icon>
+        <span>Privacy</span>
+    </button>
+
+    <mat-divider></mat-divider>
+
+    <!-- Logout -->
+    <button mat-menu-item (click)="logoutUser(); closeMobileMenu()" class="logout-button">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+    </button>
+</mat-menu>

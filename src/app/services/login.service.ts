@@ -18,7 +18,7 @@ export class LoginService {
   signupLogin(email: any, password: any) {
     throw new Error('Method not implemented.');
   }
-  
+
 
   private loggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   loggedIn$ = this.loggedInSubject.asObservable();
@@ -26,7 +26,7 @@ export class LoginService {
   private BASE_URL = ENV.CARGO_SETU;
   constructor(private http: HttpClient,
     private jwtdecode: JwttokenService,
-    private staffuserservice:StaffuserServiceService
+    private staffuserservice: StaffuserServiceService
   ) { }
 
   private hasToken(): boolean {
@@ -65,6 +65,11 @@ export class LoginService {
       if (token) {
         const decoded = this.jwtdecode.getDecodedToken(); // Ensure variable name match (jwtdecode)
         if (decoded && decoded.sub) {
+          tap((staffData: any) => {
+            this.loggedInSubject.next(true);
+            localStorage.setItem('staffInfo', JSON.stringify(staffData));
+            console.log("loging staff"+this.currentUserSubject.value);
+          })
           this.staffuserservice.getStaffById(decoded.sub); // Pass the correct ID/sub field
         }
       }
@@ -88,20 +93,36 @@ export class LoginService {
   }
 
   loginAndFetchUser(token: string): Observable<any> {
-  localStorage.setItem('token', token);
-  const decoded: any = jwtDecode(token);
+    localStorage.setItem('token', token);
+    const decoded: any = jwtDecode(token);
 
-  if (decoded && decoded.sub) {
-    return this.staffuserservice.getStaffById(decoded.sub).pipe(
-      // Explicitly type staffData to satisfy TypeScript strict mode
-      tap((staffData: any) => { 
-        this.loggedInSubject.next(true);
-        localStorage.setItem('staffInfo', JSON.stringify(staffData));
-      })
-    );
+    if (decoded && decoded.sub) {
+      return this.staffuserservice.getStaffById(decoded.sub).pipe(
+        // Explicitly type staffData to satisfy TypeScript strict mode
+        tap((staffData: any) => {
+          this.loggedInSubject.next(true);
+          localStorage.setItem('staffInfo', JSON.stringify(staffData));
+        })
+      );
+    }
+    // Use return throwError for error handling in RxJS
+    return throwError(() => new Error('Invalid Token Payload'));
   }
-  // Use return throwError for error handling in RxJS
-  return throwError(() => new Error('Invalid Token Payload'));
-}
+
+
+
+  private currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('user') || '{}'));
+  public currentUser$ = this.currentUserSubject.asObservable();
+
+  // Method to update user data after a successful login
+  setUserData(user: any) {
+    localStorage.setItem('user', JSON.stringify(user)); // Save for persistence
+    this.currentUserSubject.next(user); // Notify all subscribers
+  }
+
+  // Helper to get data once without subscribing
+  getUserData() {
+    return this.currentUserSubject.value;
+  }
 
 }
