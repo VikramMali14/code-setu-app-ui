@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl, ValidationErrors, FormGroup } from '@angular/forms';
 import { Staff } from 'src/app/models/staff';
 import { Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
+import { GenericDataDTO } from 'src/app/models/generic-data-dto';
+import { ShowpopupService } from 'src/app/services/showpopup.service';
 
 
 @Component({
@@ -12,9 +14,9 @@ import { StaffuserServiceService } from 'src/app/services/staffuser-service';
   styleUrls: ['./staffuser.component.css']
 })
 export class StaffuserComponent implements OnInit {
+  imagePreview: string | null = null;
   staffForm!: FormGroup;
   isSubmitting = false;
-
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
   uploadedImageUrl: string | null = null;
@@ -25,12 +27,33 @@ export class StaffuserComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private staffservice:StaffuserServiceService
-  ) { }
+    private staffservice: StaffuserServiceService,
+    private cd: ChangeDetectorRef,
+    private shoepopup: ShowpopupService
+  ) {
+    this.initializeForm();
+
+    // Get navigation from Router
+    const navigation = this.router.getCurrentNavigation();
+
+    // Try to get data from Router State OR History API fallback
+    const receivedData = navigation?.extras.state?.['staffData'] || history.state?.['staffData'];
+
+    if (receivedData) {
+      console.log('Data received, patching...', receivedData);
+      // Use a small timeout to ensure the form is fully ready in the DOM
+      setTimeout(() => {
+        this.patchStaffData(receivedData);
+      });
+    }
+  }
+
+
 
   ngOnInit() {
-    this.initializeForm();
-    this.loadStaffData(); // Load existing data if available
+    if (this.staffForm.pristine) {
+      this.loadStaffData();
+    }
   }
 
   initializeForm() {
@@ -67,7 +90,11 @@ export class StaffuserComponent implements OnInit {
   onSubmit() {
     if (this.staffForm.valid) {
       this.isSubmitting = true;
-
+      this.staffservice.updateStaff(this.staffForm).subscribe({
+        next: (response: GenericDataDTO) => {
+          this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
+        }
+      })
       console.log('Updated Staff Data:', this.staffForm.value);
 
       // Simulate API call
@@ -188,6 +215,31 @@ export class StaffuserComponent implements OnInit {
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
+    }
+  }
+  patchStaffData(data: any) {
+    // Map the API data to your Form Controls
+    this.staffForm.patchValue({
+
+      userName: data.userName,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      mobileCode: data.mobileCode,
+      mobileNumber: data.mobileNumber,
+      state: data.state,
+      city: data.city,
+      address: data.address,
+      pincode: data.pincode,
+      staffType: data.staffType,
+      isActive: data.isActive
+    });
+    this.cd.detectChanges(); // Force UI update
+
+
+    // Set profile image preview if URL exists
+    if (data.profileImageUrl) {
+      this.imagePreview = `http://localhost:8080/images/${data.profileImageUrl}`;
     }
   }
 }

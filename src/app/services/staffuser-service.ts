@@ -17,6 +17,9 @@ export class StaffuserServiceService {
   createStaff(payload: any): Observable<any> {
     return this.http.post(`${this.BASE_URL}/auth/user/register`, payload);
   }
+   updateStaff(payload: any): Observable<any> {
+    return this.http.post(`${this.BASE_URL}/auth/user/register`, payload);
+  }
   // staff.service.ts
   private staffDetailsSubject = new BehaviorSubject<any>(null);
   staffDetails$ = this.staffDetailsSubject.asObservable(); // Components subscribe to this

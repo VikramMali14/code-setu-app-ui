@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
@@ -15,11 +16,13 @@ import { StaffuserServiceService } from 'src/app/services/staffuser-service';
   styleUrls: ['./nav-bar.component.css']
 })
 export class NavBarComponent implements OnInit {
+  staffForm!: FormGroup;
 
   constructor(private loginservice: LoginService,
     private staffuserservice: StaffuserServiceService,
     private router: Router,
     private jwtdecode: JwttokenService,
+    private fb: FormBuilder
   ) { }
   loggedIn: boolean = false;
   userId: string = '';
@@ -93,11 +96,12 @@ export class NavBarComponent implements OnInit {
   goToEditProfile(): void {
     const user = this.jwtdecode.getDecodedToken();
 
-    this.staffuserservice.getStaffById(user?.sub).subscribe(data => {
-      this.staffuserservice.setStaffDetails(data); // Push data to the stream
-      this.router.navigate(['/staffuser']); // Navigate to the form component
+    this.staffuserservice.getStaffById(user?.sub).subscribe(res => {
+      // Navigate and pass the staff object in the router state
+      this.router.navigate(['/staffuser'], { state: { staffData: res.data } });
     });
   }
+
 
   goToSettings(): void {
     this.router.navigate(['/settings']);
@@ -111,5 +115,33 @@ export class NavBarComponent implements OnInit {
     this.router.navigate(['/privacy']);
   }
 
-
+  initializeForm() {
+    this.staffForm = this.fb.group({
+      userName: ['', [Validators.required, Validators.minLength(3)]],
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.minLength(6)]],
+      mobileCode: ['+91'],
+      mobileNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      country: ['India'],
+      state: [''],
+      city: [''],
+      address: [''],
+      pincode: [null, [Validators.pattern('^[0-9]{6}$')]],
+      departmentId: [null],
+      staffType: ['STAFF', Validators.required],
+      isActive: [true],
+      dob: [null]
+    });
+  }
+  loadStaffData() {
+    // Load existing staff data from service or route params
+    // Example: Get from localStorage or API
+    const savedData = localStorage.getItem('currentStaff');
+    if (savedData) {
+      const staffData = JSON.parse(savedData);
+      this.staffForm.patchValue(staffData);
+    }
+  }
 }
