@@ -1,89 +1,152 @@
 <div class="staff-details-container" *ngIf="staffData">
+    <!-- Simple Header -->
     <div class="header-section">
-        <!-- Dynamically set the name in the header -->
-        <h2>{{ staffData.firstName }} {{ staffData.lastName }} Staff</h2> 
+        <div class="header-content">
+            <div class="avatar-section">
+                <div class="avatar-circle">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                <span class="status-indicator" [class.active]="staffData.isActive"></span>
+            </div>
+            <div class="header-info">
+                <h1>{{ staffData.firstName }} {{ staffData.lastName }}</h1>
+                <p class="subtitle">{{ userRolesDisplay }}</p>
+                <div class="quick-info">
+                    
+                    <span><i class="bi bi-envelope"></i> {{ staffData.email }}</span>
+                    <span><i class="bi bi-telephone"></i> {{ staffData.mobileCode }} {{ staffData.mobileNumber }}</span>
+                    <span><i class="bi bi-geo-alt"></i> {{ staffData.city }}, {{ staffData.state }}</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-edit" (click)="editProfile()">
+                    <i class="bi bi-pencil"></i> Edit Profile
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div class="basic-details-card">
-        <h4>Basic Details</h4>
-        <div class="details-content">
-            <div class="avatar-placeholder">
-                <i class="bi bi-person-circle"></i>
+    <!-- Content Section -->
+    <div class="content-wrapper">
+        <!-- Personal Details -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="bi bi-person"></i>
+                <h3>Personal Information</h3>
             </div>
-            
-            <div class="details-grid-container">
-                <!-- Row 1 -->
-                <div class="detail-item">
-                    <span class="detail-label">Firstname:</span>
-                    <span class="detail-value">{{ staffData.firstName }}</span>
+            <div class="details-grid">
+                <div class="detail-row">
+                    <label>First Name</label>
+                    <span>{{ staffData.firstName }}</span>
                 </div>
-                <div class="detail-item">
-                    <span class="detail-label">Lastname:</span>
-                    <span class="detail-value">{{ staffData.lastName }}</span>
+                <div class="detail-row">
+                    <label>Last Name</label>
+                    <span>{{ staffData.lastName }}</span>
                 </div>
-                <div class="detail-item">
-                    <span class="detail-label">Username:</span>
-                    <span class="detail-value">{{ staffData.userName }}</span>
+                <div class="detail-row">
+                    <label>Username</label>
+                    <span>{{ staffData.userName }}</span>
                 </div>
-
-                <!-- Row 2 -->
-                <div class="detail-item">
-                    <span class="detail-label">Email:</span>
-                    <span class="detail-value">{{ staffData.email }}</span>
+                <div class="detail-row">
+                    <label>User ID</label>
+                    <span class="id-badge">{{ staffData.uuid }}</span>
                 </div>
-                <div class="detail-item">
-                    <span class="detail-label">Mobile:</span>
-                    <!-- Combine code and number -->
-                    <span class="detail-value">{{ staffData.mobileCode }} {{ staffData.mobileNumber }}</span>
+                <div class="detail-row">
+                    <label>Date of Birth</label>
+                    <span>{{ staffData.dob || 'Not provided' }}</span>
                 </div>
-                <div class="detail-item">
-                    <span class="detail-label">Roles:</span>
-                    <!-- Use the formatted string from TS -->
-                    <span class="detail-value">{{ userRolesDisplay }}</span> 
-                </div>
-                
-                <!-- Row 3 -->
-                <!-- Note: Service Area, Business Unit, Team fields require data binding, here's how you'd bind a potential 'serviceArea' property -->
-                <!-- <div class="detail-item"> -->
-                    <!-- <span class="detail-label">Service area:</span> -->
-                    <!-- <a href="#">Click here</a> Bind this link dynamically if needed -->
-                <!-- </div>
-                <div class="detail-item">
-                    <span class="detail-label">Business Unit:</span>
-                    <a href="#">Click here</a>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Team:</span>
-                    <a href="#">Click here</a>
-                </div> -->
-
-                <!-- Row 4 -->
-                <!-- <div class="detail-item">
-                    <span class="detail-label">Parent Staff:</span>
-                    <span class="detail-value">{{ staffData.parentStaff || 'N/A'}}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Partner:</span>
-                    <span class="detail-value">{{ staffData.partner || 'Default' }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">HRMS ID:</span>
-                    <span class="detail-value">{{ staffData.hrmsId }}</span>
-                </div> -->
-
-                <!-- Row 5 -->
-                <div class="detail-item">
-                    <span class="detail-label">Branch Name:</span>
-                    <span class="detail-value">{{ staffData.branchName }}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Status:</span>
-                    <!-- Dynamically apply status class and text -->
-                    <span class="status-badge" [class.status-active]="staffData.isActive" [class.status-inactive]="!staffData.isActive">
+                <div class="detail-row">
+                    <label>Status</label>
+                    <span class="status-text" [class.active]="staffData.isActive">
                         {{ statusDisplay }}
                     </span>
                 </div>
             </div>
         </div>
+
+        <!-- Contact Details -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="bi bi-telephone"></i>
+                <h3>Contact Information</h3>
+            </div>
+            <div class="details-grid">
+                <div class="detail-row full-width">
+                    <label>Email Address</label>
+                    <span><a href="mailto:{{ staffData.email }}">{{ staffData.email }}</a></span>
+                </div>
+                <div class="detail-row">
+                    <label>Phone Code</label>
+                    <span>{{ staffData.mobileCode }}</span>
+                </div>
+                <div class="detail-row">
+                    <label>Mobile Number</label>
+                    <span> {{ staffData.mobileNumber }}</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Address Details -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="bi bi-geo-alt"></i>
+                <h3>Address Details</h3>
+            </div>
+            <div class="details-grid">
+                <div class="detail-row full-width">
+                    <label>Street Address</label>
+                    <span>{{ staffData.address || 'Not provided' }}</span>
+                </div>
+                <div class="detail-row">
+                    <label>City</label>
+                    <span>{{ staffData.city }}</span>
+                </div>
+                <div class="detail-row">
+                    <label>State</label>
+                    <span>{{ staffData.state }}</span>
+                </div>
+                <div class="detail-row">
+                    <label>Country</label>
+                    <span>{{ staffData.country || 'Not provided' }}</span>
+                </div>
+                <div class="detail-row">
+                    <label>Pincode</label>
+                    <span>{{ staffData.pincode || 'Not provided' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Work Details -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="bi bi-briefcase"></i>
+                <h3>Work Information</h3>
+            </div>
+            <div class="details-grid">
+                <div class="detail-row">
+                    <label>Staff Type</label>
+                    <span class="type-badge">{{ staffData.staffType }}</span>
+                </div>
+                <div class="detail-row">
+                    <label>Department ID</label>
+                    <span>{{ staffData.departmentId || 'Not assigned' }}</span>
+                </div>
+                <div class="detail-row">
+                    <label>Branch Name</label>
+                    <span>{{ staffData.branchName || 'Not assigned' }}</span>
+                </div>
+                <div class="detail-row">
+                    <label>User Role</label>
+                    <span>{{ userRolesDisplay }}</span>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-state" *ngIf="!staffData">
+    <div class="spinner"></div>
+    <p>Loading staff details...</p>
 </div>

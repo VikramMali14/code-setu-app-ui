@@ -1,92 +1,345 @@
-/* Ensure you have Bootstrap Icons included for the person icon */
-/* <link rel="stylesheet" href="https://cdn.jsdelivr.net"> */
-
+/* Container */
 .staff-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
-    font-family: sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
 }
 
-.header-section h2 {
-    color: #333;
-    font-size: 1.5rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+/* Header Section */
+.header-section {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.basic-details-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
-}
-
-.basic-details-card h4 {
-    margin-bottom: 15px;
-    color: #555;
-    border-bottom: 1px solid #eee; /* Light horizontal line as divider */
-    padding-bottom: 10px;
-}
-
-.details-content {
+.header-content {
     display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.avatar-section {
+    position: relative;
+}
+
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    background: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.avatar-circle i {
+    font-size: 100px;
+    color: #999;
+}
+
+.status-indicator {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ccc;
+    border: 3px solid white;
+}
+
+.status-indicator.active {
+    background: #28a745;
+}
+
+.header-info {
+    flex: 1;
+}
+
+.header-info h1 {
+    margin: 0 0 5px 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+}
+
+.subtitle {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: #666;
+}
+
+.quick-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.quick-info span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.quick-info i {
+    color: #999;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-edit {
+    padding: 10px 20px;
+    background: #6badf4;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+
+.btn-edit:hover {
+    background: #0056b3;
+}
+
+/* Content Section */
+.content-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
     gap: 20px;
 }
 
-.avatar-placeholder i {
-    font-size: 100px;
-    color: #ccc;
-    margin-right: 20px;
+.section-card {
+    background: white;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.details-grid-container {
-    /* Creates 3 columns of equal width for the detail items */
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 15px 30px; /* Vertical gap, Horizontal gap */
-    flex-grow: 1;
-}
-
-.detail-item {
-    /* Each detail item occupies one grid cell */
+.section-title {
     display: flex;
     align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
 }
 
-.detail-label {
-    font-weight: 500;
-    color: #666;
-    margin-right: 5px;
-    white-space: nowrap;
+.section-title i {
+    font-size: 20px;
+    color: #007bff;
 }
 
-.detail-value {
+.section-title h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
     color: #333;
 }
 
-a {
-    color: #007bff; /* Links as seen in image */
+/* Details Grid */
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.detail-row.full-width {
+    grid-column: 1 / -1;
+}
+
+.detail-row label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-row span {
+    font-size: 15px;
+    color: #333;
+    word-break: break-word;
+}
+
+.detail-row a {
+    color: #007bff;
     text-decoration: none;
 }
 
-.status-active {
-    background-color: #28a745; /* Green color for Active status */
-    color: white;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 0.8rem;
+.detail-row a:hover {
+    text-decoration: underline;
 }
 
-/* Optional: Make it responsive for smaller screens */
+/* Badges */
+.id-badge {
+    display: inline-block;
+    background: #f0f0f0;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: monospace;
+    color: #666;
+}
+
+.type-badge {
+    display: inline-block;
+    /* background: #007bff; */
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status-text {
+    display: inline-block;
+    padding: 4px au;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #dc3545;
+    color: white;
+}
+
+.status-text.active {
+    background: #c7f5d1;
+}
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: #666;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f0f0f0;
+    border-top-color: #007bff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-state p {
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    .details-content {
+    .staff-details-container {
+        padding: 15px;
+    }
+
+    .header-section {
+        padding: 20px;
+    }
+
+    .header-content {
         flex-direction: column;
-    }
-    .details-grid-container {
-        grid-template-columns: 1fr; /* Stack items vertically on mobile */
-    }
-    .avatar-placeholder {
         text-align: center;
+        gap: 20px;
+    }
+
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+    }
+
+    .avatar-circle i {
+        font-size: 80px;
+    }
+
+    .header-info h1 {
+        font-size: 24px;
+    }
+
+    .quick-info {
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .btn-edit {
+        width: 150%;
+        justify-content: center;
+    }
+
+    .content-wrapper {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .section-card {
+        padding: 20px;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .section-title h3 {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-info h1 {
+        font-size: 20px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+
+    .quick-info {
+        font-size: 13px;
+    }
+
+    .section-title {
+        font-size: 16px;
+    }
+
+    .detail-row label {
+        font-size: 12px;
+    }
+
+    .detail-row span {
+        font-size: 14px;
     }
 }

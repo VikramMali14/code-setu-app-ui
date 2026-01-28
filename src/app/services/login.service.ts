@@ -9,6 +9,7 @@ import { tap } from 'rxjs/operators'; // Required to use tap in .pipe()
 import { ENV } from 'src/assets/env';
 import { AuthResponse } from '../models/authresponse';
 import { GenericDataDTO } from '../models/generic-data-dto';
+import { Router } from '@angular/router';
 
 // import { url } from 'inspector';
 
@@ -27,7 +28,8 @@ export class LoginService {
   private BASE_URL = ENV.CARGO_SETU;
   constructor(private http: HttpClient,
     private jwtdecode: JwttokenService,
-    private staffuserservice: StaffuserServiceService
+    private staffuserservice: StaffuserServiceService,
+    private router: Router,
   ) { }
 
   private hasToken(): boolean {
@@ -103,6 +105,7 @@ export class LoginService {
   logout() {
     localStorage.removeItem('token');
     this.loggedInSubject.next(false);
+    this.router.navigateByUrl("/login");
   }
 
   isLoggedIn() {

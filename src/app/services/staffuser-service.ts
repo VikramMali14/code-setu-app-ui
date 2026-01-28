@@ -32,6 +32,8 @@ export class StaffuserServiceService {
     this.loadingSubject.next(state);
   }
 
-
+  profileUpload(staffId: any) {
+    return this.http.post(`${this.BASE_URL}/api/v2/cargosetu/document/upload?/`,staffId);
+  }
 
 }

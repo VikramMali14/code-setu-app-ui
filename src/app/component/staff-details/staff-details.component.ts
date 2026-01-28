@@ -9,6 +9,9 @@ import { StaffuserServiceService } from 'src/app/services/staffuser-service';
   styleUrls: ['./staff-details.component.css']
 })
 export class StaffDetailsComponent implements OnInit {
+editProfile() {
+throw new Error('Method not implemented.');
+}
   goBack() {
     throw new Error('Method not implemented.');
   }
@@ -59,5 +62,23 @@ export class StaffDetailsComponent implements OnInit {
       return roles.map(role => role.roleName).join(', ');
     }
     return 'N/A';
+  }
+
+
+  imagePreview: string | ArrayBuffer | null = null;
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+
+      reader.readAsDataURL(file); // Converts image to base64 for preview
+    }
   }
 }
