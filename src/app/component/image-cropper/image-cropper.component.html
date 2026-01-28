@@ -1,13 +1,43 @@
-<div class="cropper-modal-overlay">
-    <div class="cropper-card shadow">
-        <h6 class="mb-3">Crop Your Photo</h6>
-        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
-            [roundCropper]="true" format="png" (imageCropped)="imageCropped($event)" style="max-height: 350px;">
-        </image-cropper>
+<div class="cropper-modal-overlay" (click)="onOverlayClick($event)">
+    <div class="cropper-container" (click)="$event.stopPropagation()">
+        <div class="cropper-header">
+            <h5 class="cropper-title">
+                <i class="bi bi-crop"></i>
+                Crop Your Photo
+            </h5>
+            <button type="button" class="btn-close-modal" (click)="cancel()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
 
-        <div class="d-flex justify-content-end gap-2 mt-3">
-            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="cancel()">Cancel</button>
-            <button type="button" class="btn btn-sm btn-primary" (click)="confirmCrop()">Apply Crop</button>
+        <div class="cropper-body">
+            <div class="cropper-wrapper">
+                <image-cropper 
+                    [imageChangedEvent]="imageChangedEvent" 
+                    [maintainAspectRatio]="true" 
+                    [aspectRatio]="1 / 1"
+                    [roundCropper]="true" 
+                    format="png" 
+                    (imageCropped)="imageCropped($event)"
+                    [style.max-height.px]="400">
+                </image-cropper>
+            </div>
+
+            <div class="cropper-instructions">
+                <i class="bi bi-info-circle"></i>
+                <span>Drag to reposition, scroll to zoom</span>
+            </div>
+        </div>
+
+        <div class="cropper-footer">
+            <button type="button" class="btn btn-cancel" (click)="cancel()">
+                <i class="bi bi-x-circle"></i>
+                Cancel
+            </button>
+            <button type="button" class="btn btn-confirm" (click)="confirmCrop()">
+                <i class="bi bi-check-circle"></i>
+                Apply Crop
+            </button>
         </div>
     </div>
 </div>

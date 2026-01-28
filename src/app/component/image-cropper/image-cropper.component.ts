@@ -16,7 +16,7 @@ export class ImageCropperComponent {
 
   imageCropped(event: ImageCroppedEvent) {
     this.croppedImageBase64 = event.base64;
-    
+
     // In ngx-image-cropper v6, we convert base64 to Blob manually for the File object
     if (event.base64) {
       this.tempBlob = this.base64ToBlob(event.base64);
@@ -42,5 +42,9 @@ export class ImageCropperComponent {
       int8Array[i] = byteString.charCodeAt(i);
     }
     return new Blob([int8Array], { type: 'image/png' });
+  }
+  onOverlayClick(event: MouseEvent) {
+    // Close modal when clicking outside
+    this.cancel();
   }
 }
