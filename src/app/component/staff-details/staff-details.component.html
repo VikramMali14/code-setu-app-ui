@@ -1,0 +1,89 @@
+<div class="staff-details-container" *ngIf="staffData">
+    <div class="header-section">
+        <!-- Dynamically set the name in the header -->
+        <h2>{{ staffData.firstName }} {{ staffData.lastName }} Staff</h2> 
+    </div>
+
+    <div class="basic-details-card">
+        <h4>Basic Details</h4>
+        <div class="details-content">
+            <div class="avatar-placeholder">
+                <i class="bi bi-person-circle"></i>
+            </div>
+            
+            <div class="details-grid-container">
+                <!-- Row 1 -->
+                <div class="detail-item">
+                    <span class="detail-label">Firstname:</span>
+                    <span class="detail-value">{{ staffData.firstName }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Lastname:</span>
+                    <span class="detail-value">{{ staffData.lastName }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Username:</span>
+                    <span class="detail-value">{{ staffData.userName }}</span>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="detail-item">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">{{ staffData.email }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Mobile:</span>
+                    <!-- Combine code and number -->
+                    <span class="detail-value">{{ staffData.mobileCode }} {{ staffData.mobileNumber }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Roles:</span>
+                    <!-- Use the formatted string from TS -->
+                    <span class="detail-value">{{ userRolesDisplay }}</span> 
+                </div>
+                
+                <!-- Row 3 -->
+                <!-- Note: Service Area, Business Unit, Team fields require data binding, here's how you'd bind a potential 'serviceArea' property -->
+                <!-- <div class="detail-item"> -->
+                    <!-- <span class="detail-label">Service area:</span> -->
+                    <!-- <a href="#">Click here</a> Bind this link dynamically if needed -->
+                <!-- </div>
+                <div class="detail-item">
+                    <span class="detail-label">Business Unit:</span>
+                    <a href="#">Click here</a>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Team:</span>
+                    <a href="#">Click here</a>
+                </div> -->
+
+                <!-- Row 4 -->
+                <!-- <div class="detail-item">
+                    <span class="detail-label">Parent Staff:</span>
+                    <span class="detail-value">{{ staffData.parentStaff || 'N/A'}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Partner:</span>
+                    <span class="detail-value">{{ staffData.partner || 'Default' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">HRMS ID:</span>
+                    <span class="detail-value">{{ staffData.hrmsId }}</span>
+                </div> -->
+
+                <!-- Row 5 -->
+                <div class="detail-item">
+                    <span class="detail-label">Branch Name:</span>
+                    <span class="detail-value">{{ staffData.branchName }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Status:</span>
+                    <!-- Dynamically apply status class and text -->
+                    <span class="status-badge" [class.status-active]="staffData.isActive" [class.status-inactive]="!staffData.isActive">
+                        {{ statusDisplay }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

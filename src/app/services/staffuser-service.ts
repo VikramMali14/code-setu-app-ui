@@ -12,7 +12,7 @@ export class StaffuserServiceService {
 
   private BASE_URL = ENV.CARGO_SETU;
   getStaffById(staffId: any) {
-    return this.http.get(`${this.BASE_URL}/api/v2/cargosetu/staff/${staffId}`);
+    return this.http.get<any>(`${this.BASE_URL}/api/v2/cargosetu/staff/${staffId}`);
   }
   createStaff(payload: any): Observable<any> {
     return this.http.post(`${this.BASE_URL}/auth/user/register`, payload);
@@ -31,6 +31,7 @@ export class StaffuserServiceService {
   setLoading(state: boolean) {
     this.loadingSubject.next(state);
   }
+
 
 
 }

@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { GenericDataDTO } from 'src/app/models/generic-data-dto';
 import { JwttokenService } from 'src/app/services/jwttoken.service';
 import { LoginService } from 'src/app/services/login.service';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
@@ -18,11 +19,15 @@ export class NavBarComponent implements OnInit {
   constructor(private loginservice: LoginService,
     private staffuserservice: StaffuserServiceService,
     private router: Router,
-    private jwtdecode:JwttokenService,
+    private jwtdecode: JwttokenService,
   ) { }
   loggedIn: boolean = false;
   userId: string = '';
   username: string = '';
+  staffData: any = null;
+  userRolesDisplay: string = '';
+  statusDisplay: string = '';
+  sessionData = localStorage.getItem('user_session');
 
   public mobileMenuOpen = false;
   public servicesSubmenuOpen = false;
@@ -33,9 +38,8 @@ export class NavBarComponent implements OnInit {
 
       if (status) {
         // Retrieve user info from localStorage if status is true
-        const userData = JSON.parse(localStorage.getItem('user') || '{}');
-        this.userId = userData.id || 'User_01'; // Default if ID is missing
-        this.userId = userData.username || 'User_01';
+        const userData = JSON.parse(this.sessionData || '{}');
+        this.username = userData.userName;
       } else {
         this.userId = ''; // Reset when logged out
       }
@@ -59,10 +63,32 @@ export class NavBarComponent implements OnInit {
       this.servicesSubmenuOpen = false;
     }
   }
+  userdata = JSON.parse(localStorage.getItem('user_session') || "");
+
+
+  // Source Component (e.g., nav-bar.component.ts)
 
   goToProfile(): void {
-    this.router.navigate(['/staffdetails']);
+    // 1. Fetch data
+    console.log(this.userdata)
+    this.staffuserservice.getStaffById(this.userdata.staffId).subscribe({
+      next: (response: GenericDataDTO) => {
+        if (response && response.data) {
+          // 2. Set the data in the shared service
+          this.staffuserservice.setStaffDetails(response);
+
+          // 3. Navigate only AFTER data is successfully received and stored
+          this.router.navigate(['/staffdetails']);
+        }
+      },
+      error: (err) => {
+        console.error("Error fetching staff profile:", err);
+      }
+    });
+
+    // Remove the `this.router.navigate(['/staffdetails']);` from above the subscribe block
   }
+
 
   goToEditProfile(): void {
     const user = this.jwtdecode.getDecodedToken();
@@ -70,7 +96,7 @@ export class NavBarComponent implements OnInit {
     this.staffuserservice.getStaffById(user?.sub).subscribe(data => {
       this.staffuserservice.setStaffDetails(data); // Push data to the stream
       this.router.navigate(['/staffuser']); // Navigate to the form component
-    }); 
+    });
   }
 
   goToSettings(): void {

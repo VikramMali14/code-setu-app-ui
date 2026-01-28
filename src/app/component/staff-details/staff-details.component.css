@@ -1,40 +1,92 @@
-.profile-container {
-  padding: 20px;
-  display: flex;
-  justify-content: center;
+/* Ensure you have Bootstrap Icons included for the person icon */
+/* <link rel="stylesheet" href="https://cdn.jsdelivr.net"> */
+
+.staff-details-container {
+    padding: 20px;
+    font-family: sans-serif;
 }
 
-.profile-card {
-  max-width: 800px;
-  width: 100%;
-  padding: 16px;
+.header-section h2 {
+    color: #333;
+    font-size: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-top: 20px;
+.basic-details-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 }
 
-.info-section h3 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #3f51b5; /* Primary Color */
-  border-bottom: 1px solid #eee;
-  padding-bottom: 8px;
+.basic-details-card h4 {
+    margin-bottom: 15px;
+    color: #555;
+    border-bottom: 1px solid #eee; /* Light horizontal line as divider */
+    padding-bottom: 10px;
 }
 
-.active-status {
-  color: green;
-  font-weight: bold;
+.details-content {
+    display: flex;
+    gap: 20px;
 }
 
-.roles-section {
-  margin-top: 24px;
+.avatar-placeholder i {
+    font-size: 100px;
+    color: #ccc;
+    margin-right: 20px;
 }
 
-mat-chip-set {
-  margin-top: 10px;
+.details-grid-container {
+    /* Creates 3 columns of equal width for the detail items */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 15px 30px; /* Vertical gap, Horizontal gap */
+    flex-grow: 1;
+}
+
+.detail-item {
+    /* Each detail item occupies one grid cell */
+    display: flex;
+    align-items: center;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: #666;
+    margin-right: 5px;
+    white-space: nowrap;
+}
+
+.detail-value {
+    color: #333;
+}
+
+a {
+    color: #007bff; /* Links as seen in image */
+    text-decoration: none;
+}
+
+.status-active {
+    background-color: #28a745; /* Green color for Active status */
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+/* Optional: Make it responsive for smaller screens */
+@media (max-width: 768px) {
+    .details-content {
+        flex-direction: column;
+    }
+    .details-grid-container {
+        grid-template-columns: 1fr; /* Stack items vertically on mobile */
+    }
+    .avatar-placeholder {
+        text-align: center;
+    }
 }

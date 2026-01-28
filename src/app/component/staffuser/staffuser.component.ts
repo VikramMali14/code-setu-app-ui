@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators,AbstractControl, ValidationErrors, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, AbstractControl, ValidationErrors, FormGroup } from '@angular/forms';
 import { Staff } from 'src/app/models/staff';
 import { Router } from '@angular/router';
 
@@ -57,9 +57,9 @@ export class StaffuserComponent implements OnInit {
   onSubmit() {
     if (this.staffForm.valid) {
       this.isSubmitting = true;
-      
+
       console.log('Updated Staff Data:', this.staffForm.value);
-      
+
       // Simulate API call
       setTimeout(() => {
         this.isSubmitting = false;

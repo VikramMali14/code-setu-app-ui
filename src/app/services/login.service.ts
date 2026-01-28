@@ -8,6 +8,7 @@ import { StaffuserServiceService } from './staffuser-service';
 import { tap } from 'rxjs/operators'; // Required to use tap in .pipe()
 import { ENV } from 'src/assets/env';
 import { AuthResponse } from '../models/authresponse';
+import { GenericDataDTO } from '../models/generic-data-dto';
 
 // import { url } from 'inspector';
 
@@ -68,9 +69,25 @@ export class LoginService {
           tap((staffData: any) => {
             this.loggedInSubject.next(true);
             localStorage.setItem('staffInfo', JSON.stringify(staffData));
-            console.log("loging staff"+this.currentUserSubject.value);
+            console.log("loging staff" + this.currentUserSubject.value);
           })
-          this.staffuserservice.getStaffById(decoded.sub); // Pass the correct ID/sub field
+          this.staffuserservice.getStaffById(decoded.sub).subscribe({
+            next: (res: GenericDataDTO) => {
+              if (res.responseCode === 200 && res.data) {
+                const staffData = res.data;
+                // Save as one object
+                const userSession = {
+                  staffId: res.data.staffId,
+                  uuid: res.data.uuid,
+                  userName: res.data.userName,
+                  firstName: res.data.firstName
+                };
+                localStorage.setItem('user_session', JSON.stringify(userSession));
+
+              }
+            },
+            error: (err) => console.error('Error fetching staff details', err)
+          });
         }
       }
 
