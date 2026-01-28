@@ -44,14 +44,12 @@
             <mat-icon>login</mat-icon> Login
         </a>
 
-        <!-- FIXED: Profile Menu Button for Desktop -->
-        <a *ngIf="loggedIn" mat-button [matMenuTriggerFor]="profileMenuDesktop" class="profile-button">
+        <!-- Profile Menu Button for Desktop - REMOVED EXTRA LOGOUT BUTTON -->
+        <button *ngIf="loggedIn" mat-button [matMenuTriggerFor]="profileMenuDesktop" class="profile-button">
             <mat-icon>person</mat-icon>
             <span class="user-name">{{ username }}</span>
             <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
-        </a>
-        <a *ngIf="loggedIn" mat-button (click)="logoutUser()" routerLink="/login">
-            <mat-icon>logout</mat-icon> </a>
+        </button>
     </div>
 
     <!-- Mobile Menu Toggle -->
@@ -70,7 +68,6 @@
         <div class="user-info">
             <div class="user-name-header">{{ username }}</div>
             <div class="user-id">ID: {{ userId }}</div>
-            <!-- <div class="user-email">{{ userEmail }}</div> -->
         </div>
     </div>
 
@@ -111,12 +108,10 @@
     <mat-divider></mat-divider>
 
     <!-- Logout -->
-    <button *ngIf="loggedIn" mat-menu-item (click)="logoutUser()" class="logout-button" routerLink="/login">
+    <button mat-menu-item (click)="logoutUser()" class="logout-button">
         <mat-icon>logout</mat-icon>
         <span>Logout</span>
     </button>
-
-
 </mat-menu>
 
 <!-- Mobile Menu -->
@@ -133,20 +128,14 @@
         <mat-icon>{{ servicesSubmenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon> Services
     </a>
     <div *ngIf="servicesSubmenuOpen" style="background: rgba(0,0,0,0.1);">
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Generate
-            Bilty</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create
-            Quotation</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Generate Bilty</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create Quotation</a>
         <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Invoicing</a>
         <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage Staff</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage
-            Vehicles</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Ops
-            Documents</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create
-            Customer</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Pending
-            Approvals</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage Vehicles</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Ops Documents</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create Customer</a>
+        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Pending Approvals</a>
     </div>
 
     <a mat-button routerLink="/" fragment="app-featurescreen" (click)="closeMobileMenu()">
@@ -169,12 +158,11 @@
         </a>
 
         <!-- Profile Menu for Mobile -->
-        <a *ngIf="loggedIn" mat-button [matMenuTriggerFor]="profileMenuMobile" class="profile-button">
+        <button *ngIf="loggedIn" mat-button [matMenuTriggerFor]="profileMenuMobile" class="profile-button">
             <mat-icon>person</mat-icon>
             <span class="user-name">{{ username }}</span>
             <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
-        </a>
-
+        </button>
     </div>
 </div>
 
