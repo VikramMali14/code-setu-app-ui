@@ -21,6 +21,7 @@ import { MatMenuModule } from '@angular/material/menu'; // 1. Import it
 import { Router, Routes } from '@angular/router';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 
 import { LoginComponent } from './component/login/login.component';
@@ -55,6 +56,7 @@ import { PlanscreenComponent } from './component/planscreen/planscreen.component
 import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 import { FeaturescreenComponent } from './component/featurescreen/featurescreen.component';
 import { StaffDetailsComponent } from './component/staff-details/staff-details.component';
+import { ImageCropperComponent } from './component/image-cropper/image-cropper.component';
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
 @NgModule({
@@ -70,6 +72,7 @@ import { StaffDetailsComponent } from './component/staff-details/staff-details.c
     DepartmentComponent,
     StaffuserComponent,
     StaffDetailsComponent,
+    ImageCropperComponent,
   ],
   imports: [
     BrowserModule,
@@ -97,7 +100,7 @@ import { StaffDetailsComponent } from './component/staff-details/staff-details.c
     MatNativeDateModule, MatPaginatorModule,
     MatAutocompleteModule, MatSnackBarModule, MatDividerModule,
     FormsModule,
-    FormsModule,
+    FormsModule,ImageCropperModule,
     // standaload Component
     PlanscreenComponent,
     ContectUsComponent,

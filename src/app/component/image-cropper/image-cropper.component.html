@@ -1,0 +1,13 @@
+<div class="cropper-modal-overlay">
+    <div class="cropper-card shadow">
+        <h6 class="mb-3">Crop Your Photo</h6>
+        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
+            [roundCropper]="true" format="png" (imageCropped)="imageCropped($event)" style="max-height: 350px;">
+        </image-cropper>
+
+        <div class="d-flex justify-content-end gap-2 mt-3">
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="cancel()">Cancel</button>
+            <button type="button" class="btn btn-sm btn-primary" (click)="confirmCrop()">Apply Crop</button>
+        </div>
+    </div>
+</div>

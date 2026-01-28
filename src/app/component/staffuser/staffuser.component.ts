@@ -6,6 +6,7 @@ import { HttpEventType } from '@angular/common/http';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { GenericDataDTO } from 'src/app/models/generic-data-dto';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 
 
 @Component({
@@ -23,7 +24,9 @@ export class StaffuserComponent implements OnInit {
   uploadProgress: number = 0;
   uploadError: string | null = null;
   uploadSuccess: string | null = null;
-
+  imageChangedEvent: any = '';
+  croppedImage: any = ''; // Preview of the cropped version
+  showCropper = false;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -122,39 +125,39 @@ export class StaffuserComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
+  // onFileSelected(event: any) {
+  //   const file = event.target.files[0];
 
-    if (file) {
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      if (!allowedTypes.includes(file.type)) {
-        this.uploadError = 'Only JPG and PNG images are allowed';
-        return;
-      }
+  //   if (file) {
+  //     // Validate file type
+  //     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+  //     if (!allowedTypes.includes(file.type)) {
+  //       this.uploadError = 'Only JPG and PNG images are allowed';
+  //       return;
+  //     }
 
-      // Validate file size (5MB max)
-      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
-      if (file.size > maxSize) {
-        this.uploadError = 'File size must be less than 5MB';
-        return;
-      }
+  //     // Validate file size (5MB max)
+  //     const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+  //     if (file.size > maxSize) {
+  //       this.uploadError = 'File size must be less than 5MB';
+  //       return;
+  //     }
 
-      this.selectedFile = file;
-      this.uploadError = null;
-      this.uploadSuccess = null;
+  //     this.selectedFile = file;
+  //     this.uploadError = null;
+  //     this.uploadSuccess = null;
 
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.previewImageUrl = e.target.result;
-      };
-      reader.readAsDataURL(file);
+  //     // Create preview
+  //     const reader = new FileReader();
+  //     reader.onload = (e: any) => {
+  //       this.previewImageUrl = e.target.result;
+  //     };
+  //     reader.readAsDataURL(file);
 
-      // Upload immediately
-      this.uploadImage();
-    }
-  }
+  //     // Upload immediately
+  //     this.uploadImage();
+  //   }
+  // }
   uploadImage() {
     if (!this.selectedFile) {
       return;
@@ -242,4 +245,57 @@ export class StaffuserComponent implements OnInit {
       this.imagePreview = `http://localhost:8080/images/${data.profileImageUrl}`;
     }
   }
+  nFileSelected(event: any): void {
+    this.imageChangedEvent = event;
+    this.showCropper = true; // Show cropper UI
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+    // 1. Set preview using the base64 string
+    this.croppedImage = event.base64;
+
+    // 2. Convert Base64 to a Blob/File for Spring Boot
+    if (event.base64) {
+      const blob = this.base64ToBlob(event.base64);
+      this.selectedFile = new File([blob], "profile.png", { type: 'image/png' });
+    }
+  }
+
+  confirmCrop() {
+    this.showCropper = false;
+    this.previewImageUrl = this.croppedImage; // Update UI avatar
+    this.uploadImage(); // Call your existing Spring Boot upload method
+  }
+  // Helper method to convert base64 to Blob
+  private base64ToBlob(base64: string): Blob {
+    const byteString = atob(base64.split(',')[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const int8Array = new Uint8Array(arrayBuffer);
+
+    for (let i = 0; i < byteString.length; i++) {
+      int8Array[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([int8Array], { type: 'image/png' });
+  }
+  // Replace your old onFileSelected and add the handler
+onFileSelected(event: any) {
+  if (event.target.files && event.target.files[0]) {
+    this.imageChangedEvent = event;
+    this.showCropper = true;
+  }
+}
+
+handleCroppedImage(file: File) {
+  this.showCropper = false;
+  this.selectedFile = file;
+
+  // Set local preview for the form
+  const reader = new FileReader();
+  reader.onload = (e: any) => this.previewImageUrl = e.target.result;
+  reader.readAsDataURL(file);
+
+  // Trigger your Spring Boot upload logic
+  this.uploadImage();
+}
+
 }
