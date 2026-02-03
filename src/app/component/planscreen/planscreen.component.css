@@ -419,3 +419,272 @@
     font-size: 1rem !important;
   }
 }
+
+/* Modal Overlay */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Content Container */
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Gradient Header Bar */
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #E94E77 100%);
+}
+
+/* Close Button */
+.close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: 300;
+  color: #718096;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.close:hover {
+  background-color: #f7fafc;
+  color: #2d3748;
+  transform: rotate(90deg);
+}
+
+/* Modal Header */
+.modal-content h2 {
+  padding: 35px 30px 25px 30px;
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d3748;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* Payment Breakdown Section */
+.payment-breakdown {
+  padding: 30px;
+  background: #f8f9fa;
+}
+
+/* Detail Rows */
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+.detail-row span:first-child {
+  font-weight: 500;
+}
+
+.detail-row .amount {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1.05rem;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #cbd5e0, transparent);
+  margin: 20px 0;
+}
+
+/* Total Row */
+.total-row {
+  padding: 18px 20px;
+  background: white;
+  border-radius: 10px;
+  margin-top: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.total-row strong {
+  font-size: 1.1rem;
+  color: #2d3748;
+}
+
+.total-row .amount {
+  font-size: 1.5rem;
+  color: #667eea;
+  font-weight: 700;
+}
+
+/* Next Button */
+.next-button {
+  width: calc(100% - 60px);
+  margin: 0 30px 30px 30px;
+  padding: 16px !important;
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 10px !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.next-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4) !important;
+}
+
+.next-button:active {
+  transform: translateY(0);
+}
+
+/* Plan Badge (Optional) */
+.plan-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* Tax Breakdown Styling */
+.tax-row {
+  font-size: 0.95rem;
+  color: #718096;
+  padding: 10px 0;
+}
+
+.tax-row .amount {
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+/* Info Text */
+.info-text {
+  font-size: 0.85rem;
+  color: #718096;
+  text-align: center;
+  padding: 0 30px 20px;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .modal {
+    padding: 10px;
+    align-items: flex-end;
+  }
+  
+  .modal-content {
+    border-radius: 16px 16px 0 0;
+    max-width: 100%;
+    animation: slideUpMobile 0.3s ease-out;
+  }
+  
+  @keyframes slideUpMobile {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  
+  .modal-content h2 {
+    padding: 30px 20px 20px 20px;
+    font-size: 1.5rem;
+  }
+  
+  .payment-breakdown {
+    padding: 20px;
+  }
+  
+  .detail-row {
+    padding: 12px 0;
+    font-size: 0.95rem;
+  }
+  
+  .total-row {
+    padding: 15px;
+  }
+  
+  .total-row strong {
+    font-size: 1rem;
+  }
+  
+  .total-row .amount {
+    font-size: 1.3rem;
+  }
+  
+  .next-button {
+    width: calc(100% - 40px);
+    margin: 0 20px 20px 20px;
+    padding: 14px !important;
+    font-size: 1rem !important;
+  }
+  
+  .close {
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+  }
+}

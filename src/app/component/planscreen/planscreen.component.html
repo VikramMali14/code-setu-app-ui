@@ -29,7 +29,7 @@
     <h1>Choose Your Perfect Plan</h1>
     <p>Select the subscription that fits your needs</p>
   </div>
-  
+
   <div class="container">
     <div class="row">
       <!-- Loop through plans using *ngFor -->
@@ -49,10 +49,63 @@
             </ul>
           </div>
           <div class="card-action">
-            <a class="btn waves-effect waves-light" href="#">{{ plan.buttonText }}</a>
+            <button href="#" class="btn waves-effect waves-light subscribe-button"
+              (click)="openPaymentModal(plan); $event.preventDefault()">
+              {{ plan.buttonText }}
+            </button>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Payment Pop-up (Modal) HTML -->
+<div class="modal" *ngIf="isPaymentModalVisible && selectedPlan" (click)="closePaymentModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close" (click)="closePaymentModal()">&times;</span>
+
+    <h2>
+      Confirm Plan
+      <span class="plan-badge">{{ selectedPlan.name }}</span>
+    </h2>
+
+    <div class="payment-breakdown">
+      <!-- Plan Price -->
+      <div class="detail-row">
+        <span>Plan Price (Taxable Value)</span>
+        <span class="amount">{{ selectedPlan.price }}</span>
+      </div>
+
+      <!-- CGST -->
+      <div class="detail-row tax-row">
+        <span>CGST @ 9%</span>
+        <span class="amount">{{ payment.cgst | currency:'INR' }}</span>
+      </div>
+
+      <!-- SGST -->
+      <div class="detail-row tax-row">
+        <span>SGST @ 9%</span>
+        <span class="amount">{{ payment.sgst | currency:'INR' }}</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Total -->
+      <div class="detail-row total-row">
+        <strong>Total Amount Payable</strong>
+        <strong class="amount">
+          {{ payment.totalPayable | currency:'INR' }}
+        </strong>
+      </div>
+    </div>
+
+    <p class="info-text">
+      You will be redirected to a secure payment gateway to complete your transaction.
+    </p>
+
+    <button mat-raised-button class="next-button">
+      Proceed to Payment
+    </button>
   </div>
 </div>
