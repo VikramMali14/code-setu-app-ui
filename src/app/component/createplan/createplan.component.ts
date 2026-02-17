@@ -12,6 +12,7 @@ import { ShowpopupService } from 'src/app/services/showpopup.service';
 })
 export class CreateplanComponent implements OnInit {
   planForm!: FormGroup;
+  viewMode: 'list' | 'form' = 'list';
   plans: Plandto[] = [];
   selectedPlan: Plandto | null = null;
   planToDelete: Plandto | null = null;
@@ -39,17 +40,17 @@ export class CreateplanComponent implements OnInit {
     return this.planForm.controls;
   }
 
-loadPlans(): void {
-  this.planservice.getPlanList().subscribe({
-    next: (response: Plandto[]) => {
-      console.log("Plans Loaded:", response);
-      this.plans = response;
-    },
-    error: (err) => {
-      console.error("Error loading plans:", err);
-    }
-  });
-}
+// loadPlans(): void {
+//   this.planservice.getPlanList().subscribe({
+//     next: (response: Plandto[]) => {
+//       console.log("Plans Loaded:", response);
+//       this.plans = response;
+//     },
+//     error: (err) => {
+//       console.error("Error loading plans:", err);
+//     }
+//   });
+// }
 
 
   selectPlan(plan: Plandto): void {
@@ -192,4 +193,59 @@ deletePlan(): void {
     const validityDate = new Date(plan.planValidity);
     return validityDate >= today;
   }
+// viewMode: 'list' | 'form' = 'list';
+
+openCreateForm(): void {
+  this.viewMode = 'form';
+  this.isEditMode = false;
+  this.planForm.reset();
 }
+
+
+// Add these new properties
+showSearch = false;
+searchQuery = '';
+filteredPlans: Plandto[] = [];
+isRefreshing = false;
+
+// Update loadPlans to also set filteredPlans
+loadPlans(): void {
+  this.isRefreshing = true;
+  this.planservice.getPlanList().subscribe({
+    next: (response: Plandto[]) => {
+      this.plans = response;
+      this.filterPlans(); // keep filter in sync
+      this.isRefreshing = false;
+    },
+    error: (err) => {
+      console.error("Error loading plans:", err);
+      this.isRefreshing = false;
+    }
+  });
+}
+
+// Add these new methods
+toggleSearch(): void {
+  this.showSearch = !this.showSearch;
+  if (!this.showSearch) {
+    this.clearSearch();
+  }
+}
+
+clearSearch(): void {
+  this.searchQuery = '';
+  this.filterPlans();
+}
+
+filterPlans(): void {
+  const q = this.searchQuery.toLowerCase().trim();
+  this.filteredPlans = q
+    ? this.plans.filter(p =>
+        p.name?.toLowerCase().includes(q) ||
+        p.plannCategory?.toLowerCase().includes(q)
+      )
+    : [...this.plans];
+}
+}
+
+

@@ -1,25 +1,68 @@
 <div class="plan-management-container">
-  <!-- Left Panel - Plan Table -->
-  <div class="plan-list-panel">
+
+  <!-- ===== TOP TOOLBAR ===== -->
+  <div class="top-toolbar">
+    <div class="toolbar-left">
+      <button mat-icon-button class="back-nav-btn" onclick="history.back()" matTooltip="Go Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="toolbar-title">
+        <h2>Plan Management</h2>
+        <p>Manage your subscription plans</p>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <!-- Search Input (expandable) -->
+      <div class="search-wrapper" [class.expanded]="showSearch">
+        <mat-form-field appearance="outline" class="search-field" *ngIf="showSearch">
+          <mat-label>Search plans...</mat-label>
+          <input matInput [(ngModel)]="searchQuery" (input)="filterPlans()" placeholder="Name, category..." #searchInput>
+          <mat-icon matPrefix>search</mat-icon>
+          <button matSuffix mat-icon-button (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <button mat-icon-button class="toolbar-icon-btn search-btn" (click)="toggleSearch()" matTooltip="Search">
+          <mat-icon>{{ showSearch ? 'search_off' : 'search' }}</mat-icon>
+        </button>
+      </div>
+
+      <!-- Refresh Button -->
+      <button mat-icon-button class="toolbar-icon-btn refresh-btn" (click)="loadPlans()" matTooltip="Refresh List" [class.spinning]="isRefreshing">
+        <mat-icon>refresh</mat-icon>
+      </button>
+
+      <!-- Create Button -->
+      <button mat-raised-button class="create-button" (click)="openCreateForm()">
+        <mat-icon>add</mat-icon> Create Plan
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== LIST VIEW ===== -->
+  <div class="plan-list-panel" *ngIf="viewMode === 'list'">
+
     <div class="plan-list-header">
-      <h2>
-        All Plans
-        <span class="plan-count">{{ plans.length }}</span>
-      </h2>
-      <p>Manage your subscription plans</p>
+      <h2>All Plans <span class="plan-count">{{ filteredPlans.length }}</span></h2>
+      <span class="search-active-tag" *ngIf="searchQuery">
+        <mat-icon>filter_list</mat-icon> "{{ searchQuery }}"
+      </span>
     </div>
 
     <div class="plan-table-wrapper">
+
       <!-- Empty State -->
       <div class="empty-state" *ngIf="plans.length === 0">
         <mat-icon>inbox</mat-icon>
-        <p>No plans available. Create your first plan!</p>
+        <h3>No Plans Found</h3>
+        <p>Click "Create Plan" to add your first plan.</p>
       </div>
 
       <!-- Plan Table -->
-      <table class="plan-table" *ngIf="plans.length > 0">
+      <table class="plan-table" *ngIf="filteredPlans.length > 0">
         <thead>
           <tr>
+            <th>#</th>
             <th>Plan Name</th>
             <th>Category</th>
             <th>Price</th>
@@ -29,188 +72,160 @@
           </tr>
         </thead>
         <tbody>
-          <tr 
-            *ngFor="let plan of plans"
-            [class.active]="selectedPlan?.planId === plan.planId"
+          <tr
+            *ngFor="let plan of filteredPlans; let i = index"
+            [class.active-row]="selectedPlan?.planId === plan.planId"
             (click)="selectPlan(plan)"
           >
-            <td class="plan-name-cell">
+            <td class="index-cell">{{ i + 1 }}</td>
+
+            <td>
               <div class="plan-name-wrapper">
-                <mat-icon class="plan-icon">card_membership</mat-icon>
+                <span class="plan-icon-circle">
+                  <mat-icon>card_membership</mat-icon>
+                </span>
                 <span class="plan-name">{{ plan.name }}</span>
               </div>
             </td>
-            <td class="category-cell">
+
+            <td>
               <span class="category-badge">{{ plan.plannCategory }}</span>
             </td>
-            <td class="price-cell">
+
+            <td>
               <span class="price-value">₹{{ plan.price }}</span>
             </td>
+
             <td class="validity-cell">
-              {{ plan.planValidity | date:'dd/MM/yyyy' }}
+              {{ plan.planValidity | date:'dd MMM yyyy' }}
             </td>
-            <td class="status-cell">
-              <span class="status-badge" [class.active-status]="isPlanActive(plan)" [class.expired-status]="!isPlanActive(plan)">
+
+            <td>
+              <span
+                class="status-badge"
+                [class.active-status]="isPlanActive(plan)"
+                [class.expired-status]="!isPlanActive(plan)"
+              >
+                <mat-icon>{{ isPlanActive(plan) ? 'check_circle' : 'cancel' }}</mat-icon>
                 {{ isPlanActive(plan) ? 'Active' : 'Expired' }}
               </span>
             </td>
+
             <td class="actions-cell" (click)="$event.stopPropagation()">
-              <button 
-                mat-icon-button 
+              <button
+                mat-icon-button
                 class="action-icon-button edit-icon"
                 (click)="editPlan(plan)"
                 matTooltip="Edit Plan"
               >
                 <mat-icon>edit</mat-icon>
               </button>
-              <button 
-                mat-icon-button 
+              <button
+                mat-icon-button
                 class="action-icon-button delete-icon"
                 (click)="confirmDelete(plan)"
                 matTooltip="Delete Plan"
               >
-                <mat-icon>delete</mat-icon>
+                <mat-icon>delete_outline</mat-icon>
               </button>
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
 
-    <!-- Add New Plan Button -->
-    <!-- <button 
-      mat-raised-button 
-      class="add-plan-button"
-      (click)="createNewPlan()"
-    >
-      <mat-icon>add</mat-icon>
-      Create New Plan
-    </button> -->
+    </div>
   </div>
 
-  <!-- Right Panel - Form -->
-  <div class="plan-form-panel">
+  <!-- ===== FORM VIEW ===== -->
+  <div class="plan-form-panel" *ngIf="viewMode === 'form'">
     <div class="form-card">
-      <!-- Success Message -->
-      <div class="success-message" *ngIf="successMessage">
-        <mat-icon>check_circle</mat-icon>
-        <span>{{ successMessage }}</span>
-      </div>
 
-      <!-- Delete Confirmation -->
+      <!-- Delete Confirmation Banner -->
       <div class="delete-confirmation" *ngIf="planToDelete">
-        <mat-icon>warning</mat-icon>
+        <div class="delete-icon-wrap">
+          <mat-icon>warning_amber</mat-icon>
+        </div>
         <div class="delete-confirmation-content">
-          <h3>Delete Plan?</h3>
-          <p>Are you sure you want to delete "{{ planToDelete.name }}"? This action cannot be undone.</p>
+          <h3>Delete "{{ planToDelete.name }}"?</h3>
+          <p>This action cannot be undone. The plan will be permanently removed.</p>
         </div>
         <div class="delete-confirmation-actions">
-          <button mat-stroked-button class="cancel-delete-button" (click)="cancelDelete()">
+          <button mat-stroked-button class="cancel-delete-btn" (click)="cancelDelete()">
             Cancel
           </button>
-          <button mat-raised-button class="confirm-delete-button" (click)="deletePlan()">
-            Delete
+          <button mat-raised-button class="confirm-delete-btn" (click)="deletePlan()">
+            <mat-icon>delete</mat-icon> Delete
           </button>
         </div>
       </div>
 
+      <!-- Form Header -->
       <div class="form-header">
-        <h2>{{ isEditMode ? 'Edit Plan' : 'Create New Plan' }}</h2>
-        <p>{{ isEditMode ? 'Update plan details below' : 'Fill in the details to create a new subscription plan' }}</p>
+        <div class="form-header-left">
+          <button mat-icon-button class="back-btn" (click)="onCancel()" matTooltip="Back to list">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <div>
+            <h2>{{ isEditMode ? 'Edit Plan' : 'Create New Plan' }}</h2>
+            <p>{{ isEditMode ? 'Update the plan details below' : 'Fill in the details to add a new subscription plan' }}</p>
+          </div>
+        </div>
       </div>
 
+      <!-- Form Body -->
       <form [formGroup]="planForm" (ngSubmit)="onSubmit()">
         <div class="form-content">
-          <!-- Plan Name -->
-          <div class="form-field">
+
+          <!-- Row 1: Name + Category -->
+          <div class="form-row">
             <mat-form-field appearance="outline">
               <mat-label>Plan Name</mat-label>
-              <input 
-                matInput 
-                formControlName="name" 
-                placeholder="e.g., Silver Plan, Gold Plan"
-              />
+              <input matInput formControlName="name" placeholder="e.g. Gold Plan">
               <mat-icon matPrefix>card_membership</mat-icon>
-              <mat-error *ngIf="planForm.get('name')?.hasError('required')">
-                Plan name is required
-              </mat-error>
+              <mat-error *ngIf="f['name'].hasError('required')">Plan name is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Category</mat-label>
+              <input matInput formControlName="plannCategory" placeholder="e.g. Premium">
+              <mat-icon matPrefix>category</mat-icon>
+              <mat-error *ngIf="f['plannCategory'].hasError('required')">Category is required</mat-error>
             </mat-form-field>
           </div>
 
-          <!-- Category and Validity -->
+          <!-- Row 2: Validity + Price -->
           <div class="form-row">
-            <div class="form-field">
-              <mat-form-field appearance="outline">
-                <mat-label>Category</mat-label>
-                <input 
-                  matInput 
-                  formControlName="plannCategory" 
-                  placeholder="Enter category"
-                />
-                <mat-icon matPrefix>category</mat-icon>
-                <mat-error *ngIf="planForm.get('plannCategory')?.hasError('required')">
-                  Category is required
-                </mat-error>
-              </mat-form-field>
-            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Validity Date</mat-label>
+              <input matInput type="date" formControlName="planValidity">
+              <mat-icon matPrefix>event</mat-icon>
+              <mat-error *ngIf="f['planValidity'].hasError('required')">Validity date is required</mat-error>
+            </mat-form-field>
 
-            <div class="form-field">
-              <mat-form-field appearance="outline">
-                <mat-label>Validity Date</mat-label>
-                <input 
-                  matInput 
-                  type="date" 
-                  formControlName="planValidity"
-                />
-                <mat-icon matPrefix>event</mat-icon>
-                <mat-error *ngIf="planForm.get('planValidity')?.hasError('required')">
-                  Validity date is required
-                </mat-error>
-              </mat-form-field>
-            </div>
-          </div>
-
-          <!-- Price -->
-          <div class="form-field">
             <mat-form-field appearance="outline">
               <mat-label>Price (₹)</mat-label>
-              <input 
-                matInput 
-                type="number" 
-                formControlName="price" 
-                placeholder="Enter price" 
-                min="0"
-              />
+              <input matInput type="number" formControlName="price" placeholder="0.00" min="0">
               <mat-icon matPrefix>currency_rupee</mat-icon>
-              <mat-hint>Enter the price excluding taxes</mat-hint>
-              <mat-error *ngIf="planForm.get('price')?.hasError('required')">
-                Price is required
-              </mat-error>
+              <mat-error *ngIf="f['price'].hasError('required')">Price is required</mat-error>
+              <mat-error *ngIf="f['price'].hasError('min')">Price must be 0 or more</mat-error>
             </mat-form-field>
           </div>
+
         </div>
 
         <!-- Form Actions -->
         <div class="form-actions">
-          <button 
-            type="button" 
-            mat-stroked-button 
-            class="cancel-button"
-            (click)="onCancel()"
-          >
+          <button type="button" mat-stroked-button class="cancel-button" (click)="onCancel()">
             Cancel
           </button>
-          <button 
-            type="submit" 
-            mat-raised-button 
-            class="submit-button"
-            [disabled]="planForm.invalid"
-          >
-            <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+          <button type="submit" mat-raised-button class="submit-button" [disabled]="planForm.invalid">
+            <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
             {{ isEditMode ? 'Update Plan' : 'Save Plan' }}
           </button>
         </div>
+
       </form>
     </div>
   </div>
+
 </div>
