@@ -62,8 +62,18 @@ export class LoginService {
 
       // Check if exp exists first
       if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-        this.logout();
-        return false;
+        try {
+          // Attempt to get a new access token using your refresh token
+          const newTokens =  this.refreshToken();
+
+          // Update your local storage/state with the new token
+          this.updateTokens(newTokens);
+          return true;
+        } catch (error) {
+          // If refresh fails (e.g., refresh token also expired), then logout
+          this.logout();
+          return false;
+        }
       }
       if (token) {
         const decoded = this.jwtdecode.getDecodedToken(); // Ensure variable name match (jwtdecode)
@@ -100,6 +110,13 @@ export class LoginService {
       console.error('Invalid JWT Token', error);
       return false;
     }
+  }
+  updateTokens(newTokens: any) {
+    this.loginAndFetchUser
+  }
+  refreshToken(): Observable<any> {
+    const refreshToken = localStorage.getItem('refreshToken');
+    return this.http.post('/api/auth/refresh', { token: refreshToken });
   }
 
   logout() {

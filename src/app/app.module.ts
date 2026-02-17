@@ -57,6 +57,7 @@ import { DownloadscreenComponent } from './component/downloadscreen/downloadscre
 import { FeaturescreenComponent } from './component/featurescreen/featurescreen.component';
 import { StaffDetailsComponent } from './component/staff-details/staff-details.component';
 import { ImageCropperComponent } from './component/image-cropper/image-cropper.component';
+import { CreateplanComponent } from './component/createplan/createplan.component';
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
 @NgModule({
@@ -73,6 +74,7 @@ import { ImageCropperComponent } from './component/image-cropper/image-cropper.c
     StaffuserComponent,
     StaffDetailsComponent,
     ImageCropperComponent,
+    CreateplanComponent,
   ],
   imports: [
     BrowserModule,
