@@ -59,18 +59,22 @@ export class CreateplanComponent implements OnInit {
 
 
 
-  editPlan(plan: Plandto): void {
-    this.isEditMode = true;
-    this.selectedPlan = plan;
-    this.planForm.patchValue(plan);
-    this.planToDelete = null; // Hide delete confirmation if open
-    this.successMessage = ''; // Clear success message
-
-    // Scroll to form on mobile
-    if (window.innerWidth < 1024) {
-      document.querySelector('.plan-form-panel')?.scrollIntoView({ behavior: 'smooth' });
-    }
+editPlan(plan: Plandto): void {
+  this.isEditMode = true;
+  this.viewMode = 'form';  
+  this.selectedPlan = plan;
+  this.planForm.patchValue(plan);
+  this.planToDelete = null;
+  this.successMessage = '';
+console.log('Edit plan object:', plan);
+  if (window.innerWidth < 1024) {
+    setTimeout(() => {
+      document
+        .querySelector('.plan-form-panel')
+        ?.scrollIntoView({ behavior: 'smooth' });
+    });
   }
+}
 
   confirmDelete(plan: Plandto): void {
     this.planToDelete = plan;
