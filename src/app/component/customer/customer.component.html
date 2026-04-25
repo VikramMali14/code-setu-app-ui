@@ -170,7 +170,7 @@
         <tbody>
           <tr *ngFor="let customer of filteredCustomers">
             <td class="name-cell">{{ getCustomerName(customer) }}</td>
-            <td>{{ customer.username }}</td>
+            <td>{{ customer.uuid }}</td>
             <td>{{ customer.email }}</td>
             <td>{{ customer.workEmail }}</td>
             <td>{{ customer.mobileNo }}</td>
@@ -204,24 +204,33 @@
       </table>
     </div>
 
-    <div class="pagination-row">
-      <button type="button" disabled>&laquo;</button>
-      <button type="button" class="active">1</button>
-      <button type="button">2</button>
-      <button type="button">3</button>
-      <button type="button">4</button>
-      <button type="button">5</button>
-      <button type="button">6</button>
-      <button type="button">7</button>
-      <button type="button">8</button>
-      <button type="button">...</button>
-      <button type="button">31</button>
-      <button type="button">&raquo;</button>
+    <div class="pagination-row" *ngIf="getDisplayTotalPages() > 0">
+      <span class="pagination-summary">
+        Page {{ getDisplayCurrentPage() }} of {{ getDisplayTotalPages() }}
+        | {{ pageRecords || filteredCustomers.length }} of {{ getDisplayTotalRecords() }} records
+      </span>
 
-      <select class="page-size browser-default">
-        <option>5</option>
-        <option>10</option>
-        <option>25</option>
+      <button type="button" [disabled]="currentPageNumber === 0" (click)="goToPage(currentPageNumber - 1)">
+        &laquo;
+      </button>
+      <button
+        type="button"
+        *ngFor="let page of visiblePageNumbers"
+        [class.active]="page === getDisplayCurrentPage()"
+        (click)="goToPage(page - 1)">
+        {{ page }}
+      </button>
+      <button
+        type="button"
+        [disabled]="currentPageNumber >= getDisplayTotalPages() - 1"
+        (click)="goToPage(currentPageNumber + 1)">
+        &raquo;
+      </button>
+
+      <select class="page-size browser-default" [(ngModel)]="pageSize" (change)="changePageSize()">
+        <option [ngValue]="5">5</option>
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="25">25</option>
       </select>
     </div>
   </section>

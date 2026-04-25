@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ENV } from 'src/assets/env';
 
@@ -11,8 +11,12 @@ export class CustomersService {
 
   constructor(private http: HttpClient) { }
 
-  getCustomers(): Observable<any> {
-    return this.http.get<any>(`${this.BASE_URL}/api/v2/cargosetu/customer`);
+  getCustomers(pageNumber = 0, pageSize = 5): Observable<any> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', pageSize);
+
+    return this.http.get<any>(`${this.BASE_URL}/api/v2/cargosetu/customer`, { params });
   }
 
   createCustomer(payload: any): Observable<any> {

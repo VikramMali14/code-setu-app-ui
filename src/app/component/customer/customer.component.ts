@@ -39,11 +39,25 @@ export class CustomerComponent implements OnInit {
   updateMessage = '';
   updateError = '';
   updateCustomerForm = this.getEmptyUpdateForm();
+  pageSize = 5;
+  pageRecords = 0;
+  totalRecords = 0;
+  currentPageNumber = 0;
+  totalPages = 0;
 
   constructor(private customersService: CustomersService) { }
 
   ngOnInit(): void {
     this.loadCustomers();
+  }
+
+  get visiblePageNumbers(): number[] {
+    const total = this.getDisplayTotalPages();
+    const current = this.getDisplayCurrentPage();
+    const start = Math.max(1, current - 2);
+    const end = Math.min(total, start + 4);
+
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
   }
 
   get serviceAreas(): string[] {
@@ -88,17 +102,16 @@ export class CustomerComponent implements OnInit {
     return customer.connectionStatus === 'Online' ? 'online' : 'offline';
   }
 
-  loadCustomers(): void {
+  loadCustomers(pageNumber = this.currentPageNumber): void {
     this.isLoading = true;
     this.loadError = '';
 
-    this.customersService.getCustomers().subscribe({
+    this.customersService.getCustomers(pageNumber, this.pageSize).subscribe({
       next: response => {
         const customerList = this.extractCustomers(response);
+        this.updatePagination(response, customerList.length);
 
-        if (customerList.length > 0) {
-          this.customers = customerList.map(customer => this.toCustomerRow(customer));
-        }
+        this.customers = customerList.map(customer => this.toCustomerRow(customer));
 
         this.isLoading = false;
       },
@@ -108,6 +121,22 @@ export class CustomerComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  goToPage(pageNumber: number): void {
+    const total = this.getDisplayTotalPages();
+
+    if (pageNumber < 0 || pageNumber >= total || pageNumber === this.currentPageNumber) {
+      return;
+    }
+
+    this.currentPageNumber = pageNumber;
+    this.loadCustomers(pageNumber);
+  }
+
+  changePageSize(): void {
+    this.currentPageNumber = 0;
+    this.loadCustomers(0);
   }
 
   openCreateForm(): void {
@@ -209,6 +238,25 @@ export class CustomerComponent implements OnInit {
     }
 
     return [];
+  }
+
+  private updatePagination(response: any, loadedRecords: number): void {
+    this.pageRecords = response?.pageRecords || loadedRecords;
+    this.totalRecords = response?.totalRecords || loadedRecords;
+    this.currentPageNumber = response?.currentPageNumber || 0;
+    this.totalPages = response?.totalPages || (this.totalRecords > 0 ? Math.ceil(this.totalRecords / this.pageSize) : 0);
+  }
+
+  getDisplayCurrentPage(): number {
+    return this.currentPageNumber + 1;
+  }
+
+  getDisplayTotalPages(): number {
+    return this.totalPages || (this.filteredCustomers.length > 0 ? 1 : 0);
+  }
+
+  getDisplayTotalRecords(): number {
+    return this.totalRecords || this.filteredCustomers.length;
   }
 
   private toCustomerRow(customer: any): CustomerRow {
