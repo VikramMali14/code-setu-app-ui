@@ -1,1 +1,149 @@
-<p>customer works!</p>
+<div class="postpaid-page">
+  <section class="panel action-panel">
+    <div class="panel-header">
+      <h1>Customer Management</h1>
+      <button class="collapse-button" type="button">
+        <i class="material-icons">remove</i>
+      </button>
+    </div>
+
+    <div class="quick-actions">
+      <button class="quick-action" type="button">
+        <i class="material-icons">language</i>
+        <span>Create  Customer</span>
+        <i class="material-icons corner-icon">crop_free</i>
+      </button>
+
+      <button class="quick-action active" type="button">
+        <i class="material-icons">language</i>
+        <span>Search Customer</span>
+        <i class="material-icons corner-icon">crop_free</i>
+      </button>
+    </div>
+  </section>
+
+  <section class="panel search-panel">
+    <div class="panel-header">
+      <h2> Customer Management</h2>
+      <button class="collapse-button" type="button">
+        <i class="material-icons">remove</i>
+      </button>
+    </div>
+
+    <div class="search-grid">
+      <select class="browser-default" [(ngModel)]="selectedArea">
+        <option value="Any">Any</option>
+        <option *ngFor="let area of serviceAreas" [value]="area">{{ area }}</option>
+      </select>
+
+      <input type="text" placeholder="Enter Search Detail" [(ngModel)]="searchText">
+
+      <div class="date-field">
+        <input type="date" [(ngModel)]="startDate" aria-label="Select Start Date">
+        <span>Select Start Date</span>
+        <i class="material-icons">event</i>
+      </div>
+
+      <div class="date-field">
+        <input type="date" [(ngModel)]="endDate" aria-label="Select End Date">
+        <span>Select End Date</span>
+        <i class="material-icons">event</i>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="search-button" type="button">
+        <i class="material-icons">search</i>
+        Search
+      </button>
+      <button class="clear-button" type="button" (click)="clearFilters()">
+        <i class="material-icons">sync</i>
+        Clear
+      </button>
+      <button class="export-button" type="button" (click)="exportCustomers()">
+        <i class="material-icons">description</i>
+        Export
+      </button>
+    </div>
+  </section>
+
+  <section class="panel list-panel">
+    <div class="panel-header">
+      <h2>Customer List</h2>
+      <button class="collapse-button" type="button">
+        <i class="material-icons">remove</i>
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Service Area</th>
+            <th>Mobile Number</th>
+            <th>Account No</th>
+            <th>Connection Status</th>
+            <th>ISP Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customer of filteredCustomers">
+            <td class="name-cell">{{ getCustomerName(customer) }}</td>
+            <td>{{ customer.username }}</td>
+            <td>{{ customer.serviceArea }}</td>
+            <td>{{ customer.mobileNo }}</td>
+            <td>{{ customer.accountNo }}</td>
+            <td>
+              <span class="status-pill" [ngClass]="getStatusClass(customer)">
+                {{ customer.connectionStatus }}
+              </span>
+            </td>
+            <td>{{ customer.isp }}</td>
+            <td>
+              <div class="action-cell">
+                <button type="button" title="Billing"><i class="material-icons">receipt</i></button>
+                <button type="button" title="Edit"><i class="material-icons">edit</i></button>
+                <button type="button" title="Document"><i class="material-icons">description</i></button>
+                <button type="button" title="Location"><i class="material-icons">hub</i></button>
+                <button type="button" title="Status" (click)="refreshStatus(customer)">
+                  <i class="material-icons">radio_button_unchecked</i>
+                </button>
+                <button type="button" title="Refresh" (click)="refreshStatus(customer)">
+                  <i class="material-icons">refresh</i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredCustomers.length === 0">
+            <td colspan="8" class="empty-state">No customers match your filters.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-row">
+      <button type="button" disabled>&laquo;</button>
+      <button type="button" class="active">1</button>
+      <button type="button">2</button>
+      <button type="button">3</button>
+      <button type="button">4</button>
+      <button type="button">5</button>
+      <button type="button">6</button>
+      <button type="button">7</button>
+      <button type="button">8</button>
+      <button type="button">...</button>
+      <button type="button">31</button>
+      <button type="button">&raquo;</button>
+
+      <select class="page-size browser-default">
+        <option>5</option>
+        <option>10</option>
+        <option>25</option>
+      </select>
+    </div>
+  </section>
+</div>
