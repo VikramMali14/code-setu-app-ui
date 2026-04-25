@@ -14,12 +14,45 @@
         <i class="material-icons corner-icon">crop_free</i>
       </button>
 
-      <button class="quick-action" type="button" [class.active]="!showCreateForm" (click)="closeCreateForm()">
+      <button class="quick-action" type="button" [class.active]="!showCreateForm && !showUpdateForm" (click)="closeCreateForm(); closeUpdateForm()">
         <i class="material-icons">language</i>
         <span>Search Customer</span>
         <i class="material-icons corner-icon">crop_free</i>
       </button>
     </div>
+  </section>
+
+  <section class="panel create-panel" *ngIf="showUpdateForm">
+    <div class="panel-header">
+      <h2>Update Customer</h2>
+      <button class="collapse-button" type="button" (click)="closeUpdateForm()">
+        <i class="material-icons">remove</i>
+      </button>
+    </div>
+
+    <form class="create-form" (ngSubmit)="updateCustomer()" #updateForm="ngForm">
+      <h3>Customer Details</h3>
+      <div class="form-grid">
+        <input name="updateCustomerId" type="number" placeholder="Customer Id" [(ngModel)]="updateCustomerForm.customerId" required>
+        <input name="updateFirstName" placeholder="First Name" [(ngModel)]="updateCustomerForm.firstName" required>
+        <input name="updateLastName" placeholder="Last Name" [(ngModel)]="updateCustomerForm.lastName" required>
+        <input name="updateMobileNo" placeholder="Mobile Number" [(ngModel)]="updateCustomerForm.mobileNo" required>
+        <input name="updateAlternateMobileNo" placeholder="Alternate Mobile" [(ngModel)]="updateCustomerForm.alternateMobileNo">
+        <input name="updateEmail" type="email" placeholder="Email" [(ngModel)]="updateCustomerForm.email" required>
+        <input name="updateWorkEmail" type="email" placeholder="Work Email" [(ngModel)]="updateCustomerForm.workEmail">
+        <input name="updateUuid" placeholder="UUID" [(ngModel)]="updateCustomerForm.uuid">
+      </div>
+
+      <div class="form-actions">
+        <button class="clear-button" type="button" (click)="resetUpdateForm()">Reset</button>
+        <button class="export-button" type="submit" [disabled]="updateForm.invalid || isUpdating">
+          {{ isUpdating ? 'Updating...' : 'Update Customer' }}
+        </button>
+      </div>
+
+      <p class="api-message" *ngIf="updateMessage">{{ updateMessage }}</p>
+      <p class="api-message error" *ngIf="updateError">{{ updateError }}</p>
+    </form>
   </section>
 
   <section class="panel create-panel" *ngIf="showCreateForm">
@@ -116,12 +149,17 @@
     </div>
 
     <div class="table-wrap">
+      <p class="api-message" *ngIf="isDeleting">Deleting customer...</p>
+      <p class="api-message" *ngIf="deleteMessage">{{ deleteMessage }}</p>
+      <p class="api-message error" *ngIf="deleteError">{{ deleteError }}</p>
+
       <table>
         <thead>
           <tr>
             <th>Name</th>
             <th>Username</th>
             <th>Email</th>
+            <th>Work Email</th>
             <th>Mobile Number</th>
             <th>Account No</th>
             <th>Connection Status</th>
@@ -134,7 +172,7 @@
             <td class="name-cell">{{ getCustomerName(customer) }}</td>
             <td>{{ customer.username }}</td>
             <td>{{ customer.email }}</td>
-            <td>{{ customer.serviceArea }}</td>
+            <td>{{ customer.workEmail }}</td>
             <td>{{ customer.mobileNo }}</td>
             <td>{{ customer.accountNo }}</td>
             <td>
@@ -142,25 +180,25 @@
                 {{ customer.connectionStatus }}
               </span>
             </td>
-            <td>{{ customer.isp }}</td>
+            <td>{{ customer.companyId || customer.isp }}</td>
             <td>
               <div class="action-cell">
-                <button type="button" title="Billing"><i class="material-icons">receipt</i></button>
-                <button type="button" title="Edit"><i class="material-icons">edit</i></button>
+                <!-- <button type="button" title="Billing"><i class="material-icons">receipt</i></button> -->
+                <button type="button" title="Edit" (click)="openUpdateForm(customer)"><i class="material-icons">edit</i></button>
                 <button type="button" title="Document"><i class="material-icons">description</i></button>
                 <button type="button" title="Location"><i class="material-icons">hub</i></button>
-                <button type="button" title="Status" (click)="refreshStatus(customer)">
+                <button type="button" title="Delete" (click)="deleteCustomer(customer)" [disabled]="isDeleting">
                   <i class="material-icons">radio_button_unchecked</i>
                 </button>
-                <button type="button" title="Refresh" (click)="refreshStatus(customer)">
+                <!-- <button type="button" title="Refresh">
                   <i class="material-icons">refresh</i>
-                </button>
+                </button> -->
               </div>
             </td>
           </tr>
 
           <tr *ngIf="filteredCustomers.length === 0">
-            <td colspan="8" class="empty-state">No customers match your filters.</td>
+            <td colspan="9" class="empty-state">No customers match your filters.</td>
           </tr>
         </tbody>
       </table>

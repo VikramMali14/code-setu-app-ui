@@ -26,11 +26,19 @@ export class CustomerComponent implements OnInit {
   endDate = '';
   isLoading = false;
   loadError = '';
+  isDeleting = false;
+  deleteMessage = '';
+  deleteError = '';
   showCreateForm = false;
   isCreating = false;
   createMessage = '';
   createError = '';
   newCustomer = this.getEmptyCustomerForm();
+  showUpdateForm = false;
+  isUpdating = false;
+  updateMessage = '';
+  updateError = '';
+  updateCustomerForm = this.getEmptyUpdateForm();
 
   constructor(private customersService: CustomersService) { }
 
@@ -104,6 +112,7 @@ export class CustomerComponent implements OnInit {
 
   openCreateForm(): void {
     this.showCreateForm = true;
+    this.showUpdateForm = false;
     this.createMessage = '';
     this.createError = '';
   }
@@ -135,6 +144,53 @@ export class CustomerComponent implements OnInit {
         console.error('Create customer failed:', error);
         this.isCreating = false;
         this.createError = error.error?.responseMessege || error.error?.message || 'Unable to create customer.';
+      }
+    });
+  }
+
+  openUpdateForm(customer: CustomerRow): void {
+    this.showCreateForm = false;
+    this.showUpdateForm = true;
+    this.updateMessage = '';
+    this.updateError = '';
+    this.updateCustomerForm = {
+      customerId: customer.customerId,
+      firstName: customer.firstName || '',
+      lastName: customer.lastName || '',
+      mobileNo: customer.mobileNo || '',
+      alternateMobileNo: customer.alternateMobileNo || '',
+      email: customer.email || '',
+      workEmail: customer.workEmail || '',
+      uuid: customer.uuid || ''
+    };
+  }
+
+  closeUpdateForm(): void {
+    this.showUpdateForm = false;
+  }
+
+  resetUpdateForm(): void {
+    this.updateCustomerForm = this.getEmptyUpdateForm();
+    this.updateMessage = '';
+    this.updateError = '';
+  }
+
+  updateCustomer(): void {
+    this.isUpdating = true;
+    this.updateMessage = '';
+    this.updateError = '';
+
+    this.customersService.updateCustomer(this.updateCustomerForm).subscribe({
+      next: () => {
+        this.isUpdating = false;
+        this.updateMessage = 'Customer updated successfully.';
+        this.showUpdateForm = false;
+        this.loadCustomers();
+      },
+      error: error => {
+        console.error('Update customer failed:', error);
+        this.isUpdating = false;
+        this.updateError = error.error?.responseMessege || error.error?.message || 'Unable to update customer.';
       }
     });
   }
@@ -209,8 +265,34 @@ export class CustomerComponent implements OnInit {
     URL.revokeObjectURL(link.href);
   }
 
-  refreshStatus(customer: CustomerRow): void {
-    customer.connectionStatus = customer.connectionStatus === 'Online' ? 'Offline' : 'Online';
+  deleteCustomer(customer: CustomerRow): void {
+    const payload = {
+      customerId: customer.customerId || 0,
+      firstName: customer.firstName || '',
+      lastName: customer.lastName || '',
+      mobileNo: customer.mobileNo || '',
+      alternateMobileNo: customer.alternateMobileNo || '',
+      email: customer.email || '',
+      workEmail: customer.workEmail || '',
+      uuid: customer.uuid || ''
+    };
+
+    this.isDeleting = true;
+    this.deleteMessage = '';
+    this.deleteError = '';
+
+    this.customersService.deleteCustomer(payload).subscribe({
+      next: () => {
+        this.isDeleting = false;
+        this.deleteMessage = 'Customer deleted successfully.';
+        this.loadCustomers();
+      },
+      error: error => {
+        console.error('Delete customer failed:', error);
+        this.isDeleting = false;
+        this.deleteError = error.error?.responseMessege || error.error?.message || 'Unable to delete customer.';
+      }
+    });
   }
 
   private getEmptyCustomerForm(): any {
@@ -255,6 +337,19 @@ export class CustomerComponent implements OnInit {
           }
         }
       ]
+    };
+  }
+
+  private getEmptyUpdateForm(): any {
+    return {
+      customerId: null,
+      firstName: '',
+      lastName: '',
+      mobileNo: '',
+      alternateMobileNo: '',
+      email: '',
+      workEmail: '',
+      uuid: ''
     };
   }
 }

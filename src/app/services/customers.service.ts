@@ -18,4 +18,12 @@ export class CustomersService {
   createCustomer(payload: any): Observable<any> {
     return this.http.post<any>(`${this.BASE_URL}/api/v2/cargosetu/customer`, payload);
   }
+
+  updateCustomer(payload: any): Observable<any> {
+    return this.http.put<any>(`${this.BASE_URL}/api/v2/cargosetu/customer`, payload);
+  }
+
+  deleteCustomer(payload: any): Observable<any> {
+    return this.http.delete<any>(`${this.BASE_URL}/api/v2/cargosetu/customer`, { body: payload });
+  }
 }
