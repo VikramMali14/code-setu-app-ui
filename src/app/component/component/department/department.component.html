@@ -19,7 +19,7 @@
       <ng-container matColumnDef="isActive">
         <th mat-header-cell *matHeaderCellDef>Status</th>
         <td mat-cell *matCellDef="let d">
-          <span [class.active]="d.isActive" [class.inactive]="!d.isActive">
+          <span class="status-badge" [class.active]="d.isActive" [class.inactive]="!d.isActive">
             {{ d.isActive ? 'Active' : 'Inactive' }}
           </span>
         </td>
