@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerModels } from 'src/app/models/customer-models';
+import { CustomersService } from 'src/app/services/customers.service';
 
 type ConnectionStatus = 'Online' | 'Offline';
 type CustomerRow = CustomerModels & {
@@ -16,100 +17,25 @@ type CustomerRow = CustomerModels & {
   styleUrls: ['./customer.component.css']
 })
 export class CustomerComponent implements OnInit {
-  customers: CustomerRow[] = [
-    {
-      customerId: 1001,
-      firstName: 'Mr Customer_59',
-      lastName: 'Customer_59',
-      username: 'Customer_59',
-      serviceArea: 'ACT',
-      accountNo: 'Customer_59',
-      isp: 'admin',
-      connectionStatus: 'Offline',
-      mobileNo: '9876543210',
-      email: 'customer59@example.com',
-      shiftFromCity: 'Pune',
-      shiftToCity: 'Bangalore',
-      shiftingStartDate: '2026-04-28',
-      shiftReachedDate: '2026-05-01',
-      shiftCompleted: false
-    },
-    {
-      customerId: 1002,
-      firstName: 'Mr Customer_33',
-      lastName: 'Customer_33',
-      username: 'Customer_33',
-      serviceArea: 'ACT',
-      accountNo: 'Customer_33',
-      isp: 'admin',
-      connectionStatus: 'Offline',
-      mobileNo: '9123456780',
-      email: 'customer33@example.com',
-      shiftFromCity: 'Mumbai',
-      shiftToCity: 'Hyderabad',
-      shiftingStartDate: '2026-04-18',
-      shiftReachedDate: '2026-04-21',
-      shiftCompleted: true
-    },
-    {
-      customerId: 1003,
-      firstName: 'Mr Customer_32',
-      lastName: 'Customer_32',
-      username: 'Customer_32',
-      serviceArea: 'ACT',
-      accountNo: 'Customer_32',
-      isp: 'admin',
-      connectionStatus: 'Offline',
-      mobileNo: '9988776655',
-      email: 'customer32@example.com',
-      shiftFromCity: 'Delhi',
-      shiftToCity: 'Jaipur',
-      shiftingStartDate: '2026-04-30',
-      shiftCompleted: false
-    },
-    {
-      customerId: 1004,
-      firstName: 'Mr Customer_30',
-      lastName: 'Customer_30',
-      username: 'Customer_30',
-      serviceArea: 'ACT',
-      accountNo: 'Customer_30',
-      isp: 'admin',
-      connectionStatus: 'Offline',
-      mobileNo: '9000010030',
-      email: 'customer30@example.com',
-      shiftFromCity: 'Chennai',
-      shiftToCity: 'Pune',
-      shiftingStartDate: '2026-04-25',
-      shiftCompleted: false
-    },
-    {
-      customerId: 1005,
-      firstName: 'Mr Customer_27',
-      lastName: 'Customer_27',
-      username: 'Customer_27',
-      serviceArea: 'organization',
-      accountNo: 'Customer_27',
-      isp: 'admin',
-      connectionStatus: 'Online',
-      mobileNo: '9000010027',
-      email: 'customer27@example.com',
-      shiftFromCity: 'Ahmedabad',
-      shiftToCity: 'Surat',
-      shiftingStartDate: '2026-04-22',
-      shiftCompleted: true
-    }
-  ];
+  customers: CustomerRow[] = [];
 
   searchText = '';
   selectedArea = 'Any';
   selectedStatus = 'All';
   startDate = '';
   endDate = '';
+  isLoading = false;
+  loadError = '';
+  showCreateForm = false;
+  isCreating = false;
+  createMessage = '';
+  createError = '';
+  newCustomer = this.getEmptyCustomerForm();
 
-  constructor() { }
+  constructor(private customersService: CustomersService) { }
 
   ngOnInit(): void {
+    this.loadCustomers();
   }
 
   get serviceAreas(): string[] {
@@ -154,6 +80,103 @@ export class CustomerComponent implements OnInit {
     return customer.connectionStatus === 'Online' ? 'online' : 'offline';
   }
 
+  loadCustomers(): void {
+    this.isLoading = true;
+    this.loadError = '';
+
+    this.customersService.getCustomers().subscribe({
+      next: response => {
+        const customerList = this.extractCustomers(response);
+
+        if (customerList.length > 0) {
+          this.customers = customerList.map(customer => this.toCustomerRow(customer));
+        }
+
+        this.isLoading = false;
+      },
+      error: error => {
+        console.error('Customer API failed:', error);
+        this.loadError = 'Unable to load latest customers. Showing saved customer data.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  openCreateForm(): void {
+    this.showCreateForm = true;
+    this.createMessage = '';
+    this.createError = '';
+  }
+
+  closeCreateForm(): void {
+    this.showCreateForm = false;
+  }
+
+  resetCreateForm(): void {
+    this.newCustomer = this.getEmptyCustomerForm();
+    this.createMessage = '';
+    this.createError = '';
+  }
+
+  createCustomer(): void {
+    this.isCreating = true;
+    this.createMessage = '';
+    this.createError = '';
+
+    this.customersService.createCustomer(this.newCustomer).subscribe({
+      next: () => {
+        this.isCreating = false;
+        this.createMessage = 'Customer created successfully.';
+        this.resetCreateForm();
+        this.showCreateForm = false;
+        this.loadCustomers();
+      },
+      error: error => {
+        console.error('Create customer failed:', error);
+        this.isCreating = false;
+        this.createError = error.error?.responseMessege || error.error?.message || 'Unable to create customer.';
+      }
+    });
+  }
+
+  private extractCustomers(response: any): any[] {
+    if (Array.isArray(response)) {
+      return response;
+    }
+
+    if (Array.isArray(response?.dataList)) {
+      return response.dataList;
+    }
+
+    if (Array.isArray(response?.data)) {
+      return response.data;
+    }
+
+    return [];
+  }
+
+  private toCustomerRow(customer: any): CustomerRow {
+    const firstName = customer.firstName || customer.name || customer.customerName || 'Customer';
+    const lastName = customer.lastName || '';
+    const username = customer.username || customer.userName || customer.accountNo || customer.accountNumber || '';
+    const serviceArea = customer.serviceArea || customer.shiftFromCity || 'ACT';
+    const accountNo = customer.accountNo || customer.accountNumber || username || String(customer.customerId || '');
+    const rawStatus = customer.status || customer.connectionStatus || (customer.shiftCompleted ? 'Online' : 'Offline');
+    const connectionStatus: ConnectionStatus = String(rawStatus).toLowerCase() === 'online' ? 'Online' : 'Offline';
+
+    return {
+      ...customer,
+      firstName,
+      lastName,
+      username,
+      serviceArea,
+      accountNo,
+      isp: customer.isp || customer.ispName || 'admin',
+      connectionStatus,
+      mobileNo: customer.mobileNo || customer.mobile || customer.mobileNumber || ''
+    };
+  }
+
   clearFilters(): void {
     this.searchText = '';
     this.selectedArea = 'Any';
@@ -188,5 +211,50 @@ export class CustomerComponent implements OnInit {
 
   refreshStatus(customer: CustomerRow): void {
     customer.connectionStatus = customer.connectionStatus === 'Online' ? 'Offline' : 'Online';
+  }
+
+  private getEmptyCustomerForm(): any {
+    return {
+      firstName: '',
+      lastName: '',
+      mobileNo: '',
+      alternateMobileNo: '',
+      email: '',
+      workEmail: '',
+      shiftings: [
+        {
+          isShiftCompleted: false,
+          shiftFromCity: '',
+          shiftToCity: '',
+          fromAddress: '',
+          toAddress: '',
+          shiftingType: '',
+          shiftingStartDate: new Date().toISOString().slice(0, 10),
+          shiftReachedDate: '',
+          shiftCompletedBy: '',
+          shiftCompletedById: null,
+          customerId: null,
+          chargesDTO: {
+            transportCharge: 0,
+            packingCharge: 0,
+            loadingCharge: 0,
+            unloadingCharge: 0,
+            unpackingCharge: 0,
+            carTransportCharge: 0,
+            riskInsureCharge: 0,
+            storageCharge: 0,
+            statisticalCharge: 0,
+            serviceCharge: 0,
+            serviceRate: 0,
+            gstRate: 18,
+            gstCharge: 0,
+            extraChargesList: [
+              { chargeName: 'Toll Charge', chargeValue: 0, chargeRate: 0 },
+              { chargeName: 'Lift Handling Charge', chargeValue: 0, chargeRate: 0 }
+            ]
+          }
+        }
+      ]
+    };
   }
 }

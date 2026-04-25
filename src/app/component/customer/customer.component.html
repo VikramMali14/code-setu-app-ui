@@ -8,13 +8,13 @@
     </div>
 
     <div class="quick-actions">
-      <button class="quick-action" type="button">
+      <button class="quick-action" type="button" [class.active]="showCreateForm" (click)="openCreateForm()">
         <i class="material-icons">language</i>
-        <span>Create  Customer</span>
+        <span>Create Customer</span>
         <i class="material-icons corner-icon">crop_free</i>
       </button>
 
-      <button class="quick-action active" type="button">
+      <button class="quick-action" type="button" [class.active]="!showCreateForm" (click)="closeCreateForm()">
         <i class="material-icons">language</i>
         <span>Search Customer</span>
         <i class="material-icons corner-icon">crop_free</i>
@@ -22,7 +22,44 @@
     </div>
   </section>
 
-  <section class="panel search-panel">
+  <section class="panel create-panel" *ngIf="showCreateForm">
+    <div class="panel-header">
+      <h2>Create Customer</h2>
+      <button class="collapse-button" type="button" (click)="closeCreateForm()">
+        <i class="material-icons">remove</i>
+      </button>
+    </div>
+
+    <form class="create-form" (ngSubmit)="createCustomer()" #customerForm="ngForm">
+      <h3>Customer Details</h3>
+      <div class="form-grid">
+        <input name="firstName" placeholder="First Name" [(ngModel)]="newCustomer.firstName" required>
+        <input name="lastName" placeholder="Last Name" [(ngModel)]="newCustomer.lastName" required>
+        <input name="mobileNo" placeholder="Mobile Number" [(ngModel)]="newCustomer.mobileNo" required>
+        <input name="email" type="email" placeholder="Email" [(ngModel)]="newCustomer.email" required>
+      </div>
+
+      <h3>Shifting Details</h3>
+      <div class="form-grid">
+        <input name="shiftFromCity" placeholder="From City" [(ngModel)]="newCustomer.shiftings[0].shiftFromCity"
+          required>
+        <input name="shiftToCity" placeholder="To City" [(ngModel)]="newCustomer.shiftings[0].shiftToCity" required>
+        <input name="shiftingType" placeholder="Shifting Type" [(ngModel)]="newCustomer.shiftings[0].shiftingType">
+      </div>
+
+      <div class="form-actions">
+        <button class="clear-button" type="button" (click)="resetCreateForm()">Reset</button>
+        <button class="export-button" type="submit" [disabled]="customerForm.invalid || isCreating">
+          {{ isCreating ? 'Saving...' : 'Create Customer' }}
+        </button>
+      </div>
+
+      <p class="api-message" *ngIf="createMessage">{{ createMessage }}</p>
+      <p class="api-message error" *ngIf="createError">{{ createError }}</p>
+    </form>
+  </section>
+
+  <!-- <section class="panel search-panel">
     <div class="panel-header">
       <h2> Customer Management</h2>
       <button class="collapse-button" type="button">
@@ -52,7 +89,7 @@
     </div>
 
     <div class="button-row">
-      <button class="search-button" type="button">
+      <button class="search-button" type="button" (click)="loadCustomers()">
         <i class="material-icons">search</i>
         Search
       </button>
@@ -65,7 +102,10 @@
         Export
       </button>
     </div>
-  </section>
+
+    <p class="api-message" *ngIf="isLoading">Loading customer data...</p>
+    <p class="api-message error" *ngIf="loadError">{{ loadError }}</p>
+  </section> -->
 
   <section class="panel list-panel">
     <div class="panel-header">
@@ -81,11 +121,11 @@
           <tr>
             <th>Name</th>
             <th>Username</th>
-            <th>Service Area</th>
+            <th>Email</th>
             <th>Mobile Number</th>
             <th>Account No</th>
             <th>Connection Status</th>
-            <th>ISP Name</th>
+            <th>Company Id</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -93,6 +133,7 @@
           <tr *ngFor="let customer of filteredCustomers">
             <td class="name-cell">{{ getCustomerName(customer) }}</td>
             <td>{{ customer.username }}</td>
+            <td>{{ customer.email }}</td>
             <td>{{ customer.serviceArea }}</td>
             <td>{{ customer.mobileNo }}</td>
             <td>{{ customer.accountNo }}</td>
