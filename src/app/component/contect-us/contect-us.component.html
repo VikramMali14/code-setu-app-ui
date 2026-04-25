@@ -13,25 +13,25 @@
                 <mat-card-subtitle>We'd love to hear from you.</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-                <form class="contact-form">
+                <form class="contact-form" (ngSubmit)="sendMessage()" #contactForm="ngForm">
                     <mat-form-field appearance="outline">
                         <mat-label>Full Name</mat-label>
-                        <input matInput placeholder="John Doe" required>
+                        <input matInput name="fullName" placeholder="John Doe" [(ngModel)]="contact.fullName" required>
                         <mat-icon matSuffix>person</mat-icon>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline">
                         <mat-label>Email Address</mat-label>
-                        <input matInput type="email" placeholder="you@example.com" required>
+                        <input matInput name="email" type="email" placeholder="you@example.com" [(ngModel)]="contact.email" required>
                         <mat-icon matSuffix>email</mat-icon>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline">
                         <mat-label>Message</mat-label>
-                        <textarea matInput rows="4" required></textarea>
+                        <textarea matInput name="message" rows="4" [(ngModel)]="contact.message" required></textarea>
                     </mat-form-field>
 
-                    <button mat-raised-button color="primary" class="submit-btn" class="btn" type="submit">
+                    <button mat-raised-button color="primary" class="submit-btn btn" type="submit" [disabled]="contactForm.invalid">
                         Send Message
                     </button>
                 </form>
@@ -71,8 +71,8 @@
                 </div>
                 <mat-card-content>
                     <h3>Email & Support</h3>
-                    <p>info@cargosetu.com</p>
-                    <p>support@cargoSetu.com</p>
+                    <p><a href="mailto:info@cargosetu.com">info@cargosetu.com</a></p>
+                    <p><a href="mailto:support@cargosetu.com">support@cargosetu.com</a></p>
                 </mat-card-content>
             </mat-card>
 
