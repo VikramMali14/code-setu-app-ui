@@ -18,6 +18,7 @@ import { FeaturescreenComponent } from './component/featurescreen/featurescreen.
 import { StaffDetailsComponent } from './component/staff-details/staff-details.component';
 import { StaffuserComponent } from './component/staffuser/staffuser.component';
 import { CreateplanComponent } from './component/createplan/createplan.component';
+import { CustomerComponent } from './component/customer/customer.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -37,7 +38,8 @@ const routes: Routes = [
 
   { path: 'department', component: DepartmentComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'plan', component: PlanscreenComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'createplan', component: CreateplanComponent, pathMatch: 'full', canActivate: [AuthGuard] }
+  { path: 'createplan', component: CreateplanComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'customers', component: CustomerComponent, pathMatch: 'full', canActivate: [AuthGuard] }
 
 
 ];

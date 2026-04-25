@@ -58,6 +58,7 @@ import { FeaturescreenComponent } from './component/featurescreen/featurescreen.
 import { StaffDetailsComponent } from './component/staff-details/staff-details.component';
 import { ImageCropperComponent } from './component/image-cropper/image-cropper.component';
 import { CreateplanComponent } from './component/createplan/createplan.component';
+import { CustomerComponent } from './component/customer/customer.component';
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
 @NgModule({
@@ -75,6 +76,7 @@ import { CreateplanComponent } from './component/createplan/createplan.component
     StaffDetailsComponent,
     ImageCropperComponent,
     CreateplanComponent,
+    CustomerComponent,
   ],
   imports: [
     BrowserModule,
