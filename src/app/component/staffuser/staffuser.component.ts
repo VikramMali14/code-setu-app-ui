@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl, ValidationErrors, FormGroup } from '@angular/forms';
 import { Staff } from 'src/app/models/staff';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { GenericDataDTO } from 'src/app/models/generic-data-dto';
@@ -28,10 +28,10 @@ export class StaffuserComponent implements OnInit {
   imageChangedEvent: any = '';
   croppedImage: any = ''; // Preview of the cropped version
   showCropper = false;
-    isEditMode = false;
+  isEditMode = false;
   staffId!: number;
   isLoading = false;
-  
+
   roles = [
     { roleId: 1, roleName: 'ADMIN' },
     { roleId: 2, roleName: 'STAFF' },
@@ -48,7 +48,8 @@ export class StaffuserComponent implements OnInit {
     private router: Router,
     private staffservice: StaffuserServiceService,
     private cd: ChangeDetectorRef,
-        private snackBar: MatSnackBar,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
 
     private shoepopup: ShowpopupService
   ) {
@@ -71,10 +72,17 @@ export class StaffuserComponent implements OnInit {
 
 
 
-  ngOnInit() {
-    if (this.staffForm.pristine) {
-      this.loadStaffData();
-    }
+  ngOnInit(): void {
+
+    this.buildForm();
+
+    this.route.params.subscribe(params => {
+      if (params['staffId']) {
+        this.isEditMode = true;
+        this.staffId = +params['staffId'];
+        this.loadStaffById();
+      }
+    });
   }
 
   initializeForm() {
@@ -108,6 +116,64 @@ export class StaffuserComponent implements OnInit {
     }
   }
 
+  buildForm() {
+    this.staffForm = this.fb.group({
+      userName: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: [''],
+      mobileCode: ['+91'],
+      mobileNumber: ['', Validators.required],
+
+      address: [''],
+      city: [''],
+      state: [''],
+      pincode: [''],
+
+      roleId: ['', Validators.required],
+      departmentId: ['', Validators.required],
+      companyId: [101],
+
+      staffType: ['PERMANENT'],
+      isActive: [true],
+
+      licenseNumber: [''],
+      licenseExpiryDate: ['']
+    });
+  }
+  loadStaffById() {
+    this.staffservice.getStaffById(this.staffId).subscribe({
+      next: (res) => {
+
+        const data = res.data || res;
+
+        this.staffForm.patchValue({
+          userName: data.userName,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          mobileCode: data.mobileCode,
+          mobileNumber: data.mobileNumber,
+
+          address: data.address,
+          city: data.city,
+          state: data.state,
+          pincode: data.pincode,
+
+          roleId: data.roles?.[0]?.roleId,
+          departmentId: data.department?.departmentId,
+          companyId: data.companyId,
+
+          staffType: data.staffType,
+          isActive: data.isActive,
+
+          licenseNumber: data.licenseNumber,
+          licenseExpiryDate: data.licenseExpiryDate
+        });
+      }
+    });
+  }
   onSubmit() {
     if (this.staffForm.valid) {
       this.isSubmitting = true;
@@ -296,25 +362,25 @@ export class StaffuserComponent implements OnInit {
     return new Blob([int8Array], { type: 'image/png' });
   }
   // Replace your old onFileSelected and add the handler
-onFileSelected(event: any) {
-  if (event.target.files && event.target.files[0]) {
-    this.imageChangedEvent = event;
-    this.showCropper = true;
+  onFileSelected(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      this.imageChangedEvent = event;
+      this.showCropper = true;
+    }
   }
-}
 
-handleCroppedImage(file: File) {
-  this.showCropper = false;
-  this.selectedFile = file;
+  handleCroppedImage(file: File) {
+    this.showCropper = false;
+    this.selectedFile = file;
 
-  // Set local preview for the form
-  const reader = new FileReader();
-  reader.onload = (e: any) => this.previewImageUrl = e.target.result;
-  reader.readAsDataURL(file);
+    // Set local preview for the form
+    const reader = new FileReader();
+    reader.onload = (e: any) => this.previewImageUrl = e.target.result;
+    reader.readAsDataURL(file);
 
-  // Trigger your Spring Boot upload logic
-  this.uploadImage();
-}
+    // Trigger your Spring Boot upload logic
+    this.uploadImage();
+  }
 
   submit() {
 
@@ -365,7 +431,8 @@ handleCroppedImage(file: File) {
 
     if (this.isEditMode) {
       this.staffservice.updateStaff(payload).subscribe({
-        next: () => {this.staffId
+        next: () => {
+          this.staffId
           this.isLoading = false;
           this.snackBar.open('Staff Updated Successfully', 'Close', { duration: 3000 });
           this.router.navigate(['/']);
