@@ -7,6 +7,7 @@ import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { GenericDataDTO } from 'src/app/models/generic-data-dto';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -27,11 +28,28 @@ export class StaffuserComponent implements OnInit {
   imageChangedEvent: any = '';
   croppedImage: any = ''; // Preview of the cropped version
   showCropper = false;
+    isEditMode = false;
+  staffId!: number;
+  isLoading = false;
+  
+  roles = [
+    { roleId: 1, roleName: 'ADMIN' },
+    { roleId: 2, roleName: 'STAFF' },
+    { roleId: 3, roleName: 'DRIVER' }
+  ];
+
+  departments = [
+    { departmentId: 1, departmentName: 'Operations' },
+    { departmentId: 2, departmentName: 'HR' },
+    { departmentId: 3, departmentName: 'Accounts' }
+  ];
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private staffservice: StaffuserServiceService,
     private cd: ChangeDetectorRef,
+        private snackBar: MatSnackBar,
+
     private shoepopup: ShowpopupService
   ) {
     this.initializeForm();
@@ -298,4 +316,75 @@ handleCroppedImage(file: File) {
   this.uploadImage();
 }
 
+  submit() {
+
+    if (this.staffForm.invalid) {
+      this.staffForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+
+    const form = this.staffForm.value;
+
+    const payload = {
+
+      userName: form.userName,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      password: form.password,
+      mobileCode: form.mobileCode,
+      mobileNumber: form.mobileNumber,
+
+      roles: [
+        {
+          roleId: form.roleId,
+          roleName: ''
+        }
+      ],
+
+      department: {
+        departmentId: form.departmentId,
+        departmentName: ''
+      },
+
+      companyId: form.companyId,
+
+      address: form.address,
+      city: form.city,
+      state: form.state,
+      pincode: form.pincode,
+
+      staffType: form.staffType,
+      isActive: form.isActive,
+
+      licenseNumber: form.licenseNumber,
+      licenseExpiryDate: form.licenseExpiryDate
+    };
+
+    if (this.isEditMode) {
+      this.staffservice.updateStaff(payload).subscribe({
+        next: () => {this.staffId
+          this.isLoading = false;
+          this.snackBar.open('Staff Updated Successfully', 'Close', { duration: 3000 });
+          this.router.navigate(['/']);
+        },
+        error: () => this.isLoading = false
+      });
+
+    } else {
+
+      this.staffservice.createStaff(payload).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.snackBar.open('Staff Created Successfully', 'Close', { duration: 3000 });
+          this.router.navigate(['/stafflist']);
+        },
+        error: () => this.isLoading = false
+      });
+
+    }
+
+  }
 }

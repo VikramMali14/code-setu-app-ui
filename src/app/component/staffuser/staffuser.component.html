@@ -1,304 +1,172 @@
-<div class="container-fluid px-3 px-md-4 py-4">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-gradient-primary text-white py-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <h4 class="mb-0 fw-bold">
-                    <i class="bi bi-person-badge me-2"></i>Edit Staff Profile
-                </h4>
-                <button class="btn btn-light btn-sm d-none d-md-inline" onclick="history.back()" type="button">
-                    <i class="bi bi-arrow-left me-1"></i>Back
-                </button>
-            </div>
-        </div>
-        <div class="card-body p-3 p-md-4">
-            <form [formGroup]="staffForm" (ngSubmit)="onSubmit()">
+<div class="page-wrapper">
 
-                <!-- Profile Avatar Section -->
-                <div class="profile-avatar-section mb-4">
-                    <div class="avatar-container">
-                        <div class="avatar-preview">
-                            <img *ngIf="previewImageUrl" [src]="previewImageUrl" alt="Profile Avatar">
-                            <i *ngIf="!previewImageUrl" class="bi bi-person-circle"></i>
-                        </div>
-                        <div class="avatar-upload-controls">
-                            <h5 class="mb-2">Profile Picture</h5>
-                            <p class="text-muted small mb-3">Upload a profile photo (JPG, PNG, max 5MB)</p>
+  <mat-card class="header-card">
+    <h2>{{ isEditMode ? 'Edit Staff' : 'Create Staff' }}</h2>
+    <p>Manage staff profile and permissions</p>
+  </mat-card>
 
-                            <div class="upload-buttons">
-                                <label for="fileInput" class="btn btn-primary btn-sm">
-                                    <i class="bi bi-cloud-upload me-1"></i>Choose Photo
-                                </label>
-                                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg"
-                                    (change)="onFileSelected($event)" style="display: none;">
+  <mat-card class="main-card">
 
-                                <button type="button" class="btn btn-outline-danger btn-sm" *ngIf="previewImageUrl"
-                                    (click)="removeImage()">
-                                    <i class="bi bi-trash me-1"></i>Remove
-                                </button>
-                            </div>
+    <form [formGroup]="staffForm">
 
-                            <div *ngIf="uploadProgress > 0 && uploadProgress < 100" class="upload-progress mt-3">
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated"
-                                        [style.width.%]="uploadProgress">
-                                        {{ uploadProgress }}%
-                                    </div>
-                                </div>
-                            </div>
+      <mat-horizontal-stepper linear>
 
-                            <div *ngIf="uploadError" class="alert alert-danger mt-3 mb-0 small">
-                                <i class="bi bi-exclamation-triangle me-1"></i>{{ uploadError }}
-                            </div>
+        <!-- Step 1 -->
+        <mat-step label="Personal">
 
-                            <div *ngIf="uploadSuccess" class="alert alert-success mt-3 mb-0 small">
-                                <i class="bi bi-check-circle me-1"></i>{{ uploadSuccess }}
-                            </div>
-                        </div>
-                    </div>
-                    <app-image-cropper *ngIf="showCropper" [imageChangedEvent]="imageChangedEvent"
-                        (cropped)="handleCroppedImage($event)" (canceled)="showCropper = false">
-                    </app-image-cropper>
-                </div>
+          <div class="grid">
 
-                <hr class="my-4">
+            <mat-form-field appearance="outline">
+              <mat-label>Username</mat-label>
+              <input matInput formControlName="userName">
+            </mat-form-field>
 
-                <!-- Personal Information Section -->
-                <div class="section-header mb-3">
-                    <h5 class="text-primary fw-bold mb-0">
-                        <i class="bi bi-person-circle me-2"></i>Personal Information
-                    </h5>
-                    <hr class="mt-2">
-                </div>
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName">
+            </mat-form-field>
 
-                <div class="row g-3 mb-4">
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">Username <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person"></i></span>
-                            <input type="text" formControlName="userName" class="form-control"
-                                [class.is-invalid]="staffForm.get('userName')?.invalid && staffForm.get('userName')?.touched"
-                                placeholder="Enter username">
-                        </div>
-                        <div class="invalid-feedback d-block"
-                            *ngIf="staffForm.get('userName')?.invalid && staffForm.get('userName')?.touched">
-                            Username is required
-                        </div>
-                    </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName">
+            </mat-form-field>
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                            <input type="text" formControlName="firstName" class="form-control"
-                                [class.is-invalid]="staffForm.get('firstName')?.invalid && staffForm.get('firstName')?.touched"
-                                placeholder="First name">
-                        </div>
-                        <div class="invalid-feedback d-block"
-                            *ngIf="staffForm.get('firstName')?.invalid && staffForm.get('firstName')?.touched">
-                            First name is required
-                        </div>
-                    </div>
+          </div>
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                            <input type="text" formControlName="lastName" class="form-control"
-                                [class.is-invalid]="staffForm.get('lastName')?.invalid && staffForm.get('lastName')?.touched"
-                                placeholder="Last name">
-                        </div>
-                        <div class="invalid-feedback d-block"
-                            *ngIf="staffForm.get('lastName')?.invalid && staffForm.get('lastName')?.touched">
-                            Last name is required
-                        </div>
-                    </div>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">Date of Birth</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-calendar-date"></i></span>
-                            <input type="date" formControlName="dob" class="form-control">
-                        </div>
-                    </div>
-                </div>
+        </mat-step>
 
-                <!-- Contact Information Section -->
-                <div class="section-header mb-3">
-                    <h5 class="text-primary fw-bold mb-0">
-                        <i class="bi bi-telephone me-2"></i>Contact Information
-                    </h5>
-                    <hr class="mt-2">
-                </div>
+        <!-- Step 2 -->
+        <mat-step label="Contact">
 
-                <div class="row g-3 mb-4">
-                    <div class="col-12 col-lg-6">
-                        <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                            <input type="email" formControlName="email" class="form-control"
-                                [class.is-invalid]="staffForm.get('email')?.invalid && staffForm.get('email')?.touched"
-                                placeholder="example@email.com">
-                        </div>
-                        <div class="invalid-feedback d-block"
-                            *ngIf="staffForm.get('email')?.invalid && staffForm.get('email')?.touched">
-                            Valid email is required
-                        </div>
-                    </div>
+          <div class="grid">
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">Mobile Code</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-flag"></i></span>
-                            <input type="text" formControlName="mobileCode" class="form-control" placeholder="+91">
-                        </div>
-                    </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email">
+            </mat-form-field>
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">Mobile Number</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-phone"></i></span>
-                            <input type="text" formControlName="mobileNumber" class="form-control"
-                                [class.is-invalid]="staffForm.get('mobileNumber')?.invalid && staffForm.get('mobileNumber')?.touched"
-                                placeholder="1234567890">
-                        </div>
-                        <div class="invalid-feedback d-block"
-                            *ngIf="staffForm.get('mobileNumber')?.invalid && staffForm.get('mobileNumber')?.touched">
-                            Only numbers allowed
-                        </div>
-                    </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Mobile Code</mat-label>
+              <input matInput formControlName="mobileCode">
+            </mat-form-field>
 
-                    <div class="col-12">
-                        <label class="form-label fw-semibold">Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                            <input type="password" formControlName="password" class="form-control"
-                                [class.is-invalid]="staffForm.get('password')?.invalid && staffForm.get('password')?.touched"
-                                placeholder="Enter new password (min 6 characters)">
-                        </div>
-                        <div class="invalid-feedback d-block"
-                            *ngIf="staffForm.get('password')?.invalid && staffForm.get('password')?.touched">
-                            Password must be at least 6 characters
-                        </div>
-                    </div>
-                </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Mobile Number</mat-label>
+              <input matInput formControlName="mobileNumber">
+            </mat-form-field>
 
-                <!-- Address Section -->
-                <div class="section-header mb-3">
-                    <h5 class="text-primary fw-bold mb-0">
-                        <i class="bi bi-geo-alt me-2"></i>Address Details
-                    </h5>
-                    <hr class="mt-2">
-                </div>
+            <mat-form-field appearance="outline" *ngIf="!isEditMode">
+              <mat-label>Password</mat-label>
+              <input matInput type="password" formControlName="password">
+            </mat-form-field>
 
-                <div class="row g-3 mb-4">
-                    <div class="col-12">
-                        <label class="form-label fw-semibold">Address</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-house"></i></span>
-                            <input type="text" formControlName="address" class="form-control"
-                                placeholder="Street address">
-                        </div>
-                    </div>
+          </div>
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">Country</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-globe"></i></span>
-                            <input type="text" formControlName="country" class="form-control" placeholder="Country">
-                        </div>
-                    </div>
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">State</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-map"></i></span>
-                            <input type="text" formControlName="state" class="form-control" placeholder="State">
-                        </div>
-                    </div>
+        </mat-step>
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">City</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-building"></i></span>
-                            <input type="text" formControlName="city" class="form-control" placeholder="City">
-                        </div>
-                    </div>
+        <!-- Step 3 -->
+        <mat-step label="Address">
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <label class="form-label fw-semibold">Pincode</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-mailbox"></i></span>
-                            <input type="number" formControlName="pincode" class="form-control" placeholder="123456">
-                        </div>
-                    </div>
-                </div>
+          <div class="grid">
 
-                <!-- Staff Details Section -->
-                <div class="section-header mb-3">
-                    <h5 class="text-primary fw-bold mb-0">
-                        <i class="bi bi-briefcase me-2"></i>Staff Details
-                    </h5>
-                    <hr class="mt-2">
-                </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Address</mat-label>
+              <input matInput formControlName="address">
+            </mat-form-field>
 
-                <div class="row g-3 mb-4">
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <label class="form-label fw-semibold">Department ID</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-diagram-3"></i></span>
-                            <input type="number" formControlName="departmentId" class="form-control"
-                                placeholder="Department ID">
-                        </div>
-                    </div>
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input matInput formControlName="city">
+            </mat-form-field>
 
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <label class="form-label fw-semibold">Staff Type</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                            <select formControlName="staffType" class="form-select">
-                                <option value="" disabled>Select type</option>
-                                <option value="ADMIN">ADMIN</option>
-                                <option value="STAFF">STAFF</option>
-                                <option value="DRIVER">DRIVER</option>
-                            </select>
-                        </div>
-                    </div>
+            <mat-form-field appearance="outline">
+              <mat-label>State</mat-label>
+              <input matInput formControlName="state">
+            </mat-form-field>
 
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <label class="form-label fw-semibold d-block">Account Status</label>
-                        <div class="status-toggle mt-2">
-                            <div class="form-check form-switch form-switch-lg">
-                                <input class="form-check-input" type="checkbox" formControlName="isActive"
-                                    id="statusSwitch">
-                                <label class="form-check-label fw-semibold" for="statusSwitch">
-                                    <span class="badge" [class.bg-success]="staffForm.get('isActive')?.value"
-                                        [class.bg-secondary]="!staffForm.get('isActive')?.value">
-                                        {{ staffForm.get('isActive')?.value ? 'Active' : 'Inactive' }}
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Pincode</mat-label>
+              <input matInput formControlName="pincode">
+            </mat-form-field>
 
-                <!-- Action Buttons -->
-                <div class="action-buttons mt-4 pt-3 border-top">
-                    <div class="d-flex flex-column flex-sm-row gap-2 justify-content-end">
-                        <button type="button" class="btn btn-outline-secondary btn-lg" (click)="onReset()">
-                            <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
-                        </button>
-                        <button type="submit" class="btn btn-success btn-lg"
-                            [disabled]="staffForm.invalid || isSubmitting">
-                            <span *ngIf="!isSubmitting">
-                                <i class="bi bi-check-circle me-2"></i>Update Staff
-                            </span>
-                            <span *ngIf="isSubmitting">
-                                <span class="spinner-border spinner-border-sm me-2"></span>Updating...
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+          </div>
+
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+
+        </mat-step>
+
+        <!-- Step 4 -->
+        <mat-step label="Employment">
+
+          <div class="grid">
+
+            <mat-form-field appearance="outline">
+              <mat-label>Role</mat-label>
+              <mat-select formControlName="roleId">
+                <mat-option *ngFor="let role of roles" [value]="role.roleId">
+                  {{role.roleName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Department</mat-label>
+              <mat-select formControlName="departmentId">
+                <mat-option *ngFor="let dept of departments" [value]="dept.departmentId">
+                  {{dept.departmentName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Staff Type</mat-label>
+              <mat-select formControlName="staffType">
+                <mat-option value="PERMANENT">PERMANENT</mat-option>
+                <mat-option value="CONTRACT">CONTRACT</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-slide-toggle formControlName="isActive">
+              Active Staff
+            </mat-slide-toggle>
+
+          </div>
+
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+
+        </mat-step>
+
+        <!-- Step 5 -->
+        <mat-step label="Submit">
+
+          <div class="review-box">
+            <h3>{{ isEditMode ? 'Update Staff' : 'Create Staff' }}</h3>
+            <p>Please verify all details before submit.</p>
+          </div>
+
+          <button mat-button matStepperPrevious>Back</button>
+
+          <button mat-raised-button color="accent"
+            (click)="submit()"
+            [disabled]="isLoading">
+
+            {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Staff' : 'Create Staff') }}
+
+          </button>
+
+        </mat-step>
+
+      </mat-horizontal-stepper>
+
+    </form>
+
+  </mat-card>
+
 </div>
