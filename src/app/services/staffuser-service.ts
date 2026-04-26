@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ENV } from 'src/assets/env';
+import { GenericDataDTO } from '../models/generic-data-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,12 @@ export class StaffuserServiceService {
 
   profileUpload(staffId: any) {
     return this.http.post(`${this.BASE_URL}/api/v2/cargosetu/document/upload?/`,staffId);
+  }
+
+   getAllStaff(page: number, size: number): Observable<GenericDataDTO> {
+    return this.http.get<GenericDataDTO>(
+      `${this.BASE_URL}/api/v2/cargosetu/staff?page=${page}&size=${size}`,
+    );
   }
 
 }

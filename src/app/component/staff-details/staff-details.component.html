@@ -1,147 +1,154 @@
-<div class="staff-details-container" *ngIf="staffData">
-    <!-- Simple Header -->
-    <div class="header-section">
-        <div class="header-content">
-            <div class="avatar-section">
-                <div class="avatar-circle">
-                    <i class="bi bi-person-circle"></i>
-                </div>
-                <span class="status-indicator" [class.active]="staffData.isActive"></span>
-            </div>
-            <div class="header-info">
-                <h1>{{ staffData.firstName }} {{ staffData.lastName }}</h1>
-                <p class="subtitle">{{ userRolesDisplay }}</p>
-                <div class="quick-info">
-                    
-                    <span><i class="bi bi-envelope"></i> {{ staffData.email }}</span>
-                    <span><i class="bi bi-telephone"></i> {{ staffData.mobileCode }} {{ staffData.mobileNumber }}</span>
-                    <span><i class="bi bi-geo-alt"></i> {{ staffData.city }}, {{ staffData.state }}</span>
-                </div>
-            </div>
+<div class="staff-list-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-left">
+            <h1>Staff Management</h1>
+            <p class="subtitle">Manage your team members</p>
+        </div>
+        <div class="header-right">
+            <button class="btn-primary" (click)="createNewStaff()">
+                <i class="bi bi-plus-circle"></i>
+                Add New Staff
+            </button>
         </div>
     </div>
 
-    <!-- Content Section -->
-    <div class="content-wrapper">
-        <!-- Personal Details -->
-        <div class="section-card">
-            <div class="section-title">
-                <i class="bi bi-person"></i>
-                <h3>Personal Information</h3>
-            </div>
-            <div class="details-grid">
-                <div class="detail-row">
-                    <label>First Name</label>
-                    <span>{{ staffData.firstName }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>Last Name</label>
-                    <span>{{ staffData.lastName }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>Username</label>
-                    <span>{{ staffData.userName }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>User ID</label>
-                    <span class="id-badge">{{ staffData.uuid }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>Date of Birth</label>
-                    <span>{{ staffData.dob || 'Not provided' }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>Status</label>
-                    <span class="status-text" [class.active]="staffData.isActive">
-                        {{ statusDisplay }}
-                    </span>
-                </div>
-            </div>
+    <!-- Search and Filter Section -->
+    <div class="controls-section">
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input 
+                type="text" 
+                placeholder="Search by name, email, or username..."
+                [(ngModel)]="searchTerm"
+                (input)="onSearch()">
         </div>
-
-        <!-- Contact Details -->
-        <div class="section-card">
-            <div class="section-title">
-                <i class="bi bi-telephone"></i>
-                <h3>Contact Information</h3>
-            </div>
-            <div class="details-grid">
-                <div class="detail-row full-width">
-                    <label>Email Address</label>
-                    <span><a href="mailto:{{ staffData.email }}">{{ staffData.email }}</a></span>
-                </div>
-                <div class="detail-row">
-                    <label>Phone Code</label>
-                    <span>{{ staffData.mobileCode }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>Mobile Number</label>
-                    <span> {{ staffData.mobileNumber }}</span>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Address Details -->
-        <div class="section-card">
-            <div class="section-title">
-                <i class="bi bi-geo-alt"></i>
-                <h3>Address Details</h3>
-            </div>
-            <div class="details-grid">
-                <div class="detail-row full-width">
-                    <label>Street Address</label>
-                    <span>{{ staffData.address || 'Not provided' }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>City</label>
-                    <span>{{ staffData.city }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>State</label>
-                    <span>{{ staffData.state }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>Country</label>
-                    <span>{{ staffData.country || 'Not provided' }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>Pincode</label>
-                    <span>{{ staffData.pincode || 'Not provided' }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Work Details -->
-        <div class="section-card">
-            <div class="section-title">
-                <i class="bi bi-briefcase"></i>
-                <h3>Work Information</h3>
-            </div>
-            <div class="details-grid">
-                <div class="detail-row">
-                    <label>Staff Type</label>
-                    <span class="type-badge">{{ staffData.staffType }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>Department ID</label>
-                    <span>{{ staffData.departmentId || 'Not assigned' }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>Branch Name</label>
-                    <span>{{ staffData.branchName || 'Not assigned' }}</span>
-                </div>
-                <div class="detail-row">
-                    <label>User Role</label>
-                    <span>{{ userRolesDisplay }}</span>
-                </div>
-            </div>
+        <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="filterStatus" (change)="onFilterChange()">
+                <option value="">All Status</option>
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+            <select class="filter-select" [(ngModel)]="filterType" (change)="onFilterChange()">
+                <option value="">All Types</option>
+                <option value="ADMIN">Admin</option>
+                <option value="STAFF">Staff</option>
+                <option value="DRIVER">Driver</option>
+            </select>
         </div>
     </div>
-</div>
 
-<!-- Loading State -->
-<div class="loading-state" *ngIf="!staffData">
-    <div class="spinner"></div>
-    <p>Loading staff details...</p>
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading staff members...</p>
+    </div>
+
+    <!-- Staff Table -->
+    <div class="table-container" *ngIf="!loading">
+        <table class="staff-table">
+            <thead>
+                <tr>
+                    <th>Staff Member</th>
+                    <th>Contact</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let staff of staffList" class="staff-row">
+                    <td>
+                        <div class="staff-info">
+                            <div class="avatar-small">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <div class="staff-details">
+                                <div class="staff-name">{{ staff.firstName }} {{ staff.lastName }}</div>
+                                <div class="staff-username">@{{ staff.userName }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="contact-info">
+                            <div><i class="bi bi-envelope"></i> {{ staff.email }}</div>
+                            <div><i class="bi bi-telephone"></i> {{ staff.mobileCode }} {{ staff.mobileNumber }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="role-badge" [class]="'badge-' + staff.staffType?.toLowerCase()">
+                            {{ staff.staffType }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="department-text">{{ staff.departmentId || 'Not Assigned' }}</span>
+                    </td>
+                    <td>
+                        <span class="status-badge" [class.active]="staff.isActive" [class.inactive]="!staff.isActive">
+                            <i class="bi" [class.bi-check-circle]="staff.isActive" [class.bi-x-circle]="!staff.isActive"></i>
+                            {{ staff.isActive ? 'Active' : 'Inactive' }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action btn-view" (click)="viewStaff(staff.staffId)" title="View Details">
+                                <i class="material-icons">visibility</i>
+                            </button>
+                            
+                            <button class="btn-action btn-edit" (click)="editStaff(staff.staffId)" title="Edit">
+                                <i class="material-icons">edit</i>
+                            </button>
+
+                            <button class="btn-action btn-delete" (click)="deleteStaff(staff.staffId)" title="Delete">
+                            <i class="material-icons">radio_button_unchecked</i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="staffList.length === 0">
+            <i class="bi bi-people"></i>
+            <h3>No staff members found</h3>
+            <p>{{ searchTerm ? 'Try adjusting your search' : 'Get started by adding your first staff member' }}</p>
+            <button class="btn-primary" (click)="createNewStaff()" *ngIf="!searchTerm">
+                <i class="bi bi-plus-circle"></i>
+                Add New Staff
+            </button>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-section" *ngIf="!loading && staffList.length > 0">
+        <div class="pagination-info">
+            Showing {{ (page * size) + 1 }} to {{ Math.min((page + 1) * size, totalElements) }} of {{ totalElements }} entries
+        </div>
+        <div class="pagination-controls">
+            <button class="btn-page" [disabled]="page === 0" (click)="goToFirstPage()">
+                <i class="bi bi-chevron-double-left"></i>
+            </button>
+            <button class="btn-page" [disabled]="page === 0" (click)="previousPage()">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <span class="page-number">Page {{ page + 1 }} of {{ totalPages }}</span>
+            <button class="btn-page" [disabled]="page >= totalPages - 1" (click)="nextPage()">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+            <button class="btn-page" [disabled]="page >= totalPages - 1" (click)="goToLastPage()">
+                <i class="bi bi-chevron-double-right"></i>
+            </button>
+        </div>
+        <div class="page-size-selector">
+            <label>Show:</label>
+            <select [(ngModel)]="size" (change)="onPageSizeChange()">
+                <option [value]="5">5</option>
+                <option [value]="10">10</option>
+                <option [value]="25">25</option>
+                <option [value]="50">50</option>
+            </select>
+        </div>
+    </div>
 </div>

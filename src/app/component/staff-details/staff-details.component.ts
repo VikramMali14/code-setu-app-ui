@@ -8,77 +8,151 @@ import { StaffuserServiceService } from 'src/app/services/staffuser-service';
   templateUrl: './staff-details.component.html',
   styleUrls: ['./staff-details.component.css']
 })
-export class StaffDetailsComponent implements OnInit {
-editProfile() {
-throw new Error('Method not implemented.');
-}
-  goBack() {
-    throw new Error('Method not implemented.');
-  }
-  staffData: any = null;
-  userRolesDisplay: string = '';
-  statusDisplay: string = '';
+export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
+  page = 0;
+  size = 10;
+  totalElements = 0;
+  totalPages = 0;
+  loading = false;
+  searchTerm = '';
+  filterStatus = '';
+  filterType = '';
+  
+  Math = Math; // Make Math available in template
+  userdata: any;
 
   constructor(
     private staffuserservice: StaffuserServiceService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    // Subscribe to the shared data stream from the service
-    this.staffuserservice.staffDetails$.subscribe(data => {
-      if (data && data.data) {
-        this.staffData = data.data;
-        this.userRolesDisplay = this.formatRoles(this.staffData.roles);
-        this.statusDisplay = this.staffData.isActive ? 'Active' : 'Inactive';
-      }
-    });
+    this.loadStaff();
   }
 
-  onEdit() {
-    this.router.navigate(['/staffuser']); // Navigate to your form component
-  }
-  // nav-bar.component.ts
-  viewProfile(id: number) {
-    this.staffuserservice.setLoading(true); // Start Loader
+  loadStaff() {
+    this.loading = true;
 
-    this.staffuserservice.getStaffById(id).subscribe({
-      next: (response) => {
-        this.staffuserservice.setStaffDetails(response);
-        this.router.navigate(['/staff-details']);
+    this.staffuserservice.getAllStaff(this.page, this.size).subscribe({
+      next: (res: any) => {
+        console.log('API Response:', res);
+
+        if (res && res.data) {
+          this.staffList = res.data.content || res.data;
+          this.totalElements = res.data.totalElements || this.staffList.length;
+          this.totalPages = res.data.totalPages || 1;
+        } else {
+          this.staffList = [];
+        }
+
+        this.loading = false;
       },
       error: (err) => {
-        console.error(err);
-        this.staffuserservice.setLoading(false);
-      },
-      complete: () => {
-        // Delay slightly for smooth transition if API is too fast
-        setTimeout(() => this.staffuserservice.setLoading(false), 500);
+        console.error('API Error:', err);
+        this.loading = false;
+        this.staffList = [];
       }
     });
   }
-  private formatRoles(roles: any[]): string {
-    if (roles && roles.length > 0) {
-      return roles.map(role => role.roleName).join(', ');
+
+  onSearch() {
+    // Implement search logic here
+    // You can call a search API or filter locally
+    this.page = 0;
+    this.loadStaff();
+  }
+
+  onFilterChange() {
+    // Implement filter logic here
+    this.page = 0;
+    this.loadStaff();
+  }
+
+  onPageSizeChange() {
+    this.page = 0;
+    this.loadStaff();
+  }
+
+  nextPage() {
+    if (this.page < this.totalPages - 1) {
+      this.page++;
+      this.loadStaff();
     }
-    return 'N/A';
+  }
+
+  previousPage() {
+    if (this.page > 0) {
+      this.page--;
+      this.loadStaff();
+    }
+  }
+
+  goToFirstPage() {
+    this.page = 0;
+    this.loadStaff();
+  }
+
+  goToLastPage() {
+    this.page = this.totalPages - 1;
+    this.loadStaff();
+  }
+
+  viewStaff(staffId: number) {
+    this.staffuserservice.getStaffById(staffId).subscribe({
+      next: (response) => {
+        this.staffuserservice.setStaffDetails(response);
+        this.router.navigate(['/staffdetails']);
+      },
+      error: (err) => {
+        console.error('Error fetching staff details:', err);
+      }
+    });
+  }
+
+  
+
+  editStaff(staffId: number) {
+    this.staffuserservice.getStaffById(staffId).subscribe({
+      next: (response) => {
+        // Store the staff data for editing
+        localStorage.setItem('currentStaff', JSON.stringify(response.data));
+        this.router.navigate(['/staffuser']);
+      },
+      error: (err) => {
+        console.error('Error fetching staff details:', err);
+      }
+    });
+  }
+
+  deleteStaff(staffId: number) {
+    if (confirm('Are you sure you want to delete this staff member?')) {
+      // Implement delete API call
+      console.log('Delete staff:', staffId);
+      // this.staffuserservice.deleteStaff(staffId).subscribe({...});
+    }
+  }
+
+  createNewStaff() {
+    localStorage.removeItem('currentStaff');
+    this.router.navigate(['/staffuser']);
   }
 
 
-  imagePreview: string | ArrayBuffer | null = null;
+    goToStaffDetails(): void {
+  console.log(this.userdata)
+    this.staffuserservice.getStaffById(this.userdata.staffId).subscribe({
+      next: (response: GenericDataDTO) => {
+        if (response && response.data) {
+          // 2. Set the data in the shared service
+          this.staffuserservice.setStaffDetails(response);
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        this.imagePreview = reader.result;
-      };
-
-      reader.readAsDataURL(file); // Converts image to base64 for preview
-    }
+          // 3. Navigate only AFTER data is successfully received and stored
+          this.router.navigate(['/staffdetails']);
+        }
+      },
+      error: (err) => {
+        console.error("Error fetching staff profile:", err);
+      }
+    });
   }
 }
