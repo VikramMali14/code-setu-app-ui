@@ -433,7 +433,7 @@ export class StaffuserComponent implements OnInit {
           this.staffId
           this.isLoading = false;
           this.snackBar.open('Staff Updated Successfully', 'Close', { duration: 3000 });
-          this.router.navigate(['/']);
+          this.router.navigate(['/staffdetails']);
         },
         error: () => this.isLoading = false
       });

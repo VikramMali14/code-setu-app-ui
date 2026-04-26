@@ -39,7 +39,8 @@ const routes: Routes = [
   { path: 'department', component: DepartmentComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'plan', component: PlanscreenComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'createplan', component: CreateplanComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'customers', component: CustomerComponent, pathMatch: 'full', canActivate: [AuthGuard] }
+  { path: 'customers', component: CustomerComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'staffuser/:staffId', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard] }
 
 
 ];

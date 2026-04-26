@@ -116,7 +116,7 @@ export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
       next: (response) => {
         // Store the staff data for editing
         localStorage.setItem('currentStaff', JSON.stringify(response.data));
-        this.router.navigate(['/staffuser']);
+        this.router.navigate(['/staffuser', staffId]);
       },
       error: (err) => {
         console.error('Error fetching staff details:', err);
