@@ -31,23 +31,26 @@ export class NavBarComponent implements OnInit {
   userRolesDisplay: string = '';
   statusDisplay: string = '';
   sessionData = localStorage.getItem('user_session');
+  userdata: any = null;
+
 
   public mobileMenuOpen = false;
   public servicesSubmenuOpen = false;
 
-  ngOnInit(): void {
-    this.loginservice.loggedIn$.subscribe(status => {
-      this.loggedIn = status;
 
-      if (status) {
-        // Retrieve user info from localStorage if status is true
-        const userData = JSON.parse(this.sessionData || '{}');
-        this.username = userData.userName;
-      } else {
-        this.userId = ''; // Reset when logged out
-      }
-    });
-  }
+ngOnInit(): void {
+  this.userdata = this.parseJson(localStorage.getItem('user_session'));
+
+  this.loginservice.loggedIn$.subscribe(status => {
+    this.loggedIn = status;
+
+    if (status && this.userdata) {
+      this.username = this.userdata.userName;
+    } else {
+      this.username = '';
+    }
+  });
+}
 
   closeMobileMenu() {
     this.mobileMenuOpen = false;
@@ -66,7 +69,6 @@ export class NavBarComponent implements OnInit {
       this.servicesSubmenuOpen = false;
     }
   }
-  userdata = JSON.parse(localStorage.getItem('user_session') || "");
 
 
   // Source Component (e.g., nav-bar.component.ts)
@@ -144,4 +146,11 @@ export class NavBarComponent implements OnInit {
       this.staffForm.patchValue(staffData);
     }
   }
+  parseJson(value: string | null) {
+  try {
+    return value ? JSON.parse(value) : null;
+  } catch {
+    return null;
+  }
+}
 }
