@@ -1,7 +1,8 @@
 <ng-container *ngIf="!isInternalApp; else internalShell">
   <app-nav-bar></app-nav-bar>
 
-  <button mat-fab class="scroll-to-top" [class.show]="showScrollButton" (click)="scrollToTop()" aria-label="Scroll to top">
+  <button mat-fab class="scroll-to-top" [class.show]="showScrollButton" (click)="scrollToTop()"
+    aria-label="Scroll to top">
     <mat-icon>arrow_upward</mat-icon>
   </button>
 
@@ -14,83 +15,102 @@
 
 <ng-template #internalShell>
   <div class="admin-shell">
-    <aside class="admin-sidebar">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" 
+         [class.show]="!isSidebarCollapsed && isMobileView" 
+         (click)="closeSidebar()">
+    </div>
+
+    <aside class="admin-sidebar" [class.collapsed]="isSidebarCollapsed">
       <div class="sidebar-brand">
         <img src="assets/images/logo-with-name.png" alt="CargoSetu">
       </div>
 
       <nav class="sidebar-nav">
-        <button type="button" routerLink="/dashboard" routerLinkActive="active">
+        <button type="button" routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebar()">
           <mat-icon>dashboard</mat-icon>
-          Dashboard
+          <span>Dashboard</span>
         </button>
-        <button type="button" routerLink="/customers" routerLinkActive="active">
+        <button type="button" routerLink="/customers" routerLinkActive="active" (click)="closeSidebar()">
           <mat-icon>groups</mat-icon>
-          Customers
+          <span>Customers</span>
         </button>
         <button type="button" (click)="navigate('quotations')">
           <mat-icon>request_quote</mat-icon>
-          Quotations
+          <span>Quotations</span>
         </button>
         <button type="button" (click)="navigate('billing')">
           <mat-icon>receipt_long</mat-icon>
-          Billing
+          <span>Billing</span>
         </button>
         <button type="button" (click)="navigate('vehicles')">
           <mat-icon>local_shipping</mat-icon>
-          Vehicles
+          <span>Vehicles</span>
         </button>
-        <button type="button" routerLink="/staffdetails" routerLinkActive="active">
+        <button type="button" routerLink="/staffdetails" routerLinkActive="active" (click)="closeSidebar()">
           <mat-icon>badge</mat-icon>
-          Staff
+          <span>Staff</span>
+        </button>
+        <button type="button" routerLink="/department" routerLinkActive="active" (click)="closeSidebar()">
+          <mat-icon>domain</mat-icon>
+          <span>Department</span>
+        </button>
+        <button type="button" routerLink="/roles" routerLinkActive="active" (click)="closeSidebar()">
+          <mat-icon>admin_panel_settings</mat-icon>
+          <span>Roles</span>
+        </button>
+        <button type="button" routerLink="/plan" routerLinkActive="active" (click)="closeSidebar()">
+          <mat-icon>category</mat-icon>
+          <span>Plans</span>
         </button>
         <button type="button" (click)="navigate('reports')">
           <mat-icon>bar_chart</mat-icon>
-          Reports
+          <span>Reports</span>
         </button>
         <button type="button" (click)="navigate('settings')">
           <mat-icon>settings</mat-icon>
-          Settings
+          <span>Settings</span>
         </button>
       </nav>
     </aside>
 
-    <main class="admin-main">
+    <main class="admin-main" [class.sidebar-collapsed]="isSidebarCollapsed && !isMobileView">
       <header class="admin-topbar">
+        <button type="button" class="icon-button" (click)="toggleSidebar()">
+          <mat-icon>{{ isSidebarCollapsed ? 'menu' : 'menu_open' }}</mat-icon>
+        </button>
         <div class="admin-search">
           <mat-icon>search</mat-icon>
-          <input type="search" placeholder="Search">
+          <input type="search" placeholder="Search...">
         </div>
 
         <div class="topbar-actions">
           <button type="button" class="icon-button" aria-label="Notifications">
             <mat-icon>notifications</mat-icon>
           </button>
+          
           <div class="profile-menu-wrap">
             <button type="button" class="profile-button" (click)="toggleProfileMenu()">
               <mat-icon>person</mat-icon>
               <span>{{ username }}</span>
-              <mat-icon class="caret">expand_more</mat-icon>
+              <mat-icon class="caret" [class.rotate]="showProfileMenu">expand_more</mat-icon>
             </button>
 
             <div class="profile-menu" *ngIf="showProfileMenu">
               <button type="button" (click)="goToStaffDetails()">
                 <mat-icon>badge</mat-icon>
-                My Profile
+                <span>My Profile</span>
               </button>
               <button type="button" (click)="goToEditProfile()">
                 <mat-icon>edit</mat-icon>
-                Edit Profile
+                <span>Edit Profile</span>
               </button>
               <button type="button" (click)="logout()">
                 <mat-icon>logout</mat-icon>
-                Logout
+                <span>Logout</span>
               </button>
             </div>
           </div>
-          <button type="button" class="icon-button" aria-label="Logout" (click)="logout()">
-            <mat-icon>logout</mat-icon>
-          </button>
         </div>
       </header>
 

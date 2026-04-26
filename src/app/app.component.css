@@ -1,4 +1,4 @@
-/* Scroll to Top Button */
+/* ================= SCROLL TO TOP ================= */
 .scroll-to-top {
   position: fixed;
   bottom: 30px;
@@ -6,7 +6,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   display: flex;
   align-items: center;
@@ -30,123 +30,87 @@
 .scroll-to-top:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
-  background: linear-gradient(135deg, #764ba2 0%, #E94E77 100%);
-}
-
-.scroll-to-top:active {
-  transform: translateY(-2px);
 }
 
 .scroll-to-top mat-icon {
   font-size: 28px;
-  width: 28px;
-  height: 28px;
-  color: white;
-  animation: bounce 2s infinite;
 }
 
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-8px);
-  }
-  60% {
-    transform: translateY(-4px);
-  }
-}
-
-.scroll-to-top:hover mat-icon {
-  animation: none;
-  transform: translateY(-3px);
-}
-
-/* Progress Ring Around Button (Optional Enhancement) */
-.scroll-to-top.with-progress {
-  background: white;
-}
-
-.scroll-to-top.with-progress::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #E94E77 100%);
-  z-index: -1;
-}
-
-.scroll-to-top.with-progress mat-icon {
-  color: #667eea;
-}
-
-.scroll-to-top.with-progress:hover mat-icon {
-  color: #E94E77;
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .scroll-to-top {
-    bottom: 20px;
-    right: 20px;
-    width: 45px;
-    height: 45px;
-  }
-  
-  .scroll-to-top mat-icon {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
-  }
-}
-
-@media (max-width: 480px) {
-  .scroll-to-top {
-    bottom: 15px;
-    right: 15px;
-    width: 40px;
-    height: 40px;
-  }
-  
-  .scroll-to-top mat-icon {
-    font-size: 22px;
-    width: 22px;
-    height: 22px;
-  }
-}
-
+/* ================= ADMIN LAYOUT ================= */
 .admin-shell {
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
+  display: flex;
   background: #f6f8fb;
+  position: relative;
 }
 
-.admin-sidebar {
-  position: sticky;
+/* ================= SIDEBAR OVERLAY (Mobile) ================= */
+.sidebar-overlay {
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.sidebar-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ================= SIDEBAR ================= */
+.admin-sidebar {
+  width: 260px;
+  position: fixed;
+  top: 0;
+  left: 0;
   height: 100vh;
   padding: 22px 16px;
-  background: linear-gradient(180deg, #667eea 0%, #764ba2 52%, #e94e77 100%);
+  background: linear-gradient(180deg, #667eea, #764ba2, #e94e77);
   color: #fff;
   box-shadow: 12px 0 32px rgba(45, 55, 72, 0.18);
+  transition: all 0.3s ease;
+  z-index: 999;
+  overflow-y: auto;
 }
 
+/* Desktop collapsed state */
+.admin-sidebar.collapsed {
+  width: 70px;
+  padding: 22px 8px;
+}
+
+.admin-sidebar.collapsed .sidebar-nav span {
+  display: none;
+}
+
+.admin-sidebar.collapsed .sidebar-nav button {
+  justify-content: center;
+}
+
+.admin-sidebar.collapsed .sidebar-brand img {
+  max-width: 40px;
+}
+
+/* ================= SIDEBAR CONTENT ================= */
 .sidebar-brand {
   height: 64px;
   display: flex;
   align-items: center;
   padding: 0 8px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .sidebar-brand img {
   max-width: 138px;
   max-height: 48px;
   object-fit: contain;
+  transition: all 0.3s ease;
 }
 
 .sidebar-nav {
@@ -162,14 +126,14 @@
   align-items: center;
   gap: 12px;
   padding: 0 14px;
-  border: 0;
+  border: none;
   border-radius: 12px;
   color: rgba(255, 255, 255, 0.9);
   background: transparent;
   font-size: 15px;
   font-weight: 700;
-  text-align: left;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .sidebar-nav button:hover,
@@ -181,14 +145,24 @@
 
 .sidebar-nav mat-icon {
   font-size: 21px;
+  width: 21px;
+  height: 21px;
 }
 
+/* ================= MAIN ================= */
 .admin-main {
-  min-width: 0;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  margin-left: 260px;
+  transition: margin-left 0.3s ease;
 }
 
+.admin-main.sidebar-collapsed {
+  margin-left: 70px;
+}
+
+/* ================= TOPBAR ================= */
 .admin-topbar {
   position: sticky;
   top: 0;
@@ -196,7 +170,6 @@
   min-height: 76px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 18px;
   padding: 14px 28px;
   background: rgba(255, 255, 255, 0.92);
@@ -204,6 +177,7 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
+/* ================= SEARCH ================= */
 .admin-search {
   width: min(460px, 45vw);
   height: 44px;
@@ -214,22 +188,22 @@
   border: 1px solid #e2e8f0;
   border-radius: 999px;
   background: #f8fafc;
-  color: #718096;
 }
 
 .admin-search input {
   width: 100%;
-  border: 0;
-  outline: 0;
+  border: none;
+  outline: none;
   background: transparent;
-  color: #2d3748;
   font-size: 14px;
 }
 
+/* ================= ACTIONS ================= */
 .topbar-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-left: auto;
 }
 
 .profile-menu-wrap {
@@ -243,11 +217,12 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 0;
+  border: none;
   border-radius: 999px;
-  color: #2d3748;
   background: #f8fafc;
   cursor: pointer;
+  transition: all 0.2s ease;
+  color: #2d3748;
 }
 
 .icon-button {
@@ -256,11 +231,17 @@
 
 .profile-button {
   padding: 0 14px;
-  font-weight: 800;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .caret {
   font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.caret.rotate {
+  transform: rotate(180deg);
 }
 
 .icon-button:hover,
@@ -269,17 +250,30 @@
   background: linear-gradient(135deg, #667eea, #e94e77);
 }
 
+/* ================= PROFILE DROPDOWN ================= */
 .profile-menu {
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
   z-index: 20;
-  min-width: 190px;
+  min-width: 200px;
   padding: 8px;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 22px 48px rgba(45, 55, 72, 0.18);
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .profile-menu button {
@@ -289,46 +283,72 @@
   align-items: center;
   gap: 10px;
   padding: 0 12px;
-  border: 0;
+  border: none;
   border-radius: 10px;
   background: transparent;
   color: #2d3748;
-  font-weight: 700;
-  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 .profile-menu button:hover {
   background: #f8fafc;
 }
 
+.profile-menu mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ================= CONTENT ================= */
 .admin-content {
-  min-width: 0;
+  padding: 20px;
+  flex: 1;
 }
 
+/* ================= RESPONSIVE ================= */
 @media (max-width: 900px) {
-.admin-shell {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-  transition: all 0.3s ease;
-}
+  /* Mobile: Sidebar slides in from left */
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
 
-.admin-sidebar {
-  --sidebar-width: 260px;
-  transition: all 0.3s ease;
-}
+  .admin-sidebar.collapsed {
+    transform: translateX(-100%);
+  }
 
-  .sidebar-nav {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* When NOT collapsed on mobile, show sidebar */
+  .admin-sidebar:not(.collapsed) {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
   }
 
   .admin-topbar {
-    align-items: stretch;
-    flex-direction: column;
+    padding: 14px 16px;
   }
 
   .admin-search {
     width: 100%;
+    max-width: 300px;
+  }
+
+  .profile-button span {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-search {
+    max-width: 200px;
+  }
+
+  .topbar-actions .icon-button:first-child {
+    display: none;
   }
 }
