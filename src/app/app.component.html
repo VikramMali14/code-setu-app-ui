@@ -16,9 +16,7 @@
 <ng-template #internalShell>
   <div class="admin-shell">
     <!-- Sidebar Overlay for Mobile -->
-    <div class="sidebar-overlay" 
-         [class.show]="!isSidebarCollapsed && isMobileView" 
-         (click)="closeSidebar()">
+    <div class="sidebar-overlay" [class.show]="!isSidebarCollapsed && isMobileView" (click)="closeSidebar()">
     </div>
 
     <aside class="admin-sidebar" [class.collapsed]="isSidebarCollapsed">
@@ -55,6 +53,10 @@
           <mat-icon>domain</mat-icon>
           <span>Department</span>
         </button>
+        <button type="button" routerLink="/company-list" routerLinkActive="active" (click)="closeSidebar()">
+          <mat-icon>domain</mat-icon>
+          <span>Company</span>
+        </button>
         <button type="button" routerLink="/roles" routerLinkActive="active" (click)="closeSidebar()">
           <mat-icon>admin_panel_settings</mat-icon>
           <span>Roles</span>
@@ -88,7 +90,7 @@
           <button type="button" class="icon-button" aria-label="Notifications">
             <mat-icon>notifications</mat-icon>
           </button>
-          
+
           <div class="profile-menu-wrap">
             <button type="button" class="profile-button" (click)="toggleProfileMenu()">
               <mat-icon>person</mat-icon>

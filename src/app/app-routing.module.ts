@@ -19,6 +19,7 @@ import { StaffDetailsComponent } from './component/staff-details/staff-details.c
 import { StaffuserComponent } from './component/staffuser/staffuser.component';
 import { CreateplanComponent } from './component/createplan/createplan.component';
 import { CustomerComponent } from './component/customer/customer.component';
+import { CompanyComponent } from './component/company/company.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -40,8 +41,10 @@ const routes: Routes = [
   { path: 'plan', component: PlanscreenComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'createplan', component: CreateplanComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'customers', component: CustomerComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'staffuser/:staffId', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard] }
-
+  { path: 'staffuser/:staffId', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'company-list', component: CompanyComponent , pathMatch: 'full', canActivate: [AuthGuard] },
+{ path: 'company-create', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
+{ path: 'company-edit/:id', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
 
 ];
 

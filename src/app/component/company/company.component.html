@@ -1,0 +1,125 @@
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <div class="top-card">
+
+    <div class="gradient-line"></div>
+
+    <div class="card-header">
+      <h1>Company Management</h1>
+
+      <button class="circle-btn">
+        <span>−</span>
+      </button>
+    </div>
+
+    <div class="action-grid">
+
+      <div class="action-card active-card">
+        <div class="icon-box">
+          <span class="material-icons">business</span>
+        </div>
+
+        <div class="card-content">
+          <h3>Create Company</h3>
+          <p>Add new company details</p>
+        </div>
+
+        <span class="material-icons arrow">open_in_full</span>
+      </div>
+
+      <div class="action-card">
+        <div class="icon-box">
+          <span class="material-icons">search</span>
+        </div>
+
+        <div class="card-content">
+          <h3>Search Company</h3>
+          <p>Find existing companies</p>
+        </div>
+
+        <span class="material-icons arrow">open_in_full</span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- List Section -->
+  <div class="list-card">
+
+    <div class="gradient-line"></div>
+
+    <div class="card-header">
+      <h2>Company List</h2>
+
+      <button class="circle-btn">
+        <span>−</span>
+      </button>
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>CITY</th>
+            <th>STATE</th>
+            <th>STATUS</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let company of company">
+            <td>{{ company.companyId }}</td>
+            <td>{{ company.companyName }}</td>
+            <td>{{ company.companyEmail }}</td>
+            <td>{{ company.city }}</td>
+            <td>{{ company.state }}</td>
+
+            <td>
+              <span
+                class="status-badge"
+                [class.active]="company.isActive"
+                [class.inactive]="!company.isActive">
+
+                {{ company.isActive ? 'Active' : 'Inactive' }}
+
+              </span>
+            </td>
+
+            <td class="action-td">
+
+              <button class="table-btn edit-btn">
+                <span class="material-icons">edit</span>
+              </button>
+
+              <button class="table-btn delete-btn">
+                <span class="material-icons">delete</span>
+              </button>
+
+            </td>
+          </tr>
+
+          <tr *ngIf="company.length === 0">
+            <td colspan="7" class="empty-row">
+              No companies found.
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

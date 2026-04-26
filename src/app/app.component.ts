@@ -31,7 +31,8 @@ export class AppComponent implements OnInit {
     '/createrole',
     '/updaterole',
     '/plan',
-    '/createplan'
+    '/createplan',
+    '/company-list'
   ];
 
   userdata: any;
