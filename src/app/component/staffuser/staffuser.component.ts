@@ -483,4 +483,17 @@ loadDepartments() {
     }
   });
 }
+getSelectedRoleName(): string {
+  const role = this.roles.find((r: any) =>
+    r.roleId == this.staffForm.value.roleId
+  );
+  return role?.roleName || '-';
+}
+
+getSelectedDepartmentName(): string {
+  const dept = this.departments.find((d: any) =>
+    d.departmentId == this.staffForm.value.departmentId
+  );
+  return dept?.departmentName || '-';
+}
 }
