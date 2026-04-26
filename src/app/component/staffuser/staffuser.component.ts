@@ -71,6 +71,8 @@ export class StaffuserComponent implements OnInit {
   ngOnInit(): void {
 
     this.buildForm();
+    this.loadRoles();
+    this.loadDepartments();
 
     this.route.params.subscribe(params => {
       if (params['staffId']) {
@@ -157,8 +159,8 @@ export class StaffuserComponent implements OnInit {
           state: data.state,
           pincode: data.pincode,
 
-          roleId: data.roles?.[0]?.roleId,
-          departmentId: data.department?.departmentId,
+          roleId: data.roles?.[0]?.roleId ?? data.roles?.[0]?.rolesId,
+          departmentId: data.department?.departmentId ?? data.department?.id,
           companyId: data.companyId,
 
           staffType: data.staffType,
@@ -442,7 +444,7 @@ export class StaffuserComponent implements OnInit {
         next: () => {
           this.isLoading = false;
           this.snackBar.open('Staff Created Successfully', 'Close', { duration: 3000 });
-          this.router.navigate(['/stafflist']);
+          this.router.navigate(['/staffdetails']);
         },
         error: () => this.isLoading = false
       });
@@ -454,7 +456,11 @@ export class StaffuserComponent implements OnInit {
   loadRoles() {
   this.roleservice.getRole().subscribe({
     next: (res: any) => {
-      this.roles = res?.data || res || [];
+      const list = res?.dataList ?? res?.data ?? res ?? [];
+      this.roles = (Array.isArray(list) ? list : []).map((role: any) => ({
+        roleId: role.roleId ?? role.rolesId ?? role.id ?? null,
+        roleName: role.roleName ?? role.name ?? role.code ?? ''
+      }));
     },
     error: (err) => {
       console.error('Roles error', err);
@@ -465,7 +471,11 @@ export class StaffuserComponent implements OnInit {
 loadDepartments() {
     this.departmentservice.getAll().subscribe({
     next: (res: any) => {
-      this.departments = res?.data || res || [];
+      const list = res?.dataList ?? res?.data ?? res ?? [];
+      this.departments = (Array.isArray(list) ? list : []).map((dept: any) => ({
+        departmentId: dept.departmentId ?? dept.id ?? null,
+        departmentName: dept.departmentName ?? dept.name ?? dept.code ?? ''
+      }));
     },
     error: (err) => {
       console.error('Department error', err);
