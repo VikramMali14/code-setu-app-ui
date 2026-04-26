@@ -8,6 +8,9 @@ import { GenericDataDTO } from 'src/app/models/generic-data-dto';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RoleserviceService } from 'src/app/services/role/roleservice.service';
+import { DepartmentService } from 'src/app/services/department.service';
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -32,17 +35,8 @@ export class StaffuserComponent implements OnInit {
   staffId!: number;
   isLoading = false;
 
-  roles = [
-    { roleId: 1, roleName: 'ADMIN' },
-    { roleId: 2, roleName: 'STAFF' },
-    { roleId: 3, roleName: 'DRIVER' }
-  ];
-
-  departments = [
-    { departmentId: 1, departmentName: 'Operations' },
-    { departmentId: 2, departmentName: 'HR' },
-    { departmentId: 3, departmentName: 'Accounts' }
-  ];
+  roles: any[] = [];
+  departments: any[] = [];
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -50,10 +44,12 @@ export class StaffuserComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
+    private roleservice: RoleserviceService,
+    private departmentservice: DepartmentService,
 
     private shoepopup: ShowpopupService
   ) {
-    this.initializeForm();
+    // this.initializeForm();
 
     // Get navigation from Router
     const navigation = this.router.getCurrentNavigation();
@@ -454,4 +450,27 @@ export class StaffuserComponent implements OnInit {
     }
 
   }
+
+  loadRoles() {
+  this.roleservice.getRole().subscribe({
+    next: (res: any) => {
+      this.roles = res?.data || res || [];
+    },
+    error: (err) => {
+      console.error('Roles error', err);
+      this.roles = [];
+    }
+  });
+}
+loadDepartments() {
+    this.departmentservice.getAll().subscribe({
+    next: (res: any) => {
+      this.departments = res?.data || res || [];
+    },
+    error: (err) => {
+      console.error('Department error', err);
+      this.departments = [];
+    }
+  });
+}
 }

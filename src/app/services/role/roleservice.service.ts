@@ -8,7 +8,7 @@ import { ENV } from 'src/assets/env';
   providedIn: 'root'
 })
 export class RoleserviceService {
-  private BASE_URL = ENV?.CARGO_SETU;
+  private BASE_URL = ENV?.CARGO_SETU+"/api/v2/cargosetu";
   constructor(private http: HttpClient) { }
   saveRole(role: any) {
     if (!this.BASE_URL) {
