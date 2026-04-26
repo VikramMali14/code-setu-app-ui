@@ -34,6 +34,11 @@ export class CustomerComponent implements OnInit {
   createMessage = '';
   createError = '';
   newCustomer = this.getEmptyCustomerForm();
+
+  // Stepper
+  createStep = 0;
+  createSteps = ['Customer details', 'Shifting details', 'Charges', 'Review'];
+  activeShiftIndex = 0;
   showUpdateForm = false;
   isUpdating = false;
   updateMessage = '';
@@ -144,6 +149,8 @@ export class CustomerComponent implements OnInit {
     this.showUpdateForm = false;
     this.createMessage = '';
     this.createError = '';
+    this.createStep = 0;
+    this.activeShiftIndex = 0;
   }
 
   closeCreateForm(): void {
@@ -154,7 +161,117 @@ export class CustomerComponent implements OnInit {
     this.newCustomer = this.getEmptyCustomerForm();
     this.createMessage = '';
     this.createError = '';
+    this.createStep = 0;
+    this.activeShiftIndex = 0;
   }
+  // ── Stepper navigation ──────────────────────────────────────────────
+  get isFirstCreateStep(): boolean { return this.createStep === 0; }
+  get isLastCreateStep(): boolean  { return this.createStep === this.createSteps.length - 1; }
+
+  nextCreateStep(): void {
+    if (!this.validateCreateStep()) return;
+    if (!this.isLastCreateStep) this.createStep++;
+  }
+
+  prevCreateStep(): void {
+    if (!this.isFirstCreateStep) this.createStep--;
+  }
+
+  goToCreateStep(index: number): void {
+    if (index < this.createStep) this.createStep = index;
+  }
+
+  validateCreateStep(): boolean {
+    if (this.createStep === 0) {
+      if (!this.newCustomer.firstName?.trim()) { this.showCreateSnackbar('First name is required', true); return false; }
+      if (!this.newCustomer.lastName?.trim())  { this.showCreateSnackbar('Last name is required', true); return false; }
+      if (!this.newCustomer.mobileNo?.trim())  { this.showCreateSnackbar('Mobile number is required', true); return false; }
+      if (!this.newCustomer.email?.trim())     { this.showCreateSnackbar('Email is required', true); return false; }
+      const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRx.test(this.newCustomer.email)) { this.showCreateSnackbar('Enter a valid email address', true); return false; }
+    }
+    if (this.createStep === 1) {
+      for (let i = 0; i < this.newCustomer.shiftings.length; i++) {
+        const s = this.newCustomer.shiftings[i];
+        if (!s.shiftFromCity?.trim() || !s.shiftToCity?.trim()) {
+          this.showCreateSnackbar(`From and To city are required for Shifting ${i + 1}`, true);
+          this.activeShiftIndex = i;
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // ── Snackbar ────────────────────────────────────────────────────────
+  createSnackbar = { message: '', error: false, visible: false };
+  private snackbarTimer: any;
+
+  showCreateSnackbar(message: string, error = false): void {
+    clearTimeout(this.snackbarTimer);
+    this.createSnackbar = { message, error, visible: true };
+    this.snackbarTimer = setTimeout(() => this.createSnackbar.visible = false, 3500);
+  }
+
+  // ── Shifting helpers ────────────────────────────────────────────────
+  getShiftLabel(s: any, i: number): string {
+    return s.shiftFromCity && s.shiftToCity ? `${s.shiftFromCity} → ${s.shiftToCity}` : `Shifting ${i + 1}`;
+  }
+
+  addShifting(): void {
+    this.newCustomer.shiftings.push({
+      isShiftCompleted: false,
+      shiftFromCity: '',
+      shiftToCity: '',
+      fromAddress: '',
+      toAddress: '',
+      shiftingType: '',
+      shiftingStartDate: '',
+      shiftReachedDate: '',
+      shiftCompletedBy: '',
+      shiftCompletedById: null,
+      customerId: null,
+      chargesDTO: {
+        transportCharge: 0,
+        packingCharge: 0,
+        loadingCharge: 0,
+        unloadingCharge: 0,
+        unpackingCharge: 0,
+        carTransportCharge: 0,
+        riskInsureCharge: 0,
+        storageCharge: 0,
+        statisticalCharge: 0,
+        serviceCharge: 0,
+        serviceRate: 0,
+        gstRate: 18,
+        gstCharge: 0,
+        extraChargesList: []
+      }
+    });
+    this.activeShiftIndex = this.newCustomer.shiftings.length - 1;
+  }
+
+  removeShifting(index: number): void {
+    if (this.newCustomer.shiftings.length <= 1) {
+      this.showCreateSnackbar('At least one shifting is required', true);
+      return;
+    }
+    this.newCustomer.shiftings.splice(index, 1);
+    this.activeShiftIndex = Math.max(0, this.activeShiftIndex - 1);
+  }
+
+  addExtraCharge(shiftIndex: number): void {
+    this.newCustomer.shiftings[shiftIndex].chargesDTO.extraChargesList.push({
+      chargeName: '', chargeValue: 0, chargeRate: 0
+    });
+  }
+
+  removeExtraCharge(shiftIndex: number, chargeIndex: number): void {
+    this.newCustomer.shiftings[shiftIndex].chargesDTO.extraChargesList.splice(chargeIndex, 1);
+  }
+
+  trackByIndex(index: number): number { return index; }
+
 
   createCustomer(): void {
     this.isCreating = true;
@@ -167,6 +284,8 @@ export class CustomerComponent implements OnInit {
         this.createMessage = 'Customer created successfully.';
         this.resetCreateForm();
         this.showCreateForm = false;
+        this.createStep = 0;
+        this.activeShiftIndex = 0;
         this.loadCustomers();
       },
       error: error => {
@@ -364,7 +483,7 @@ export class CustomerComponent implements OnInit {
           shiftCompletedBy: '',
           shiftCompletedById: null,
           customerId: null,
-          chargesDTO: {
+          charges: {
             transportCharge: 0,
             packingCharge: 0,
             loadingCharge: 0,
@@ -378,7 +497,7 @@ export class CustomerComponent implements OnInit {
             serviceRate: 0,
             gstRate: 18,
             gstCharge: 0,
-            extraChargesList: [
+            extracharges: [
               { chargeName: 'Toll Charge', chargeValue: 0, chargeRate: 0 },
               { chargeName: 'Lift Handling Charge', chargeValue: 0, chargeRate: 0 }
             ]

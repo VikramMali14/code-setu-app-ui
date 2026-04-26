@@ -63,33 +63,199 @@
       </button>
     </div>
 
-    <form class="create-form" (ngSubmit)="createCustomer()" #customerForm="ngForm">
-      <h3>Customer Details</h3>
-      <div class="form-grid">
-        <input name="firstName" placeholder="First Name" [(ngModel)]="newCustomer.firstName" required>
-        <input name="lastName" placeholder="Last Name" [(ngModel)]="newCustomer.lastName" required>
-        <input name="mobileNo" placeholder="Mobile Number" [(ngModel)]="newCustomer.mobileNo" required>
-        <input name="email" type="email" placeholder="Email" [(ngModel)]="newCustomer.email" required>
-      </div>
+    <!-- Step bar -->
+    <div class="stepper-bar">
+      <ng-container *ngFor="let step of createSteps; let i = index">
+        <div class="stepper-node" [class.clickable]="i < createStep" (click)="goToCreateStep(i)">
+          <div class="stepper-circle" [class.active]="i === createStep" [class.done]="i < createStep">
+            <i class="material-icons" *ngIf="i < createStep" style="font-size:16px;">check</i>
+            <span *ngIf="i >= createStep">{{ i + 1 }}</span>
+          </div>
+          <span class="stepper-label" [class.active]="i === createStep" [class.done]="i < createStep">{{ step }}</span>
+        </div>
+        <div *ngIf="i < createSteps.length - 1" class="stepper-line" [class.done]="i < createStep"></div>
+      </ng-container>
+    </div>
 
-      <h3>Shifting Details</h3>
+    <!-- Step 0: Customer details -->
+    <div *ngIf="createStep === 0" class="stepper-body">
+      <h3 class="step-section-title">Customer Details</h3>
       <div class="form-grid">
-        <input name="shiftFromCity" placeholder="From City" [(ngModel)]="newCustomer.shiftings[0].shiftFromCity"
-          required>
-        <input name="shiftToCity" placeholder="To City" [(ngModel)]="newCustomer.shiftings[0].shiftToCity" required>
-        <input name="shiftingType" placeholder="Shifting Type" [(ngModel)]="newCustomer.shiftings[0].shiftingType">
+        <div class="form-field">
+          <label>First Name <span class="req">*</span></label>
+          <input name="firstName" placeholder="First Name" [(ngModel)]="newCustomer.firstName">
+        </div>
+        <div class="form-field">
+          <label>Last Name <span class="req">*</span></label>
+          <input name="lastName" placeholder="Last Name" [(ngModel)]="newCustomer.lastName">
+        </div>
+        <div class="form-field">
+          <label>Mobile Number <span class="req">*</span></label>
+          <input name="mobileNo" placeholder="Mobile Number" [(ngModel)]="newCustomer.mobileNo">
+        </div>
+        <div class="form-field">
+          <label>Alternate Mobile</label>
+          <input name="alternateMobileNo" placeholder="Alternate Mobile" [(ngModel)]="newCustomer.alternateMobileNo">
+        </div>
+        <div class="form-field">
+          <label>Email <span class="req">*</span></label>
+          <input name="email" type="email" placeholder="Email" [(ngModel)]="newCustomer.email">
+        </div>
+        <div class="form-field">
+          <label>Work Email</label>
+          <input name="workEmail" type="email" placeholder="Work Email" [(ngModel)]="newCustomer.workEmail">
+        </div>
       </div>
+    </div>
 
-      <div class="form-actions">
-        <button class="clear-button" type="button" (click)="resetCreateForm()">Reset</button>
-        <button class="export-button" type="submit" [disabled]="customerForm.invalid || isCreating">
-          {{ isCreating ? 'Saving...' : 'Create Customer' }}
+    <!-- Step 1: Shifting details -->
+    <div *ngIf="createStep === 1" class="stepper-body">
+      <h3 class="step-section-title">Shifting Details</h3>
+      <div class="shifting-tabs">
+        <button
+          *ngFor="let s of newCustomer.shiftings; let i = index; trackBy: trackByIndex"
+          class="shift-tab" type="button"
+          [class.active]="i === activeShiftIndex"
+          (click)="activeShiftIndex = i">
+          {{ getShiftLabel(s, i) }}
         </button>
+        <button class="shift-tab add-tab" type="button" (click)="addShifting()">+ Add Shifting</button>
+        <button *ngIf="newCustomer.shiftings.length > 1" class="shift-tab remove-tab" type="button" (click)="removeShifting(activeShiftIndex)">Remove</button>
+      </div>
+
+      <ng-container *ngFor="let s of newCustomer.shiftings; let i = index; trackBy: trackByIndex">
+        <div *ngIf="i === activeShiftIndex" class="form-grid">
+          <div class="form-field">
+            <label>From City <span class="req">*</span></label>
+            <input [name]="'shiftFromCity_'+i" placeholder="From City" [(ngModel)]="s.shiftFromCity">
+          </div>
+          <div class="form-field">
+            <label>To City <span class="req">*</span></label>
+            <input [name]="'shiftToCity_'+i" placeholder="To City" [(ngModel)]="s.shiftToCity">
+          </div>
+          <div class="form-field">
+            <label>From Address</label>
+            <input [name]="'fromAddress_'+i" placeholder="From Address" [(ngModel)]="s.fromAddress">
+          </div>
+          <div class="form-field">
+            <label>To Address</label>
+            <input [name]="'toAddress_'+i" placeholder="To Address" [(ngModel)]="s.toAddress">
+          </div>
+          <div class="form-field">
+            <label>Shifting Type</label>
+            <input [name]="'shiftingType_'+i" placeholder="e.g. Home, Office" [(ngModel)]="s.shiftingType">
+          </div>
+          <div class="form-field">
+            <label>Start Date</label>
+            <input [name]="'startDate_'+i" type="date" [(ngModel)]="s.shiftingStartDate">
+          </div>
+          <div class="form-field">
+            <label>Expected Reached Date</label>
+            <input [name]="'reachedDate_'+i" type="date" [(ngModel)]="s.shiftReachedDate">
+          </div>
+          <div class="form-field">
+            <label>Completed By</label>
+            <input [name]="'completedBy_'+i" placeholder="Staff name" [(ngModel)]="s.shiftCompletedBy">
+          </div>
+          <div class="form-field full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" [name]="'isCompleted_'+i" [(ngModel)]="s.isShiftCompleted">
+              Mark shift as completed
+            </label>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Step 2: Charges -->
+    <div *ngIf="createStep === 2" class="stepper-body">
+      <h3 class="step-section-title">Charges</h3>
+      <div class="shifting-tabs">
+        <button
+          *ngFor="let s of newCustomer.shiftings; let i = index; trackBy: trackByIndex"
+          class="shift-tab" type="button"
+          [class.active]="i === activeShiftIndex"
+          (click)="activeShiftIndex = i">
+          {{ getShiftLabel(s, i) }}
+        </button>
+      </div>
+
+      <ng-container *ngFor="let s of newCustomer.shiftings; let si = index; trackBy: trackByIndex">
+        <ng-container *ngIf="si === activeShiftIndex">
+          <p class="charges-subtitle">Base Charges</p>
+          <div class="charges-grid">
+            <div class="form-field"><label>Transport</label><input type="number" min="0" [name]="'transport_'+si" [(ngModel)]="s.charges.transportCharge"></div>
+            <div class="form-field"><label>Packing</label><input type="number" min="0" [name]="'packing_'+si" [(ngModel)]="s.charges.packingCharge"></div>
+            <div class="form-field"><label>Loading</label><input type="number" min="0" [name]="'loading_'+si" [(ngModel)]="s.charges.loadingCharge"></div>
+            <div class="form-field"><label>Unloading</label><input type="number" min="0" [name]="'unloading_'+si" [(ngModel)]="s.charges.unloadingCharge"></div>
+            <div class="form-field"><label>Unpacking</label><input type="number" min="0" [name]="'unpacking_'+si" [(ngModel)]="s.charges.unpackingCharge"></div>
+            <div class="form-field"><label>Car Transport</label><input type="number" min="0" [name]="'carTransport_'+si" [(ngModel)]="s.charges.carTransportCharge"></div>
+            <div class="form-field"><label>Risk / Insurance</label><input type="number" min="0" [name]="'risk_'+si" [(ngModel)]="s.charges.riskInsureCharge"></div>
+            <div class="form-field"><label>Storage</label><input type="number" min="0" [name]="'storage_'+si" [(ngModel)]="s.charges.storageCharge"></div>
+            <div class="form-field"><label>Statistical</label><input type="number" min="0" [name]="'statistical_'+si" [(ngModel)]="s.charges.statisticalCharge"></div>
+            <div class="form-field"><label>Service</label><input type="number" min="0" [name]="'service_'+si" [(ngModel)]="s.charges.serviceCharge"></div>
+            <div class="form-field"><label>Service Rate (%)</label><input type="number" min="0" [name]="'serviceRate_'+si" [(ngModel)]="s.charges.serviceRate"></div>
+            <div class="form-field"><label>GST Rate (%)</label><input type="number" min="0" [name]="'gstRate_'+si" [(ngModel)]="s.charges.gstRate"></div>
+            <div class="form-field"><label>GST Charge</label><input type="number" min="0" [name]="'gstCharge_'+si" [(ngModel)]="s.charges.gstCharge"></div>
+          </div>
+
+          <p class="charges-subtitle" style="margin-top:1.25rem;">Extra Charges</p>
+          <div class="extra-charges-header">
+            <span>Name</span><span>Rate</span><span>Value</span><span></span>
+          </div>
+          <div *ngFor="let ec of s.charges.extracharges; let ei = index; trackBy: trackByIndex" class="extra-charge-row">
+            <input type="text" placeholder="Charge name" [name]="'ecName_'+si+'_'+ei" [(ngModel)]="ec.chargeName">
+            <input type="number" min="0" placeholder="Rate" [name]="'ecRate_'+si+'_'+ei" [(ngModel)]="ec.chargeRate">
+            <input type="number" min="0" placeholder="Value" [name]="'ecVal_'+si+'_'+ei" [(ngModel)]="ec.chargeValue">
+            <button class="del-btn" type="button" (click)="removeExtraCharge(si, ei)" title="Remove">×</button>
+          </div>
+          <button class="add-extra-btn" type="button" (click)="addExtraCharge(si)">+ Add extra charge</button>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <!-- Step 3: Review -->
+    <div *ngIf="createStep === 3" class="stepper-body">
+      <h3 class="step-section-title">Review & Create</h3>
+      <p class="charges-subtitle" style="margin-top:0">Customer Information</p>
+      <div class="review-grid">
+        <div class="review-row"><span class="review-label">Full Name</span><span class="review-val">{{ newCustomer.firstName }} {{ newCustomer.lastName }}</span></div>
+        <div class="review-row"><span class="review-label">Mobile</span><span class="review-val">{{ newCustomer.mobileNo || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Alternate Mobile</span><span class="review-val">{{ newCustomer.alternateMobileNo || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Email</span><span class="review-val">{{ newCustomer.email || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Work Email</span><span class="review-val">{{ newCustomer.workEmail || '—' }}</span></div>
+      </div>
+
+      <p class="charges-subtitle">Shiftings ({{ newCustomer.shiftings.length }})</p>
+      <div *ngFor="let s of newCustomer.shiftings; let i = index; trackBy: trackByIndex" class="shift-review-card">
+        <strong>Shifting {{ i + 1 }}: {{ s.shiftFromCity || '—' }} → {{ s.shiftToCity || '—' }}</strong>
+        <div class="shift-review-meta">
+          <span>Type: {{ s.shiftingType || '—' }}</span>
+          <span>Start: {{ s.shiftingStartDate || '—' }}</span>
+          <span>Transport: ₹{{ s.charges.transportCharge }}</span>
+          <span>GST: {{ s.charges.gstRate }}%</span>
+          <span>Status: {{ s.isShiftCompleted ? 'Completed' : 'Pending' }}</span>
+        </div>
       </div>
 
       <p class="api-message" *ngIf="createMessage">{{ createMessage }}</p>
       <p class="api-message error" *ngIf="createError">{{ createError }}</p>
-    </form>
+    </div>
+
+    <!-- Nav buttons -->
+    <div class="stepper-nav">
+      <button class="clear-button" type="button" *ngIf="!isFirstCreateStep" (click)="prevCreateStep()">← Back</button>
+      <button class="clear-button" type="button" *ngIf="isFirstCreateStep" (click)="resetCreateForm()">Reset</button>
+      <button class="export-button" type="button" *ngIf="!isLastCreateStep" (click)="nextCreateStep()">Next →</button>
+      <button class="export-button" type="button" *ngIf="isLastCreateStep" [disabled]="isCreating" (click)="createCustomer()">
+        {{ isCreating ? 'Saving...' : 'Create Customer' }}
+      </button>
+    </div>
+
+    <!-- Snackbar -->
+    <div class="create-snackbar" [class.visible]="createSnackbar.visible" [class.snack-error]="createSnackbar.error">
+      {{ createSnackbar.message }}
+    </div>
   </section>
 
   <!-- <section class="panel search-panel">
