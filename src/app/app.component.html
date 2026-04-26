@@ -1,10 +1,102 @@
-<app-nav-bar></app-nav-bar>
-<!-- Scroll to Top Button -->
-<button mat-fab class="scroll-to-top" [class.show]="showScrollButton" (click)="scrollToTop()" aria-label="Scroll to top">
-  <mat-icon>arrow_upward</mat-icon>
-</button>
-<div class="page-wrapper">
-  <router-outlet></router-outlet>
-</div>
+<ng-container *ngIf="!isInternalApp; else internalShell">
+  <app-nav-bar></app-nav-bar>
 
-<app-footer></app-footer>
+  <button mat-fab class="scroll-to-top" [class.show]="showScrollButton" (click)="scrollToTop()" aria-label="Scroll to top">
+    <mat-icon>arrow_upward</mat-icon>
+  </button>
+
+  <div class="page-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+
+  <app-footer></app-footer>
+</ng-container>
+
+<ng-template #internalShell>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <img src="assets/images/logo-with-name.png" alt="CargoSetu">
+      </div>
+
+      <nav class="sidebar-nav">
+        <button type="button" routerLink="/dashboard" routerLinkActive="active">
+          <mat-icon>dashboard</mat-icon>
+          Dashboard
+        </button>
+        <button type="button" routerLink="/customers" routerLinkActive="active">
+          <mat-icon>groups</mat-icon>
+          Customers
+        </button>
+        <button type="button" (click)="navigate('quotations')">
+          <mat-icon>request_quote</mat-icon>
+          Quotations
+        </button>
+        <button type="button" (click)="navigate('billing')">
+          <mat-icon>receipt_long</mat-icon>
+          Billing
+        </button>
+        <button type="button" (click)="navigate('vehicles')">
+          <mat-icon>local_shipping</mat-icon>
+          Vehicles
+        </button>
+        <button type="button" routerLink="/staffdetails" routerLinkActive="active">
+          <mat-icon>badge</mat-icon>
+          Staff
+        </button>
+        <button type="button" (click)="navigate('reports')">
+          <mat-icon>bar_chart</mat-icon>
+          Reports
+        </button>
+        <button type="button" (click)="navigate('settings')">
+          <mat-icon>settings</mat-icon>
+          Settings
+        </button>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-search">
+          <mat-icon>search</mat-icon>
+          <input type="search" placeholder="Search">
+        </div>
+
+        <div class="topbar-actions">
+          <button type="button" class="icon-button" aria-label="Notifications">
+            <mat-icon>notifications</mat-icon>
+          </button>
+          <div class="profile-menu-wrap">
+            <button type="button" class="profile-button" (click)="toggleProfileMenu()">
+              <mat-icon>person</mat-icon>
+              <span>{{ username }}</span>
+              <mat-icon class="caret">expand_more</mat-icon>
+            </button>
+
+            <div class="profile-menu" *ngIf="showProfileMenu">
+              <button type="button" (click)="goToStaffDetails()">
+                <mat-icon>badge</mat-icon>
+                My Profile
+              </button>
+              <button type="button" (click)="goToEditProfile()">
+                <mat-icon>edit</mat-icon>
+                Edit Profile
+              </button>
+              <button type="button" (click)="logout()">
+                <mat-icon>logout</mat-icon>
+                Logout
+              </button>
+            </div>
+          </div>
+          <button type="button" class="icon-button" aria-label="Logout" (click)="logout()">
+            <mat-icon>logout</mat-icon>
+          </button>
+        </div>
+      </header>
+
+      <section class="admin-content">
+        <router-outlet></router-outlet>
+      </section>
+    </main>
+  </div>
+</ng-template>
