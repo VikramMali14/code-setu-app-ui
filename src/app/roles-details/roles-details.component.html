@@ -4,22 +4,19 @@
 
   <!-- Header -->
   <div class="top-card">
-
     <div class="gradient-line"></div>
 
     <div class="card-header">
 
       <div class="header-left">
-
         <div class="title-icon">
           <span class="material-icons">admin_panel_settings</span>
         </div>
 
         <div>
           <h1>Roles Management</h1>
-          <p class="sub-title">Manage roles and permissions</p>
+          <p class="sub-title">Create, update and manage roles</p>
         </div>
-
       </div>
 
       <button class="circle-btn" (click)="openCreateForm()">
@@ -27,10 +24,9 @@
       </button>
 
     </div>
-
   </div>
 
-  <!-- Create / Update Form -->
+  <!-- Form -->
   <div class="list-card" *ngIf="showForm">
 
     <div class="gradient-line"></div>
@@ -74,21 +70,35 @@
       <!-- Permissions -->
       <div class="permission-wrapper" formGroupName="permissions">
 
-        <h3>Permissions</h3>
+        <div class="permission-head">
+
+          <h3>Permissions</h3>
+
+          <label class="master-check">
+            <input type="checkbox" (change)="toggleAllPermissions($event)">
+            Select All
+          </label>
+
+        </div>
 
         <div *ngFor="let group of groupedPermissions | keyvalue">
 
-          <div class="module-title">
-            {{ group.key }}
+          <!-- Module -->
+          <div class="module-row">
+
+            <label class="module-check">
+              <input type="checkbox" (change)="toggleModule(group.key,$event)">
+              {{ group.key }}
+            </label>
+
           </div>
 
+          <!-- Child Permissions -->
           <div class="permission-grid">
 
-            <label class="permission-box"
-              *ngFor="let item of group.value">
+            <label class="permission-box" *ngFor="let item of $any(group.value)">
 
-              <input type="checkbox"
-                [formControlName]="item.id">
+              <input type="checkbox" [formControlName]="item.id">
 
               <span>{{ item.name }}</span>
 
@@ -106,9 +116,7 @@
           {{ isEditMode ? 'Update Role' : 'Create Role' }}
         </button>
 
-        <button class="cancel-btn"
-          type="button"
-          (click)="cancelForm()">
+        <button type="button" class="cancel-btn" (click)="cancelForm()">
           Cancel
         </button>
 
@@ -118,7 +126,7 @@
 
   </div>
 
-  <!-- List -->
+  <!-- Role List -->
   <div class="list-card">
 
     <div class="gradient-line"></div>
@@ -130,9 +138,7 @@
       <div class="search-box">
         <span class="material-icons">search</span>
 
-        <input type="text"
-          [(ngModel)]="searchText"
-          placeholder="Search role...">
+        <input type="text" [(ngModel)]="searchText" placeholder="Search role...">
       </div>
 
     </div>
@@ -147,7 +153,7 @@
             <th>ROLE</th>
             <th>CODE</th>
             <th>SCOPE</th>
-            <th>PERMISSION</th>
+            <th>PERMISSIONS</th>
             <th>ACTION</th>
           </tr>
         </thead>
@@ -174,13 +180,11 @@
 
             <td class="action-td">
 
-              <button class="table-btn edit-btn"
-                (click)="editRole(item)">
+              <button class="table-btn edit-btn" (click)="editRole(item)">
                 <span class="material-icons">edit</span>
               </button>
 
-              <button class="table-btn delete-btn"
-                (click)="deleteRole(item.rolesId)">
+              <button class="table-btn delete-btn" (click)="deleteRole(item.rolesId)">
                 <span class="material-icons">delete</span>
               </button>
 

@@ -8,8 +8,9 @@ import { RoleserviceService } from '../services/role/roleservice.service';
 @Component({
   selector: 'app-roles-details',
   templateUrl: './roles-details.component.html',
-  styleUrls: ['./roles-details.component.css']
+  styleUrls: ['./roles-details.component.css'] // Change 'roles.css' to the correct filename
 })
+
 export class RolesDetailsComponent implements OnInit {
 
   roleList: any[] = [];
@@ -243,4 +244,29 @@ groupedPermissions: { [key: string]: any[] } = {};
       x.scope?.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
+  toggleAllPermissions(event: any) {
+
+  const checked = event.target.checked;
+
+  Object.keys(this.roleForm.value.permissions)
+    .forEach(id => {
+      this.roleForm.get('permissions.' + id)
+        ?.setValue(checked);
+    });
+}
+toggleModule(moduleName: string, event: any) {
+
+  const checked = event.target.checked;
+
+  const list = this.groupedPermissions[moduleName];
+
+  if (!list) return;
+
+  list.forEach((x: any) => {
+
+    this.roleForm.get('permissions.' + x.id)
+      ?.setValue(checked);
+
+  });
+}
 }
