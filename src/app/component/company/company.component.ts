@@ -11,6 +11,7 @@ import { ShowpopupService } from 'src/app/services/showpopup.service';
   templateUrl: './company.component.html',
   styleUrls: ['./company.component.css']
 })
+
 export class CompanyComponent implements OnInit {
   @ViewChild('confirmDialog') confirmDialogTemplate!: TemplateRef<any>;
 
@@ -27,7 +28,7 @@ export class CompanyComponent implements OnInit {
     private companyService: CompanyService,
     private shoepopup: ShowpopupService,
     private dialog: MatDialog,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -35,23 +36,27 @@ export class CompanyComponent implements OnInit {
   }
 
   buildForm() {
+    const mobilePattern = '^[6-9]\\d{9}$';
+    const panPattern = '^[A-Z]{5}[0-9]{4}[A-Z]{1}$';
+    // GST: 2 digits, 10 PAN chars, 1 entity digit, 'Z', 1 checksum char
+    const gstPattern = '^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$';
+
     this.companyForm = this.fb.group({
       companyName: ['', Validators.required],
       companyEmail: ['', [Validators.required, Validators.email]],
-      whatsappNumber: [''],
-      contactNo1: [''],
-      contactNo2: [''],
+      whatsappNumber: ['', [Validators.pattern(mobilePattern)]],
+      contactNo1: ['', [Validators.required, Validators.pattern(mobilePattern)]],
+      contactNo2: ['', [Validators.pattern(mobilePattern)]],
       landlineNo: [''],
       tollFreeNumber: [''],
-      panNumber: [''],
-      gstNumber: [''],
+      panNumber: ['', [Validators.pattern(panPattern)]],
+      gstNumber: ['', [Validators.pattern(gstPattern)]],
       address: [''],
       country: ['India'],
       state: [''],
       city: [''],
       branch: [''],
       mainBranch: [''],
-      companyUUID: [''],
       isActive: [true]
     });
   }
@@ -94,7 +99,7 @@ export class CompanyComponent implements OnInit {
     if (this.isEditMode) {
 
       this.companyService.updateCompany(payload).subscribe({
-        next: (response:any) => {
+        next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
 
           this.loadCompanies();
@@ -106,8 +111,8 @@ export class CompanyComponent implements OnInit {
     } else {
 
       this.companyService.createCompany(payload).subscribe({
-        next: (response:any) => {
-        this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
+        next: (response: any) => {
+          this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
           this.loadCompanies();
           this.cancelForm();
         },
@@ -146,15 +151,15 @@ export class CompanyComponent implements OnInit {
       x.city?.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
-  
-  focusSearch(): void {
-  setTimeout(() => {
-    const searchInput = document.querySelector('.search-box input') as HTMLInputElement;
-    searchInput?.focus();
-  }, 100);
-}
 
-deleteCompany(id: number) {
+  focusSearch(): void {
+    setTimeout(() => {
+      const searchInput = document.querySelector('.search-box input') as HTMLInputElement;
+      searchInput?.focus();
+    }, 100);
+  }
+
+  deleteCompany(id: number) {
     // Open the inline template as a dialog
     const dialogRef = this.dialog.open(this.confirmDialogTemplate, {
       width: '350px'
