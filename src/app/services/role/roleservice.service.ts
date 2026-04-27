@@ -23,10 +23,10 @@ export class RoleserviceService {
   }
 
   createRole(role: any): Observable<Object> {
-    return this.http.post(this.BASE_URL + "/role/"+role.rolesId, role);
+    return this.http.post(this.BASE_URL + "/role", role);
   }
   updateRole(role: any): Observable<Object> {
-    return this.http.put(this.BASE_URL + "/update", role);
+    return this.http.put(this.BASE_URL + "/role", role);
   }
   deleteRole(id: number): Observable<Object> {
     return this.http.delete(this.BASE_URL + "/role/" + id);

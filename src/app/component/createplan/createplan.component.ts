@@ -154,8 +154,12 @@ deletePlan(): void {
         this.loadPlans();     // refresh table
         this.createNewPlan(); // reset form AFTER success
       },
-      error: (err) => console.error("Update Error:", err)
-    });
+      error: (err) => {
+        this.showPopup.showResponsePopup(
+          err.error?.message || 'Failed to create plan. Please try again.',
+          500
+        );
+      }    });
 
   } else {
 
@@ -170,7 +174,12 @@ deletePlan(): void {
         this.loadPlans();     // refresh table
         this.createNewPlan(); // reset form AFTER success
       },
-      error: (err) => console.error("Create Error:", err)
+      error: (err) => {
+        this.showPopup.showResponsePopup(
+          err.error?.message || 'Failed to create plan. Please try again.',
+          500
+        );
+      }
     });
   }
 }

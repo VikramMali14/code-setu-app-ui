@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RoleserviceService } from '../services/role/roleservice.service';
+import { ShowpopupService } from '../services/showpopup.service';
 
 @Component({
   selector: 'app-roles-details',
@@ -17,7 +18,7 @@ export class RolesDetailsComponent implements OnInit {
   permissionList: any[] = [];
 
   // groupedPermissions: any = {};
-groupedPermissions: { [key: string]: any[] } = {};
+  groupedPermissions: { [key: string]: any[] } = {};
   roleForm!: FormGroup;
 
   searchText = '';
@@ -30,8 +31,9 @@ groupedPermissions: { [key: string]: any[] } = {};
   constructor(
     private fb: FormBuilder,
     private roleService: RoleserviceService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private showpopup: ShowpopupService
+  ) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -186,8 +188,11 @@ groupedPermissions: { [key: string]: any[] } = {};
 
       this.roleService.updateRole(updatePayload)
         .subscribe({
-          next: () => {
-            alert('Role Updated');
+          next: (response: any) => {
+            this.showpopup.showResponsePopup(
+              response.responseMessege,
+              response.responseCode
+            ); 
             this.loadRoles();
             this.cancelForm();
           },
@@ -198,12 +203,21 @@ groupedPermissions: { [key: string]: any[] } = {};
 
       this.roleService.createRole(payload)
         .subscribe({
-          next: () => {
-            alert('Role Created');
+           next: (response: any) => {
+            this.showpopup.showResponsePopup(
+              response.responseMessege,
+              response.responseCode
+            ); 
             this.loadRoles();
             this.cancelForm();
           },
-          error: err => console.error(err)
+          error: err => {
+            console.error(err);
+            this.showpopup.showResponsePopup(
+              err.error?.message || 'Failed to create role. Please try again.',
+              500
+            );
+          }
         });
 
     }
@@ -219,7 +233,13 @@ groupedPermissions: { [key: string]: any[] } = {};
     this.roleService.deleteRole(id)
       .subscribe({
         next: () => this.loadRoles(),
-        error: err => console.error(err)
+        error: err => {
+          console.error(err);
+          this.showpopup.showResponsePopup(
+            err.error?.message || 'Failed to delete role. Please try again.',
+            500
+          );
+        }
       });
   }
 
@@ -246,27 +266,27 @@ groupedPermissions: { [key: string]: any[] } = {};
   }
   toggleAllPermissions(event: any) {
 
-  const checked = event.target.checked;
+    const checked = event.target.checked;
 
-  Object.keys(this.roleForm.value.permissions)
-    .forEach(id => {
-      this.roleForm.get('permissions.' + id)
+    Object.keys(this.roleForm.value.permissions)
+      .forEach(id => {
+        this.roleForm.get('permissions.' + id)
+          ?.setValue(checked);
+      });
+  }
+  toggleModule(moduleName: string, event: any) {
+
+    const checked = event.target.checked;
+
+    const list = this.groupedPermissions[moduleName];
+
+    if (!list) return;
+
+    list.forEach((x: any) => {
+
+      this.roleForm.get('permissions.' + x.id)
         ?.setValue(checked);
+
     });
-}
-toggleModule(moduleName: string, event: any) {
-
-  const checked = event.target.checked;
-
-  const list = this.groupedPermissions[moduleName];
-
-  if (!list) return;
-
-  list.forEach((x: any) => {
-
-    this.roleForm.get('permissions.' + x.id)
-      ?.setValue(checked);
-
-  });
-}
+  }
 }
