@@ -32,4 +32,8 @@ export class CompanyService {
   getCompanyById(id: number): Observable<any> {
     return this.http.get<any>(`${this.BASE_URL}/${id}`);
   }
+   // Get By Id
+  deleteCompany(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.BASE_URL}/${id}`);
+  }
 }
