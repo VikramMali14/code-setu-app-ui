@@ -1,42 +1,34 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'; // Correctly imports the Router class
+import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
+import { AccessMenuItem, AccessMenuSection, AccessMenuService } from 'src/app/services/access-menu.service';
 
 @Component({
   selector: 'app-dashboard',
-  standalone:true,
+  standalone: true,
+  imports: [CommonModule, MatIconModule],
   templateUrl: './dashboard.component.html',
-  
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  dashboardSections: AccessMenuSection[] = [];
 
-  // Injecting the router correctly
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private accessMenuService: AccessMenuService
+  ) {}
 
   ngOnInit(): void {
+    this.dashboardSections = this.accessMenuService.getDashboardSections();
   }
 
-  /**
-   * Safe Navigation
-   * For now, it logs the path since Bilty/Quotation components don't exist yet.
-   */
-  navigate(path: string): void {
-    console.log('CargoSetu Navigating to:', path);
-    
-    // Check if route exists before navigating to prevent 404
-    // If you haven't created the routes yet, just alert for now:
-    if (path === 'generate-bilty' || path === 'create-quotation') {
-      alert(`The ${path.replace('-', ' ')} module is currently static (Under Construction).`);
-    } else {
-      this.router.navigate([`/${path}`]);
+  openModule(item: AccessMenuItem): void {
+    if (item.comingSoon || !item.route) {
+      alert(`${item.label} module is currently under construction.`);
+      return;
     }
-  }
 
-  /**
-   * Logic for special documents
-   */
-  openOpsDocuments(): void {
-    alert('CargoSetu Document Suite: \n• Packing List \n• Money Receipt \n• Transit Insurance');
+    this.router.navigate([item.route]);
   }
-
 }

@@ -60,6 +60,7 @@ import { ImageCropperComponent } from './component/image-cropper/image-cropper.c
 import { CreateplanComponent } from './component/createplan/createplan.component';
 import { CustomerComponent } from './component/customer/customer.component';
 import { CompanyComponent } from './component/company/company.component';
+import { PermissionComponent } from './component/permission/permission.component';
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
 @NgModule({
@@ -79,6 +80,7 @@ import { CompanyComponent } from './component/company/company.component';
     CreateplanComponent,
     CustomerComponent,
     CompanyComponent,
+    PermissionComponent,
   ],
   imports: [
     BrowserModule,

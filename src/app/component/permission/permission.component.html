@@ -1,0 +1,35 @@
+<section class="permission-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Settings</p>
+      <h1>Permission</h1>
+    </div>
+
+    <button type="button" class="refresh-btn" (click)="loadPermissions()">
+      <mat-icon>refresh</mat-icon>
+      <span>Refresh</span>
+    </button>
+  </header>
+
+  <div class="state-box" *ngIf="isLoading">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
+
+  <div class="state-box error" *ngIf="!isLoading && errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="permission-grid" *ngIf="!isLoading && !errorMessage && permissions.length > 0">
+    <article class="permission-card" *ngFor="let item of permissions">
+      <mat-icon>vpn_key</mat-icon>
+      <div>
+        <h2>{{ getPermissionName(item) }}</h2>
+        <p>{{ getPermissionCode(item) }}</p>
+      </div>
+    </article>
+  </div>
+
+  <div class="state-box" *ngIf="!isLoading && !errorMessage && permissions.length === 0">
+    No permissions found.
+  </div>
+</section>

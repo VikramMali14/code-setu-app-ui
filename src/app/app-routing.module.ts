@@ -20,6 +20,7 @@ import { StaffuserComponent } from './component/staffuser/staffuser.component';
 import { CreateplanComponent } from './component/createplan/createplan.component';
 import { CustomerComponent } from './component/customer/customer.component';
 import { CompanyComponent } from './component/company/company.component';
+import { PermissionComponent } from './component/permission/permission.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -33,6 +34,7 @@ const routes: Routes = [
   { path: 'createrole', component: RoleComponent, pathMatch: 'full' },
   { path: 'updaterole', component: UpdateroleComponent, pathMatch: 'full' },
   { path: 'roles', component: RolesDetailsComponent, pathMatch: 'full' },
+  { path: 'permission-list', component: PermissionComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'feature', component: FeaturescreenComponent, pathMatch: 'full' },
   { path: 'staffdetails', component: StaffDetailsComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'staffuser', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard] },

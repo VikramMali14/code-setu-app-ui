@@ -1,103 +1,185 @@
-/* styles.css or component-specific .css file */
+:host {
+    display: block;
+    --cargo-blue: #2563eb;
+    --cargo-orange: #f97316;
+    --cargo-green: #059669;
+    --cargo-pink: #db2777;
+}
 
-.dashboard-card {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    height: 150px; /* Uniform height for all cards */
+.dashboard-page {
+    width: 100%;
+    display: grid;
+    gap: 24px;
+}
+
+.dashboard-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
+    justify-content: space-between;
+    padding: 6px 2px 0;
 }
 
-.dashboard-card:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+.eyebrow {
+    margin: 0 0 4px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
-.card-content i {
-    font-size: 48px;
-    color: #0d47a1; /* A shade of blue for the icons */
-    margin-bottom: 20px;
+.dashboard-header h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0;
 }
 
-.card-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
+.module-section {
+    display: grid;
+    gap: 14px;
 }
 
-/* These classes manage spacing when using Materialize's grid system */
-.row .col {
-    margin-bottom: 20px; 
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #334155;
 }
 
-.dashboard-row {
-    margin-bottom: 20px; 
-}
-/* Color Palette */
-:host {
-    --cargo-blue: #1e40af;
-    --cargo-orange: #f97316;
+.section-title h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
 }
 
-.dashboard-card {
-    border-radius: 12px !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
+.module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+}
+
+.module-card {
+    position: relative;
     min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-    border-color: #cbd5e1 !important;
+.module-card:hover {
+    transform: translateY(-3px);
+    border-color: #cbd5e1;
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
+}
+
+.module-card.coming-soon {
+    border-style: dashed;
 }
 
 .icon-wrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 15px;
+    border-radius: 50%;
+    margin-bottom: 6px;
 }
 
-/* Logic for Blue vs Orange Icons */
 .accent-blue .icon-wrapper {
-    background-color: #eff6ff;
+    background: #eff6ff;
     color: var(--cargo-blue);
 }
 
 .accent-orange .icon-wrapper {
-    background-color: #fff7ed;
+    background: #fff7ed;
     color: var(--cargo-orange);
 }
 
+.accent-green .icon-wrapper {
+    background: #ecfdf5;
+    color: var(--cargo-green);
+}
+
+.accent-pink .icon-wrapper {
+    background: #fdf2f8;
+    color: var(--cargo-pink);
+}
+
 .card-title {
-    font-size: 15px !important;
-    font-weight: 700 !important;
-    color: #1e293b !important;
-    margin-bottom: 4px !important;
-    line-height: 1.2 !important;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.25;
 }
 
 .card-subtitle {
-    font-size: 12px;
+    max-width: 180px;
     color: #64748b;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.soon-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.empty-state {
+    min-height: 280px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+    color: #64748b;
+    text-align: center;
+}
+
+.empty-state mat-icon {
+    width: 42px;
+    height: 42px;
+    color: #94a3b8;
+    font-size: 42px;
+}
+
+.empty-state h2 {
     margin: 0;
+    color: #0f172a;
+    font-size: 18px;
 }
 
-/* Special styling for the "Something Else" button */
-.special-ops {
-    background-color: #f8fafc !important;
-    border: 2px dashed #cbd5e1 !important;
+.empty-state p {
+    margin: 0;
+    font-size: 13px;
 }
 
-.special-ops:hover {
-    border-color: var(--cargo-blue) !important;
+@media (max-width: 600px) {
+    .dashboard-header h1 {
+        font-size: 24px;
+    }
+
+    .module-grid {
+        grid-template-columns: 1fr;
+    }
 }
