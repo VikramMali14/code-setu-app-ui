@@ -37,4 +37,16 @@ export class RoleserviceService {
   getPermissions(): Observable<Role[]> {
     return this.http.get<any[]>(`${this.BASE_URL + "/permission"}`)
   }
+  getPermissionById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.BASE_URL}/permission/${id}`);
+  }
+  createPermission(permission: any): Observable<any> {
+    return this.http.post<any>(`${this.BASE_URL}/permission`, permission);
+  }
+  updatePermission(id: number, permission: any): Observable<any> {
+    return this.http.put<any>(`${this.BASE_URL}/permission/${id}`, permission);
+  }
+  deletePermission(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.BASE_URL}/permission/${id}`);
+  }
 }

@@ -11,6 +11,41 @@
     </button>
   </header>
 
+  <form class="permission-form" [formGroup]="permissionForm" (ngSubmit)="submitPermission()">
+    <div class="form-group">
+      <label>Name *</label>
+      <input type="text" formControlName="name" placeholder="Create Customer">
+      <small *ngIf="permissionForm.get('name')?.touched && permissionForm.get('name')?.invalid">Name is required</small>
+    </div>
+
+    <div class="form-group">
+      <label>Module *</label>
+      <input type="text" formControlName="module" placeholder="Customer">
+      <small *ngIf="permissionForm.get('module')?.touched && permissionForm.get('module')?.invalid">Module is required</small>
+    </div>
+
+    <div class="form-group">
+      <label>Code</label>
+      <input type="text" formControlName="code" placeholder="CUSTOMER_CREATE">
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <input type="text" formControlName="description" placeholder="Allows creating customer records">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="primary-btn" [disabled]="isSaving">
+        <mat-icon>{{ selectedId ? 'save' : 'add' }}</mat-icon>
+        <span>{{ selectedId ? 'Update' : 'Create' }}</span>
+      </button>
+      <button type="button" class="ghost-btn" (click)="resetForm()" *ngIf="selectedId">
+        <mat-icon>close</mat-icon>
+        <span>Cancel</span>
+      </button>
+    </div>
+  </form>
+
   <div class="state-box" *ngIf="isLoading">
     <mat-spinner diameter="36"></mat-spinner>
   </div>
@@ -22,9 +57,18 @@
   <div class="permission-grid" *ngIf="!isLoading && !errorMessage && permissions.length > 0">
     <article class="permission-card" *ngFor="let item of permissions">
       <mat-icon>vpn_key</mat-icon>
-      <div>
+      <div class="permission-info">
         <h2>{{ getPermissionName(item) }}</h2>
-        <p>{{ getPermissionCode(item) }}</p>
+        <p>{{ item.module || 'Other' }}</p>
+        <span>{{ getPermissionCode(item) }}</span>
+      </div>
+      <div class="card-actions">
+        <button type="button" aria-label="Edit permission" (click)="editPermission(item)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button type="button" aria-label="Delete permission" class="danger" (click)="deletePermission(item)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
     </article>
   </div>
