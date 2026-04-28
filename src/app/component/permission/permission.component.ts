@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RoleserviceService } from 'src/app/services/role/roleservice.service';
 
@@ -10,11 +11,20 @@ import { RoleserviceService } from 'src/app/services/role/roleservice.service';
 })
 export class PermissionComponent implements OnInit {
   permissions: any[] = [];
+  private loadedPermissions: any[] = [];
   permissionForm!: FormGroup;
   isLoading = false;
   isSaving = false;
   errorMessage = '';
   selectedId: number | null = null;
+  pageIndex = 0;
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 25, 50];
+  totalRecords = 0;
+  totalPages = 0;
+  pageRecords = 0;
+  searchText = '';
+  private serverPaged = false;
 
   constructor(
     private fb: FormBuilder,
@@ -36,22 +46,56 @@ export class PermissionComponent implements OnInit {
     });
   }
 
-  loadPermissions(): void {
+  loadPermissions(pageIndex: number = this.pageIndex, pageSize: number = this.pageSize): void {
     this.isLoading = true;
     this.errorMessage = '';
+    this.pageIndex = pageIndex;
+    this.pageSize = pageSize;
 
-    this.roleService.getPermissions().subscribe({
+    this.roleService.getPermissions(this.pageIndex, this.pageSize, this.searchText.trim()).subscribe({
       next: (res: any) => {
         const list = res?.dataList ?? res?.data ?? res ?? [];
-        this.permissions = Array.isArray(list) ? list : [];
+        this.loadedPermissions = Array.isArray(list) ? list : [];
+        const responseTotal = Number(res?.totalRecords);
+        const responseTotalPages = Number(res?.totalPages);
+        this.serverPaged = responseTotal > this.loadedPermissions.length || responseTotalPages > 1;
+
+        if (this.serverPaged) {
+          this.permissions = this.loadedPermissions;
+          this.totalRecords = this.readNumber(res?.totalRecords, this.loadedPermissions.length);
+        } else {
+          const filteredList = this.filterPermissions(this.loadedPermissions);
+          this.totalRecords = filteredList.length;
+          this.permissions = this.slicePage(filteredList);
+        }
+
+        this.pageRecords = this.permissions.length;
+        this.totalPages = this.totalRecords ? Math.ceil(this.totalRecords / this.pageSize) : 0;
+        this.pageIndex = this.readNumber(res?.currentPageNumber, this.pageIndex);
         this.isLoading = false;
       },
       error: () => {
         this.permissions = [];
+        this.pageRecords = 0;
+        this.totalRecords = 0;
+        this.totalPages = 0;
         this.errorMessage = 'Unable to load permissions.';
         this.isLoading = false;
       }
     });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.loadPermissions(event.pageIndex, event.pageSize);
+  }
+
+  searchPermissions(): void {
+    this.loadPermissions(0, this.pageSize);
+  }
+
+  clearSearch(): void {
+    this.searchText = '';
+    this.loadPermissions(0, this.pageSize);
   }
 
   submitPermission(): void {
@@ -61,6 +105,7 @@ export class PermissionComponent implements OnInit {
     }
 
     const payload = this.buildPayload();
+    const wasEdit = !!this.selectedId;
     this.isSaving = true;
 
     const request = this.selectedId
@@ -72,7 +117,7 @@ export class PermissionComponent implements OnInit {
         this.isSaving = false;
         this.showMessage(res?.responseMessege || (this.selectedId ? 'Permission updated' : 'Permission created'));
         this.resetForm();
-        this.loadPermissions();
+        this.loadPermissions(wasEdit ? this.pageIndex : 0, this.pageSize);
       },
       error: () => {
         this.isSaving = false;
@@ -104,7 +149,8 @@ export class PermissionComponent implements OnInit {
         if (this.selectedId === id) {
           this.resetForm();
         }
-        this.loadPermissions();
+        const nextPageIndex = this.permissions.length === 1 && this.pageIndex > 0 ? this.pageIndex - 1 : this.pageIndex;
+        this.loadPermissions(nextPageIndex, this.pageSize);
       },
       error: () => this.showMessage('Permission delete failed')
     });
@@ -149,5 +195,30 @@ export class PermissionComponent implements OnInit {
 
   private showMessage(message: string): void {
     this.snackBar.open(String(message), 'Close', { duration: 3000 });
+  }
+
+  private readNumber(value: any, fallback: number): number {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+  }
+
+  private filterPermissions(list: any[]): any[] {
+    const term = this.searchText.trim().toLowerCase();
+
+    if (!term) {
+      return list;
+    }
+
+    return list.filter(permission => [
+      this.getPermissionName(permission),
+      this.getPermissionCode(permission),
+      permission?.module,
+      permission?.description
+    ].some(value => String(value || '').toLowerCase().includes(term)));
+  }
+
+  private slicePage(list: any[]): any[] {
+    const start = this.pageIndex * this.pageSize;
+    return list.slice(start, start + this.pageSize);
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { Role } from 'src/app/models/role';
@@ -34,8 +34,16 @@ export class RoleserviceService {
   getRole(): Observable<Role[]> {
     return this.http.get<Role[]>(`${this.BASE_URL + "/role"}`)
   }
-  getPermissions(): Observable<Role[]> {
-    return this.http.get<any[]>(`${this.BASE_URL + "/permission"}`)
+  getPermissions(pageNumber: number = 0, pageSize: number = 10, searchText: string = ''): Observable<any> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', pageSize)
+      .set('page', pageNumber)
+      .set('size', pageSize)
+      .set('search', searchText)
+      .set('keyword', searchText);
+
+    return this.http.get<any>(`${this.BASE_URL + "/permission"}`, { params })
   }
   getPermissionById(id: number): Observable<any> {
     return this.http.get<any>(`${this.BASE_URL}/permission/${id}`);

@@ -46,6 +46,23 @@
     </div>
   </form>
 
+  <div class="search-panel">
+    <mat-icon>search</mat-icon>
+    <input
+      type="search"
+      [(ngModel)]="searchText"
+      placeholder="Search permission, module, code..."
+      (keyup.enter)="searchPermissions()">
+    <button type="button" class="ghost-btn" (click)="searchPermissions()">
+      <mat-icon>search</mat-icon>
+      <span>Search</span>
+    </button>
+    <button type="button" class="ghost-btn" (click)="clearSearch()" *ngIf="searchText">
+      <mat-icon>close</mat-icon>
+      <span>Clear</span>
+    </button>
+  </div>
+
   <div class="state-box" *ngIf="isLoading">
     <mat-spinner diameter="36"></mat-spinner>
   </div>
@@ -72,6 +89,17 @@
       </div>
     </article>
   </div>
+
+  <mat-paginator
+    *ngIf="!isLoading && !errorMessage && (totalRecords > 0 || permissions.length > 0)"
+    class="permission-paginator"
+    [length]="totalRecords"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    showFirstLastButtons
+    (page)="onPageChange($event)">
+  </mat-paginator>
 
   <div class="state-box" *ngIf="!isLoading && !errorMessage && permissions.length === 0">
     No permissions found.
