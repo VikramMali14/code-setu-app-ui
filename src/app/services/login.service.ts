@@ -92,7 +92,9 @@ export class LoginService {
                   staffId: res.data.staffId,
                   uuid: res.data.uuid,
                   userName: res.data.userName,
-                  firstName: res.data.firstName
+                  firstName: res.data.firstName,
+                  roles: res.data.roles || [],
+                  permissions: this.extractPermissions(res.data)
                 };
                 localStorage.setItem('user_session', JSON.stringify(userSession));
 
@@ -160,6 +162,15 @@ export class LoginService {
   // Helper to get data once without subscribing
   getUserData() {
     return this.currentUserSubject.value;
+  }
+
+  private extractPermissions(staffData: any): any[] {
+    const directPermissions = staffData?.permissions || staffData?.permissionList || [];
+    const rolePermissions = Array.isArray(staffData?.roles)
+      ? staffData.roles.flatMap((role: any) => role?.permissions || [])
+      : [];
+
+    return [...directPermissions, ...rolePermissions];
   }
 
 }

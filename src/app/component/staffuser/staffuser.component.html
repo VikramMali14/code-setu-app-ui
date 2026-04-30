@@ -143,25 +143,58 @@
 
         </mat-step>
 
-        <!-- Step 5 -->
-        <mat-step label="Submit">
+   <!-- Step 5 -->
+<mat-step label="Submit">
 
-          <div class="review-box">
-            <h3>{{ isEditMode ? 'Update Staff' : 'Create Staff' }}</h3>
-            <p>Please verify all details before submit.</p>
-          </div>
+  <div class="review-box">
 
-          <button mat-button matStepperPrevious>Back</button>
+    <h3>{{ isEditMode ? 'Update Staff' : 'Create Staff' }}</h3>
+    <p>Please verify all details before submit.</p>
 
-          <button mat-raised-button color="accent"
-            (click)="submit()"
-            [disabled]="isLoading">
+    <div class="preview-grid">
 
-            {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Staff' : 'Create Staff') }}
+      <p><strong>Username:</strong> {{ staffForm.value.userName }}</p>
+      <p><strong>First Name:</strong> {{ staffForm.value.firstName }}</p>
+      <p><strong>Last Name:</strong> {{ staffForm.value.lastName }}</p>
+      <p><strong>Email:</strong> {{ staffForm.value.email }}</p>
 
-          </button>
+      <p><strong>Mobile Code:</strong> {{ staffForm.value.mobileCode }}</p>
+      <p><strong>Mobile Number:</strong> {{ staffForm.value.mobileNumber }}</p>
 
-        </mat-step>
+      <p><strong>Address:</strong> {{ staffForm.value.address }}</p>
+      <p><strong>City:</strong> {{ staffForm.value.city }}</p>
+      <p><strong>State:</strong> {{ staffForm.value.state }}</p>
+      <p><strong>Pincode:</strong> {{ staffForm.value.pincode }}</p>
+
+      <p><strong>Role:</strong> {{ getSelectedRoleName() }}</p>
+      <p><strong>Department:</strong> {{ getSelectedDepartmentName() }}</p>
+
+      <p><strong>Staff Type:</strong> {{ staffForm.value.staffType }}</p>
+      <p><strong>Status:</strong> {{ staffForm.value.isActive ? 'Active' : 'Inactive' }}</p>
+
+      <p><strong>License Number:</strong> {{ staffForm.value.licenseNumber || '-' }}</p>
+      <p><strong>License Expiry:</strong> {{ staffForm.value.licenseExpiryDate || '-' }}</p>
+
+    </div>
+
+  </div>
+
+  <button mat-button matStepperPrevious type="button">
+    Back
+  </button>
+
+  <button
+    type="button"
+    mat-raised-button
+    color="accent"
+    (click)="submit()"
+    [disabled]="isLoading">
+
+    {{ isLoading ? 'Saving...' : (isEditMode ? 'Update Staff' : 'Create Staff') }}
+
+  </button>
+
+</mat-step>
 
       </mat-horizontal-stepper>
 

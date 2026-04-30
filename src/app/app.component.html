@@ -16,9 +16,7 @@
 <ng-template #internalShell>
   <div class="admin-shell">
     <!-- Sidebar Overlay for Mobile -->
-    <div class="sidebar-overlay" 
-         [class.show]="!isSidebarCollapsed && isMobileView" 
-         (click)="closeSidebar()">
+    <div class="sidebar-overlay" [class.show]="!isSidebarCollapsed && isMobileView" (click)="closeSidebar()">
     </div>
 
     <aside class="admin-sidebar" [class.collapsed]="isSidebarCollapsed">
@@ -27,50 +25,47 @@
       </div>
 
       <nav class="sidebar-nav">
-        <button type="button" routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebar()">
-          <mat-icon>dashboard</mat-icon>
-          <span>Dashboard</span>
-        </button>
-        <button type="button" routerLink="/customers" routerLinkActive="active" (click)="closeSidebar()">
-          <mat-icon>groups</mat-icon>
-          <span>Customers</span>
-        </button>
-        <button type="button" (click)="navigate('quotations')">
-          <mat-icon>request_quote</mat-icon>
-          <span>Quotations</span>
-        </button>
-        <button type="button" (click)="navigate('billing')">
-          <mat-icon>receipt_long</mat-icon>
-          <span>Billing</span>
-        </button>
-        <button type="button" (click)="navigate('vehicles')">
-          <mat-icon>local_shipping</mat-icon>
-          <span>Vehicles</span>
-        </button>
-        <button type="button" routerLink="/staffdetails" routerLinkActive="active" (click)="closeSidebar()">
-          <mat-icon>badge</mat-icon>
-          <span>Staff</span>
-        </button>
-        <button type="button" routerLink="/department" routerLinkActive="active" (click)="closeSidebar()">
-          <mat-icon>domain</mat-icon>
-          <span>Department</span>
-        </button>
-        <button type="button" routerLink="/roles" routerLinkActive="active" (click)="closeSidebar()">
-          <mat-icon>admin_panel_settings</mat-icon>
-          <span>Roles</span>
-        </button>
-        <button type="button" routerLink="/plan" routerLinkActive="active" (click)="closeSidebar()">
-          <mat-icon>category</mat-icon>
-          <span>Plans</span>
-        </button>
-        <button type="button" (click)="navigate('reports')">
-          <mat-icon>bar_chart</mat-icon>
-          <span>Reports</span>
-        </button>
-        <button type="button" (click)="navigate('settings')">
-          <mat-icon>settings</mat-icon>
-          <span>Settings</span>
-        </button>
+        <div class="nav-section" *ngFor="let section of menuSections">
+          <ng-container *ngIf="section.id === 'main'; else dropdownSection">
+            <button
+              type="button"
+              *ngFor="let item of section.items"
+              [routerLink]="!item.comingSoon && item.route ? item.route : null"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+              (click)="handleMenuClick(item)">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span>{{ item.label }}</span>
+              <small *ngIf="item.comingSoon">Soon</small>
+            </button>
+          </ng-container>
+
+          <ng-template #dropdownSection>
+            <button
+              type="button"
+              class="dropdown-trigger"
+              [class.open]="isMenuSectionOpen(section)"
+              (click)="toggleMenuSection(section)">
+              <mat-icon>{{ section.icon }}</mat-icon>
+              <span>{{ section.label }}</span>
+              <mat-icon class="dropdown-caret">expand_more</mat-icon>
+            </button>
+
+            <div class="sub-menu" *ngIf="isMenuSectionOpen(section)">
+              <button
+                type="button"
+                class="sub-menu-item"
+                *ngFor="let item of section.items"
+                [routerLink]="!item.comingSoon && item.route ? item.route : null"
+                routerLinkActive="active"
+                (click)="handleMenuClick(item)">
+                <mat-icon>{{ item.icon }}</mat-icon>
+                <span>{{ item.label }}</span>
+                <small *ngIf="item.comingSoon">Soon</small>
+              </button>
+            </div>
+          </ng-template>
+        </div>
       </nav>
     </aside>
 
@@ -88,7 +83,7 @@
           <button type="button" class="icon-button" aria-label="Notifications">
             <mat-icon>notifications</mat-icon>
           </button>
-          
+
           <div class="profile-menu-wrap">
             <button type="button" class="profile-button" (click)="toggleProfileMenu()">
               <mat-icon>person</mat-icon>

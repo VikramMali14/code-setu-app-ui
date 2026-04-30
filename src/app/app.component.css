@@ -89,6 +89,12 @@
   display: none;
 }
 
+.admin-sidebar.collapsed .dropdown-caret,
+.admin-sidebar.collapsed .sub-menu,
+.admin-sidebar.collapsed .sidebar-nav small {
+  display: none;
+}
+
 .admin-sidebar.collapsed .sidebar-nav button {
   justify-content: center;
 }
@@ -115,8 +121,13 @@
 
 .sidebar-nav {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   margin-top: 22px;
+}
+
+.nav-section {
+  display: grid;
+  gap: 6px;
 }
 
 .sidebar-nav button {
@@ -136,11 +147,66 @@
   transition: all 0.2s ease;
 }
 
+.sidebar-nav .dropdown-trigger {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav .dropdown-trigger.open {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.dropdown-caret {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-trigger.open .dropdown-caret {
+  transform: rotate(180deg);
+}
+
+.sub-menu {
+  display: grid;
+  gap: 6px;
+  padding-left: 16px;
+  animation: slideDown 0.18s ease;
+}
+
+.sidebar-nav .sub-menu-item {
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sidebar-nav .sub-menu-item mat-icon {
+  font-size: 19px;
+  width: 19px;
+  height: 19px;
+}
+
+.sidebar-nav small {
+  margin-left: auto;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
 .sidebar-nav button:hover,
 .sidebar-nav button.active {
   color: #2d3748;
   background: #fff;
   box-shadow: 0 14px 26px rgba(45, 55, 72, 0.14);
+}
+
+.sidebar-nav button:hover small,
+.sidebar-nav button.active small {
+  color: #2d3748;
+  background: #edf2f7;
 }
 
 .sidebar-nav mat-icon {

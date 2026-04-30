@@ -19,6 +19,8 @@ import { StaffDetailsComponent } from './component/staff-details/staff-details.c
 import { StaffuserComponent } from './component/staffuser/staffuser.component';
 import { CreateplanComponent } from './component/createplan/createplan.component';
 import { CustomerComponent } from './component/customer/customer.component';
+import { CompanyComponent } from './component/company/company.component';
+import { PermissionComponent } from './component/permission/permission.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -32,6 +34,7 @@ const routes: Routes = [
   { path: 'createrole', component: RoleComponent, pathMatch: 'full' },
   { path: 'updaterole', component: UpdateroleComponent, pathMatch: 'full' },
   { path: 'roles', component: RolesDetailsComponent, pathMatch: 'full' },
+  { path: 'permission-list', component: PermissionComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'feature', component: FeaturescreenComponent, pathMatch: 'full' },
   { path: 'staffdetails', component: StaffDetailsComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'staffuser', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard] },
@@ -39,8 +42,11 @@ const routes: Routes = [
   { path: 'department', component: DepartmentComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'plan', component: PlanscreenComponent, pathMatch: 'full', canActivate: [AuthGuard] },
   { path: 'createplan', component: CreateplanComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'customers', component: CustomerComponent, pathMatch: 'full', canActivate: [AuthGuard] }
-
+  { path: 'customers', component: CustomerComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'staffuser/:staffId', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'company-list', component: CompanyComponent , pathMatch: 'full', canActivate: [AuthGuard] },
+{ path: 'company-create', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
+{ path: 'company-edit/:id', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
 
 ];
 

@@ -4,6 +4,7 @@ import { filter } from 'rxjs/operators';
 import { LoginService } from './services/login.service';
 import { StaffuserServiceService } from './services/staffuser-service';
 import { GenericDataDTO } from './models/generic-data-dto';
+import { AccessMenuItem, AccessMenuSection, AccessMenuService } from './services/access-menu.service';
 
 @Component({
   selector: 'app-root',
@@ -16,23 +17,14 @@ export class AppComponent implements OnInit {
   isInternalApp = false;
   username = 'SUPERADMIN';
   showProfileMenu = false;
+  menuSections: AccessMenuSection[] = [];
+  expandedSections: { [key: string]: boolean } = {};
   
   // Sidebar state
   isSidebarCollapsed = false;
   isMobileView = false;
 
-  private internalRoutes = [
-    '/dashboard',
-    '/customers',
-    '/department',
-    '/staffdetails',
-    '/staffuser',
-    '/roles',
-    '/createrole',
-    '/updaterole',
-    '/plan',
-    '/createplan'
-  ];
+  private internalRoutes: string[] = [];
 
   userdata: any;
 
@@ -40,6 +32,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     private loginService: LoginService,
     private staffuserservice: StaffuserServiceService,
+    private accessMenuService: AccessMenuService,
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +43,8 @@ export class AppComponent implements OnInit {
       console.error('Error parsing user session:', error);
       this.userdata = {};
     }
+
+    this.refreshAccessMenu();
 
     // Check viewport size
     this.checkViewport();
@@ -120,6 +115,29 @@ export class AppComponent implements OnInit {
     this.closeSidebarOnMobile();
   }
 
+  toggleMenuSection(section: AccessMenuSection): void {
+    if (section.id === 'main') {
+      return;
+    }
+
+    this.expandedSections[section.id] = !this.expandedSections[section.id];
+  }
+
+  isMenuSectionOpen(section: AccessMenuSection): boolean {
+    return section.id === 'main' || !!this.expandedSections[section.id];
+  }
+
+  handleMenuClick(item: AccessMenuItem): void {
+    if (item.comingSoon || !item.route) {
+      alert(`${item.label} module is currently under construction.`);
+      this.closeSidebarOnMobile();
+      return;
+    }
+
+    this.router.navigate([item.route]);
+    this.closeSidebarOnMobile();
+  }
+
   toggleSidebar() {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
@@ -184,6 +202,7 @@ export class AppComponent implements OnInit {
   }
 
   private setLayout(url: string): void {
+    this.refreshAccessMenu();
     this.isInternalApp = this.loginService.isLoggedIn() && 
                          this.internalRoutes.some(route => url.startsWith(route));
 
@@ -196,5 +215,24 @@ export class AppComponent implements OnInit {
         console.error('Error parsing user session in setLayout:', error);
       }
     }
+  }
+
+  private refreshAccessMenu(): void {
+    this.menuSections = this.accessMenuService.getSections();
+    this.internalRoutes = Array.from(new Set([
+      ...this.accessMenuService.getInternalRoutes(),
+      '/staffuser',
+      '/createrole',
+      '/updaterole',
+      '/createplan',
+      '/company-create',
+      '/company-edit'
+    ]));
+
+    this.menuSections.forEach(section => {
+      if (section.id !== 'main' && this.expandedSections[section.id] === undefined) {
+        this.expandedSections[section.id] = true;
+      }
+    });
   }
 }

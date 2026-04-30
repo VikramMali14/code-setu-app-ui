@@ -49,3 +49,18 @@ margin-right:10px;
 ::ng-deep .mat-horizontal-stepper-header-container{
 margin-bottom:25px;
 }
+.preview-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:12px;
+  margin-top:20px;
+  text-align:left;
+}
+
+.preview-grid p{
+  margin:0;
+  padding:12px;
+  background:#ffffff;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+}

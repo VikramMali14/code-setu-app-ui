@@ -1,36 +1,209 @@
-<h2>Employee List</h2>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Role</th>
-      <th>Roles Code</th>
-      <th>Discription</th>
-      <th>Scopr</th>
-      <th>Permission</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let role of role">
-      <td>{{ role.roleName }}</td>
-      <td>{{ role.code }}</td>
-      <td>{{ role.discription }}</td>
-      <td>{{ role.scope }}</td>
-      <td>{{ role.permissions }}</td>
-      <td>
-        <button (click)="updaterole(role.rolesId)" class="btn btn-info">
-          Update
+<!-- roles-details.component.html -->
+
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <div class="top-card">
+    <div class="gradient-line"></div>
+
+    <div class="card-header">
+
+      <div class="header-left">
+        <div class="title-icon">
+          <span class="material-icons">admin_panel_settings</span>
+        </div>
+
+        <div>
+          <h1>Roles Management</h1>
+          <p class="sub-title">Create, update and manage roles</p>
+        </div>
+      </div>
+
+      <button class="circle-btn" (click)="openCreateForm()">
+        <span class="material-icons">add</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="list-card" *ngIf="showForm">
+
+    <div class="gradient-line"></div>
+
+    <div class="card-header">
+
+      <h2>{{ isEditMode ? 'Update Role' : 'Create Role' }}</h2>
+
+      <button class="circle-btn" (click)="cancelForm()">
+        <span class="material-icons">close</span>
+      </button>
+
+    </div>
+
+    <form [formGroup]="roleForm" (ngSubmit)="submitForm()">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Role Code *</label>
+          <input type="text" formControlName="code">
+        </div>
+
+        <div class="form-group">
+          <label>Role Name *</label>
+          <input type="text" formControlName="roleName">
+        </div>
+
+        <div class="form-group">
+          <label>Scope *</label>
+          <input type="text" formControlName="scope">
+        </div>
+
+        <div class="form-group full-width">
+          <label>Description</label>
+          <input type="text" formControlName="discription">
+        </div>
+
+      </div>
+
+      <!-- Permissions -->
+      <div class="permission-wrapper" formGroupName="permissions">
+
+        <div class="permission-head">
+
+          <h3>Permissions</h3>
+
+          <label class="master-check">
+            <input type="checkbox" (change)="toggleAllPermissions($event)">
+            Select All
+          </label>
+
+        </div>
+
+        <div *ngFor="let group of groupedPermissions | keyvalue">
+
+          <!-- Module -->
+          <div class="module-row">
+
+            <label class="module-check">
+              <input type="checkbox" (change)="toggleModule(group.key,$event)">
+              {{ group.key }}
+            </label>
+
+          </div>
+
+          <!-- Child Permissions -->
+          <div class="permission-grid">
+
+            <label class="permission-box" *ngFor="let item of $any(group.value)">
+
+              <input type="checkbox" [formControlName]="item.id">
+
+              <span>{{ item.name }}</span>
+
+            </label>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="form-action">
+
+        <button class="save-btn" type="submit">
+          {{ isEditMode ? 'Update Role' : 'Create Role' }}
         </button>
-      </td>
-      <td>
-        <button (click)="deleteRole(role.rolesId)" class="btn btn-danger ">
-          Delete
+
+        <button type="button" class="cancel-btn" (click)="cancelForm()">
+          Cancel
         </button>
-      </td>
-      <td>
-        <button (click)="fetchRoleDetails(role.rolesId)" class="btn btn-success">
-          View
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- Role List -->
+  <div class="list-card">
+
+    <div class="gradient-line"></div>
+
+    <div class="card-header">
+
+      <h2>Roles List</h2>
+
+      <div class="search-box">
+        <span class="material-icons">search</span>
+
+        <input type="text" [(ngModel)]="searchText" placeholder="Search role...">
+      </div>
+
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>ROLE</th>
+            <th>CODE</th>
+            <th>SCOPE</th>
+            <th>PERMISSIONS</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let item of filteredRoles()">
+
+            <td>{{ item.rolesId }}</td>
+
+            <td>{{ item.roleName }}</td>
+
+            <td>{{ item.code }}</td>
+
+            <td>
+              <span class="scope-badge">
+                {{ item.scope }}
+              </span>
+            </td>
+
+            <td>
+              {{ item.permissions?.length || 0 }}
+            </td>
+
+            <td class="action-td">
+
+              <button class="table-btn edit-btn" (click)="editRole(item)">
+                <span class="material-icons">edit</span>
+              </button>
+
+              <button class="table-btn delete-btn" (click)="deleteRole(item.rolesId)">
+                <span class="material-icons">delete</span>
+              </button>
+
+            </td>
+
+          </tr>
+
+          <tr *ngIf="roleList.length === 0">
+            <td colspan="6" class="empty-row">
+              No roles found
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

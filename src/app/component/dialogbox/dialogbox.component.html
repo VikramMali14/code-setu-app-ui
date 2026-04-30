@@ -1,0 +1,42 @@
+<h2 mat-dialog-title class="confirm-title">
+
+  <div class="confirm-icon">
+    <span class="material-icons">delete_forever</span>
+  </div>
+
+  <div class="title-text">
+    <span>Delete Company</span>
+    <small>Confirmation Required</small>
+  </div>
+
+</h2>
+
+<mat-dialog-content class="confirm-content">
+
+  <p class="main-text">
+    Are you sure you want to delete this company?
+  </p>
+
+  <p class="sub-text">
+    This action cannot be undone and all related records may be affected.
+  </p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="confirm-actions">
+
+  <button mat-button class="cancel-btn"
+    [mat-dialog-close]="false">
+    Cancel
+  </button>
+
+  <button mat-raised-button
+    class="delete-btn"
+    [mat-dialog-close]="true">
+
+    <span class="material-icons">delete</span>
+    Delete
+
+  </button>
+
+</mat-dialog-actions>

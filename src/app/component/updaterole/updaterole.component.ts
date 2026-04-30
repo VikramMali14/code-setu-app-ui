@@ -17,19 +17,7 @@ export class UpdateroleComponent implements OnInit {
   ) { }
 
 
-  onSubmit() {
-    console.log(this.role);
-    this.updateRole();
 
-  }
-  updateRole() {
-    this.roleservice
-      .updaterole(this.role)
-      .subscribe(data => {
-        this.gotoService(),
-          console.log(this.role);
-      })
-  }
   ngOnInit(): void {
     this.id = this.actiavtedroute.snapshot.params["id"];
     this.roleservice.getroleById(this.id)
