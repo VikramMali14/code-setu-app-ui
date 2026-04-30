@@ -108,25 +108,25 @@ export class CustomerComponent implements OnInit {
   }
 
   loadCustomers(pageNumber = this.currentPageNumber): void {
-    this.isLoading = true;
-    this.loadError = '';
+  this.isLoading = true;
+  this.loadError = '';
+  this.customersService.getCustomers(pageNumber, this.pageSize).subscribe({
+    next: response => {
+      console.log('API RESPONSE:', response);
 
-    this.customersService.getCustomers(pageNumber, this.pageSize).subscribe({
-      next: response => {
-        const customerList = this.extractCustomers(response);
-        this.updatePagination(response, customerList.length);
+      const customerList = this.extractCustomers(response);
 
-        this.customers = customerList.map(customer => this.toCustomerRow(customer));
-
-        this.isLoading = false;
-      },
-      error: error => {
-        console.error('Customer API failed:', error);
-        this.loadError = 'Unable to load latest customers. Showing saved customer data.';
-        this.isLoading = false;
-      }
-    });
-  }
+      this.updatePagination(response, customerList.length);
+      this.customers = customerList.map(c => this.toCustomerRow(c));
+      this.isLoading = false;
+    },
+    error: error => {
+      console.error('Customer API failed:', error);
+      this.loadError = 'Unable to load latest customers.';
+      this.isLoading = false;
+    }
+  });
+}
 
   goToPage(pageNumber: number): void {
     const total = this.getDisplayTotalPages();
@@ -359,12 +359,14 @@ export class CustomerComponent implements OnInit {
     return [];
   }
 
-  private updatePagination(response: any, loadedRecords: number): void {
-    this.pageRecords = response?.pageRecords || loadedRecords;
-    this.totalRecords = response?.totalRecords || loadedRecords;
-    this.currentPageNumber = response?.currentPageNumber || 0;
-    this.totalPages = response?.totalPages || (this.totalRecords > 0 ? Math.ceil(this.totalRecords / this.pageSize) : 0);
-  }
+private updatePagination(response: any, loadedRecords: number): void {
+  const pageData = response?.data;
+
+  this.pageRecords = pageData?.numberOfElements ?? loadedRecords;
+  this.totalRecords = pageData?.totalElements ?? loadedRecords;
+  this.currentPageNumber = pageData?.number ?? 0;
+  this.totalPages = pageData?.totalPages ?? 1;
+}
 
   getDisplayCurrentPage(): number {
     return this.currentPageNumber + 1;
