@@ -343,21 +343,22 @@ export class CustomerComponent implements OnInit {
     });
   }
 
-  private extractCustomers(response: any): any[] {
-    if (Array.isArray(response)) {
-      return response;
-    }
+private extractCustomers(response: any): any[] {
+  if (!response) return [];
 
-    if (Array.isArray(response?.dataList)) {
-      return response.dataList;
-    }
-
-    if (Array.isArray(response?.data)) {
-      return response.data;
-    }
-
-    return [];
+  // ✅ YOUR REAL CASE (Spring Page)
+  if (Array.isArray(response?.data?.content)) {
+    return response.data.content;
   }
+
+  // fallback cases
+  if (Array.isArray(response)) return response;
+  if (Array.isArray(response?.dataList)) return response.dataList;
+  if (Array.isArray(response?.data)) return response.data;
+
+  console.warn('Unknown response format:', response);
+  return [];
+}
 
 private updatePagination(response: any, loadedRecords: number): void {
   const pageData = response?.data;
