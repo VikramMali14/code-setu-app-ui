@@ -61,6 +61,9 @@ import { CreateplanComponent } from './component/createplan/createplan.component
 import { CustomerComponent } from './component/customer/customer.component';
 import { CompanyComponent } from './component/company/company.component';
 import { PermissionComponent } from './component/permission/permission.component';
+import { VehicleManagementComponent } from './component/vehicle-management/vehicle-management.component';
+import { GoogleMapsModule } from '@angular/google-maps';
+
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
 @NgModule({
@@ -116,7 +119,8 @@ import { PermissionComponent } from './component/permission/permission.component
     DownloadscreenComponent,
     LoaderComponent,
     AboutComponent,
-    FeaturescreenComponent
+    FeaturescreenComponent,
+    VehicleManagementComponent,
 
   ],
   providers: [
