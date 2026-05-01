@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatIconModule } from '@angular/material/icon';
+import { log } from 'console';
 import { Subject, takeUntil } from 'rxjs';
 import { VehicleLocationService } from 'src/app/services/vehicle-location.service';
 
@@ -69,7 +70,8 @@ export class VehicleManagementComponent implements OnInit, OnDestroy {
     this.vehicleService.loadInitialLocation(this.vehicleId)
       .subscribe(res => {
         if (res) {
-          this.updateMarker(res.latitude, res.longitude);
+          console.log('Initial location:', res);
+          this.animateMarker(res.latitude, res.longitude);
         }
       });
   }

@@ -29,7 +29,7 @@ export class VehicleLocationService {
     );
   }
 
-  loadInitialLocation(vehicleId: number): Observable<any> {
+  loadInitialLocation(vehicleId: any): Observable<any> {
     return this.http.get<any>(
       `${this.BASE_URL}/vehicle/${vehicleId}/location`
     );
@@ -43,7 +43,7 @@ export class VehicleLocationService {
       return;
     }
     this.stompClient = new Client({
-  webSocketFactory: () => new SockJS(`${ENV.CARGO_SETU}/ws`),
+      webSocketFactory: () => new SockJS(`${ENV.CARGO_SETU}/ws`),
       reconnectDelay: 5000,
 
       onConnect: () => {
