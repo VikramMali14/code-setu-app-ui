@@ -10,7 +10,7 @@ import { ENV } from 'src/assets/env';
 })
 export class VehicleLocationService {
 
-  private BASE_URL = ENV + "/api/v2/cargosetu";
+  private BASE_URL = ENV.CARGO_SETU + "/api/v2/cargosetu";
 
   private stompClient!: Client;
   private subscription!: StompSubscription;
@@ -20,7 +20,7 @@ export class VehicleLocationService {
   private locationSubject = new BehaviorSubject<any>(null);
   location$ = this.locationSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // 🔥 REST API
   getLiveLocation(vehicleId: number) {
@@ -31,7 +31,7 @@ export class VehicleLocationService {
 
   loadInitialLocation(vehicleId: number): Observable<any> {
     return this.http.get<any>(
-      `${this.BASE_URL}/vehicle/${vehicleId}/last-location`
+      `${this.BASE_URL}/vehicle/${vehicleId}/location`
     );
   }
 
@@ -42,9 +42,8 @@ export class VehicleLocationService {
       this.subscribeToVehicle();
       return;
     }
-
     this.stompClient = new Client({
-      webSocketFactory: () => new SockJS(`${ENV}/ws`),
+  webSocketFactory: () => new SockJS(`${ENV.CARGO_SETU}/ws`),
       reconnectDelay: 5000,
 
       onConnect: () => {

@@ -21,6 +21,7 @@ import { CreateplanComponent } from './component/createplan/createplan.component
 import { CustomerComponent } from './component/customer/customer.component';
 import { CompanyComponent } from './component/company/company.component';
 import { PermissionComponent } from './component/permission/permission.component';
+import { VehicleManagementComponent } from './component/vehicle-management/vehicle-management.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -47,6 +48,7 @@ const routes: Routes = [
   { path: 'company-list', component: CompanyComponent , pathMatch: 'full', canActivate: [AuthGuard] },
 { path: 'company-create', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
 { path: 'company-edit/:id', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
+{ path: 'vehicle', component: VehicleManagementComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
 
 ];
 
