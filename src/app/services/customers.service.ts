@@ -19,6 +19,11 @@ export class CustomersService {
     return this.http.get<any>(`${this.BASE_URL}/api/v2/cargosetu/customer`, { params });
   }
 
+  // Changed to get customer by UUID
+  getCustomerByUuid(uuid: string): Observable<any> {
+    return this.http.get<any>(`${this.BASE_URL}/api/v2/cargosetu/customer/${uuid}`);
+  }
+
   createCustomer(payload: any): Observable<any> {
     return this.http.post<any>(`${this.BASE_URL}/api/v2/cargosetu/customer`, payload);
   }

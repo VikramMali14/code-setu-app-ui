@@ -29,21 +29,27 @@ export class CustomerComponent implements OnInit {
   isDeleting = false;
   deleteMessage = '';
   deleteError = '';
+
+  // ── Create Form ─────────────────────────────────────────────────────
   showCreateForm = false;
   isCreating = false;
   createMessage = '';
   createError = '';
   newCustomer = this.getEmptyCustomerForm();
-
-  // Stepper
   createStep = 0;
   createSteps = ['Customer details', 'Shifting details', 'Charges', 'Review'];
   activeShiftIndex = 0;
+
+  // ── Update Form ─────────────────────────────────────────────────────
   showUpdateForm = false;
   isUpdating = false;
   updateMessage = '';
   updateError = '';
-  updateCustomerForm = this.getEmptyUpdateForm();
+  customerToUpdate = this.getEmptyCustomerForm();
+  updateStep = 0;
+  updateSteps = ['Customer details', 'Shifting details', 'Charges', 'Review'];
+  activeUpdateShiftIndex = 0;
+
   pageSize = 5;
   pageRecords = 0;
   totalRecords = 0;
@@ -61,12 +67,11 @@ export class CustomerComponent implements OnInit {
     const current = this.getDisplayCurrentPage();
     const start = Math.max(1, current - 2);
     const end = Math.min(total, start + 4);
-
     return Array.from({ length: end - start + 1 }, (_, index) => start + index);
   }
 
   get serviceAreas(): string[] {
-    return Array.from(new Set(this.customers.map(customer => customer.serviceArea).filter(Boolean)));
+    return Array.from(new Set(this.customers.map(c => c.serviceArea).filter(Boolean)));
   }
 
   get filteredCustomers(): CustomerRow[] {
@@ -77,25 +82,19 @@ export class CustomerComponent implements OnInit {
     return this.customers.filter(customer => {
       const searchableText = [
         this.getCustomerName(customer),
-        customer.username,
-        customer.serviceArea,
-        customer.accountNo,
-        customer.isp,
-        customer.mobileNo,
-        customer.email,
-        customer.shiftFromCity,
-        customer.shiftToCity,
-        customer.customerId
+        customer.username, customer.serviceArea, customer.accountNo,
+        customer.isp, customer.mobileNo, customer.email,
+        customer.shiftFromCity, customer.shiftToCity, customer.customerId
       ].join(' ').toLowerCase();
       const shiftingDate = customer.shiftingStartDate ? new Date(customer.shiftingStartDate) : null;
 
-      const matchesSearch = !search || searchableText.includes(search);
-      const matchesArea = this.selectedArea === 'Any' || customer.serviceArea === this.selectedArea;
-      const matchesStatus = this.selectedStatus === 'All' || customer.connectionStatus === this.selectedStatus;
-      const matchesStart = !start || (shiftingDate !== null && shiftingDate >= start);
-      const matchesEnd = !end || (shiftingDate !== null && shiftingDate <= end);
-
-      return matchesSearch && matchesArea && matchesStatus && matchesStart && matchesEnd;
+      return (
+        (!search || searchableText.includes(search)) &&
+        (this.selectedArea === 'Any' || customer.serviceArea === this.selectedArea) &&
+        (this.selectedStatus === 'All' || customer.connectionStatus === this.selectedStatus) &&
+        (!start || (shiftingDate !== null && shiftingDate >= start)) &&
+        (!end   || (shiftingDate !== null && shiftingDate <= end))
+      );
     });
   }
 
@@ -108,33 +107,26 @@ export class CustomerComponent implements OnInit {
   }
 
   loadCustomers(pageNumber = this.currentPageNumber): void {
-  this.isLoading = true;
-  this.loadError = '';
-  this.customersService.getCustomers(pageNumber, this.pageSize).subscribe({
-    next: response => {
-      console.log('API RESPONSE:', response);
-
-      const customerList = this.extractCustomers(response);
-
-      this.updatePagination(response, customerList.length);
-      this.customers = customerList.map(c => this.toCustomerRow(c));
-      this.isLoading = false;
-    },
-    error: error => {
-      console.error('Customer API failed:', error);
-      this.loadError = 'Unable to load latest customers.';
-      this.isLoading = false;
-    }
-  });
-}
+    this.isLoading = true;
+    this.loadError = '';
+    this.customersService.getCustomers(pageNumber, this.pageSize).subscribe({
+      next: response => {
+        const customerList = this.extractCustomers(response);
+        this.updatePagination(response, customerList.length);
+        this.customers = customerList.map(c => this.toCustomerRow(c));
+        this.isLoading = false;
+      },
+      error: error => {
+        console.error('Customer API failed:', error);
+        this.loadError = 'Unable to load latest customers.';
+        this.isLoading = false;
+      }
+    });
+  }
 
   goToPage(pageNumber: number): void {
     const total = this.getDisplayTotalPages();
-
-    if (pageNumber < 0 || pageNumber >= total || pageNumber === this.currentPageNumber) {
-      return;
-    }
-
+    if (pageNumber < 0 || pageNumber >= total || pageNumber === this.currentPageNumber) return;
     this.currentPageNumber = pageNumber;
     this.loadCustomers(pageNumber);
   }
@@ -144,6 +136,7 @@ export class CustomerComponent implements OnInit {
     this.loadCustomers(0);
   }
 
+  // ── Create Form Actions ─────────────────────────────────────────────
   openCreateForm(): void {
     this.showCreateForm = true;
     this.showUpdateForm = false;
@@ -151,6 +144,7 @@ export class CustomerComponent implements OnInit {
     this.createError = '';
     this.createStep = 0;
     this.activeShiftIndex = 0;
+    this.newCustomer = this.getEmptyCustomerForm();
   }
 
   closeCreateForm(): void {
@@ -164,7 +158,8 @@ export class CustomerComponent implements OnInit {
     this.createStep = 0;
     this.activeShiftIndex = 0;
   }
-  // ── Stepper navigation ──────────────────────────────────────────────
+
+  // ── Create Stepper ──────────────────────────────────────────────────
   get isFirstCreateStep(): boolean { return this.createStep === 0; }
   get isLastCreateStep(): boolean  { return this.createStep === this.createSteps.length - 1; }
 
@@ -172,14 +167,8 @@ export class CustomerComponent implements OnInit {
     if (!this.validateCreateStep()) return;
     if (!this.isLastCreateStep) this.createStep++;
   }
-
-  prevCreateStep(): void {
-    if (!this.isFirstCreateStep) this.createStep--;
-  }
-
-  goToCreateStep(index: number): void {
-    if (index < this.createStep) this.createStep = index;
-  }
+  prevCreateStep(): void { if (!this.isFirstCreateStep) this.createStep--; }
+  goToCreateStep(index: number): void { if (index < this.createStep) this.createStep = index; }
 
   validateCreateStep(): boolean {
     if (this.createStep === 0) {
@@ -187,14 +176,13 @@ export class CustomerComponent implements OnInit {
       if (!this.newCustomer.lastName?.trim())  { this.showCreateSnackbar('Last name is required', true); return false; }
       if (!this.newCustomer.mobileNo?.trim())  { this.showCreateSnackbar('Mobile number is required', true); return false; }
       if (!this.newCustomer.email?.trim())     { this.showCreateSnackbar('Email is required', true); return false; }
-      const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRx.test(this.newCustomer.email)) { this.showCreateSnackbar('Enter a valid email address', true); return false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.newCustomer.email)) { this.showCreateSnackbar('Enter a valid email address', true); return false; }
     }
     if (this.createStep === 1) {
       for (let i = 0; i < this.newCustomer.shiftings.length; i++) {
         const s = this.newCustomer.shiftings[i];
         if (!s.shiftFromCity?.trim() || !s.shiftToCity?.trim()) {
-          this.showCreateSnackbar(`From and To city are required for Shifting ${i + 1}`, true);
+          this.showCreateSnackbar(`From and To city required for Shifting ${i + 1}`, true);
           this.activeShiftIndex = i;
           return false;
         }
@@ -203,89 +191,52 @@ export class CustomerComponent implements OnInit {
     return true;
   }
 
-  // ── Snackbar ────────────────────────────────────────────────────────
+  // ── Create Snackbar ─────────────────────────────────────────────────
   createSnackbar = { message: '', error: false, visible: false };
-  private snackbarTimer: any;
+  private createSnackbarTimer: any;
 
   showCreateSnackbar(message: string, error = false): void {
-    clearTimeout(this.snackbarTimer);
+    clearTimeout(this.createSnackbarTimer);
     this.createSnackbar = { message, error, visible: true };
-    this.snackbarTimer = setTimeout(() => this.createSnackbar.visible = false, 3500);
+    this.createSnackbarTimer = setTimeout(() => this.createSnackbar.visible = false, 3500);
   }
 
-  // ── Shifting helpers ────────────────────────────────────────────────
+  // ── Create Shifting helpers ─────────────────────────────────────────
   getShiftLabel(s: any, i: number): string {
     return s.shiftFromCity && s.shiftToCity ? `${s.shiftFromCity} → ${s.shiftToCity}` : `Shifting ${i + 1}`;
   }
 
   addShifting(): void {
-    this.newCustomer.shiftings.push({
-      isShiftCompleted: false,
-      shiftFromCity: '',
-      shiftToCity: '',
-      fromAddress: '',
-      toAddress: '',
-      shiftingType: '',
-      shiftingStartDate: '',
-      shiftReachedDate: '',
-      shiftCompletedBy: '',
-      shiftCompletedById: null,
-      customerId: null,
-      chargesDTO: {
-        transportCharge: 0,
-        packingCharge: 0,
-        loadingCharge: 0,
-        unloadingCharge: 0,
-        unpackingCharge: 0,
-        carTransportCharge: 0,
-        riskInsureCharge: 0,
-        storageCharge: 0,
-        statisticalCharge: 0,
-        serviceCharge: 0,
-        serviceRate: 0,
-        gstRate: 18,
-        gstCharge: 0,
-        extraChargesList: []
-      }
-    });
+    this.newCustomer.shiftings.push(this.getEmptyShiftingForm());
     this.activeShiftIndex = this.newCustomer.shiftings.length - 1;
   }
 
   removeShifting(index: number): void {
-    if (this.newCustomer.shiftings.length <= 1) {
-      this.showCreateSnackbar('At least one shifting is required', true);
-      return;
-    }
+    if (this.newCustomer.shiftings.length <= 1) { this.showCreateSnackbar('At least one shifting is required', true); return; }
     this.newCustomer.shiftings.splice(index, 1);
     this.activeShiftIndex = Math.max(0, this.activeShiftIndex - 1);
   }
 
   addExtraCharge(shiftIndex: number): void {
-    this.newCustomer.shiftings[shiftIndex].chargesDTO.extraChargesList.push({
-      chargeName: '', chargeValue: 0, chargeRate: 0
-    });
+    this.newCustomer.shiftings[shiftIndex].charges.extracharges.push({ chargeName: '', chargeValue: 0, chargeRate: 0 });
   }
 
   removeExtraCharge(shiftIndex: number, chargeIndex: number): void {
-    this.newCustomer.shiftings[shiftIndex].chargesDTO.extraChargesList.splice(chargeIndex, 1);
+    this.newCustomer.shiftings[shiftIndex].charges.extracharges.splice(chargeIndex, 1);
   }
 
   trackByIndex(index: number): number { return index; }
-
 
   createCustomer(): void {
     this.isCreating = true;
     this.createMessage = '';
     this.createError = '';
-
     this.customersService.createCustomer(this.newCustomer).subscribe({
       next: () => {
         this.isCreating = false;
         this.createMessage = 'Customer created successfully.';
         this.resetCreateForm();
         this.showCreateForm = false;
-        this.createStep = 0;
-        this.activeShiftIndex = 0;
         this.loadCustomers();
       },
       error: error => {
@@ -296,21 +247,80 @@ export class CustomerComponent implements OnInit {
     });
   }
 
+  // ── Update Form Actions ─────────────────────────────────────────────
   openUpdateForm(customer: CustomerRow): void {
     this.showCreateForm = false;
-    this.showUpdateForm = true;
+    this.showUpdateForm = true;          // open immediately — stays open on error too
     this.updateMessage = '';
     this.updateError = '';
-    this.updateCustomerForm = {
-      customerId: customer.customerId,
-      firstName: customer.firstName || '',
-      lastName: customer.lastName || '',
-      mobileNo: customer.mobileNo || '',
-      alternateMobileNo: customer.alternateMobileNo || '',
-      email: customer.email || '',
-      workEmail: customer.workEmail || '',
-      uuid: customer.uuid || ''
-    };
+    this.updateStep = 0;
+    this.activeUpdateShiftIndex = 0;
+    this.isUpdating = false;
+    this.customerToUpdate = this.getEmptyCustomerForm(); // blank skeleton while API loads
+
+    if (!customer.uuid) {
+      this.updateError = 'No customer identifier (UUID) available for update.';
+      return;
+    }
+
+    this.customersService.getCustomerByUuid(customer.uuid).subscribe({
+      next: (response) => {
+        // handle both {data: {...}} and direct object responses
+        const d = response?.data || response;
+        if (!d) { this.updateError = 'Failed to load customer details.'; return; }
+
+        this.customerToUpdate = {
+          customerId: d.customerId,
+          firstName: d.firstName || '',
+          lastName: d.lastName || '',
+          mobileNo: d.mobileNo || '',
+          alternateMobileNo: d.alternateMobileNo || '',
+          email: d.email || '',
+          workEmail: d.workEmail || '',
+          uuid: d.uuid || '',
+          shiftings: (d.shiftings && d.shiftings.length > 0)
+            ? d.shiftings.map((s: any) => {
+              // API sends chargesDTO; locally we use charges — normalise here
+              const src = s.chargesDTO || s.charges || {};
+              return {
+                ...s,
+                charges: {
+                  transportCharge:    src.transportCharge    ?? 0,
+                  packingCharge:      src.packingCharge      ?? 0,
+                  loadingCharge:      src.loadingCharge      ?? 0,
+                  unloadingCharge:    src.unloadingCharge    ?? 0,
+                  unpackingCharge:    src.unpackingCharge    ?? 0,
+                  carTransportCharge: src.carTransportCharge ?? 0,
+                  riskInsureCharge:   src.riskInsureCharge   ?? 0,
+                  storageCharge:      src.storageCharge      ?? 0,
+                  statisticalCharge:  src.statisticalCharge  ?? 0,
+                  serviceCharge:      src.serviceCharge      ?? 0,
+                  serviceRate:        src.serviceRate        ?? 0,
+                  gstRate:            src.gstRate            ?? 18,
+                  gstCharge:          src.gstCharge          ?? 0,
+                  // API may use extraChargesList (capital L) — normalise to extracharges
+                  extracharges: (src.extraChargesList || src.extracharges || []).map((e: any) => ({
+                    chargeName:  e.chargeName  || '',
+                    chargeValue: e.chargeValue ?? 0,
+                    chargeRate:  e.chargeRate  ?? 0
+                  }))
+                }
+              };
+            })
+            : [this.getEmptyShiftingForm()]
+        };
+        // Normalise dates to YYYY-MM-DD for <input type="date">
+        this.customerToUpdate.shiftings.forEach((s: any) => {
+          s.shiftingStartDate = s.shiftingStartDate ? new Date(s.shiftingStartDate).toISOString().slice(0, 10) : '';
+          s.shiftReachedDate  = s.shiftReachedDate  ? new Date(s.shiftReachedDate).toISOString().slice(0, 10)  : '';
+        });
+      },
+      error: (error) => {
+        console.error('Error fetching customer for update:', error);
+        // form stays open so the error message is visible
+        this.updateError = error.error?.responseMessege || error.error?.message || 'Unable to load customer for update.';
+      }
+    });
   }
 
   closeUpdateForm(): void {
@@ -318,9 +328,73 @@ export class CustomerComponent implements OnInit {
   }
 
   resetUpdateForm(): void {
-    this.updateCustomerForm = this.getEmptyUpdateForm();
+    this.customerToUpdate = this.getEmptyCustomerForm();
     this.updateMessage = '';
     this.updateError = '';
+    this.updateStep = 0;
+    this.activeUpdateShiftIndex = 0;
+  }
+
+  // ── Update Stepper ──────────────────────────────────────────────────
+  get isFirstUpdateStep(): boolean { return this.updateStep === 0; }
+  get isLastUpdateStep(): boolean  { return this.updateStep === this.updateSteps.length - 1; }
+
+  nextUpdateStep(): void {
+    if (!this.validateUpdateStep()) return;
+    if (!this.isLastUpdateStep) this.updateStep++;
+  }
+  prevUpdateStep(): void { if (!this.isFirstUpdateStep) this.updateStep--; }
+  goToUpdateStep(index: number): void { if (index < this.updateStep) this.updateStep = index; }
+
+  validateUpdateStep(): boolean {
+    if (this.updateStep === 0) {
+      if (!this.customerToUpdate.firstName?.trim()) { this.showUpdateSnackbar('First name is required', true); return false; }
+      if (!this.customerToUpdate.lastName?.trim())  { this.showUpdateSnackbar('Last name is required', true); return false; }
+      if (!this.customerToUpdate.mobileNo?.trim())  { this.showUpdateSnackbar('Mobile number is required', true); return false; }
+      if (!this.customerToUpdate.email?.trim())     { this.showUpdateSnackbar('Email is required', true); return false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.customerToUpdate.email)) { this.showUpdateSnackbar('Enter a valid email address', true); return false; }
+    }
+    if (this.updateStep === 1) {
+      for (let i = 0; i < this.customerToUpdate.shiftings.length; i++) {
+        const s = this.customerToUpdate.shiftings[i];
+        if (!s.shiftFromCity?.trim() || !s.shiftToCity?.trim()) {
+          this.showUpdateSnackbar(`From and To city required for Shifting ${i + 1}`, true);
+          this.activeUpdateShiftIndex = i;
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // ── Update Snackbar ─────────────────────────────────────────────────
+  updateSnackbar = { message: '', error: false, visible: false };
+  private updateSnackbarTimer: any;
+
+  showUpdateSnackbar(message: string, error = false): void {
+    clearTimeout(this.updateSnackbarTimer);
+    this.updateSnackbar = { message, error, visible: true };
+    this.updateSnackbarTimer = setTimeout(() => this.updateSnackbar.visible = false, 3500);
+  }
+
+  // ── Update Shifting helpers ─────────────────────────────────────────
+  addUpdateShifting(): void {
+    this.customerToUpdate.shiftings.push(this.getEmptyShiftingForm());
+    this.activeUpdateShiftIndex = this.customerToUpdate.shiftings.length - 1;
+  }
+
+  removeUpdateShifting(index: number): void {
+    if (this.customerToUpdate.shiftings.length <= 1) { this.showUpdateSnackbar('At least one shifting is required', true); return; }
+    this.customerToUpdate.shiftings.splice(index, 1);
+    this.activeUpdateShiftIndex = Math.max(0, this.activeUpdateShiftIndex - 1);
+  }
+
+  addUpdateExtraCharge(shiftIndex: number): void {
+    this.customerToUpdate.shiftings[shiftIndex].charges.extracharges.push({ chargeName: '', chargeValue: 0, chargeRate: 0 });
+  }
+
+  removeUpdateExtraCharge(shiftIndex: number, chargeIndex: number): void {
+    this.customerToUpdate.shiftings[shiftIndex].charges.extracharges.splice(chargeIndex, 1);
   }
 
   updateCustomer(): void {
@@ -328,7 +402,22 @@ export class CustomerComponent implements OnInit {
     this.updateMessage = '';
     this.updateError = '';
 
-    this.customersService.updateCustomer(this.updateCustomerForm).subscribe({
+    const payload = {
+      customerId: this.customerToUpdate.customerId,
+      firstName: this.customerToUpdate.firstName,
+      lastName: this.customerToUpdate.lastName,
+      mobileNo: this.customerToUpdate.mobileNo,
+      alternateMobileNo: this.customerToUpdate.alternateMobileNo,
+      email: this.customerToUpdate.email,
+      workEmail: this.customerToUpdate.workEmail,
+      uuid: this.customerToUpdate.uuid,
+      shiftings: this.customerToUpdate.shiftings.map((s: any) => ({
+        ...s,
+        chargesDTO: s.charges  // send back as chargesDTO to match API
+      }))
+    };
+
+    this.customersService.updateCustomer(payload).subscribe({
       next: () => {
         this.isUpdating = false;
         this.updateMessage = 'Customer updated successfully.';
@@ -343,60 +432,41 @@ export class CustomerComponent implements OnInit {
     });
   }
 
-private extractCustomers(response: any): any[] {
-  if (!response) return [];
-
-  // ✅ YOUR REAL CASE (Spring Page)
-  if (Array.isArray(response?.data?.content)) {
-    return response.data.content;
+  // ── Private helpers ─────────────────────────────────────────────────
+  private extractCustomers(response: any): any[] {
+    if (!response) return [];
+    if (Array.isArray(response?.data?.content)) return response.data.content;
+    if (Array.isArray(response)) return response;
+    if (Array.isArray(response?.dataList)) return response.dataList;
+    if (Array.isArray(response?.data)) return response.data;
+    console.warn('Unknown response format:', response);
+    return [];
   }
 
-  // fallback cases
-  if (Array.isArray(response)) return response;
-  if (Array.isArray(response?.dataList)) return response.dataList;
-  if (Array.isArray(response?.data)) return response.data;
-
-  console.warn('Unknown response format:', response);
-  return [];
-}
-
-private updatePagination(response: any, loadedRecords: number): void {
-  const pageData = response?.data;
-
-  this.pageRecords = pageData?.numberOfElements ?? loadedRecords;
-  this.totalRecords = pageData?.totalElements ?? loadedRecords;
-  this.currentPageNumber = pageData?.number ?? 0;
-  this.totalPages = pageData?.totalPages ?? 1;
-}
-
-  getDisplayCurrentPage(): number {
-    return this.currentPageNumber + 1;
+  private updatePagination(response: any, loadedRecords: number): void {
+    const pageData = response?.data;
+    this.pageRecords       = pageData?.numberOfElements ?? loadedRecords;
+    this.totalRecords      = pageData?.totalElements    ?? loadedRecords;
+    this.currentPageNumber = pageData?.number           ?? 0;
+    this.totalPages        = pageData?.totalPages       ?? 1;
   }
 
-  getDisplayTotalPages(): number {
-    return this.totalPages || (this.filteredCustomers.length > 0 ? 1 : 0);
-  }
-
-  getDisplayTotalRecords(): number {
-    return this.totalRecords || this.filteredCustomers.length;
-  }
+  getDisplayCurrentPage(): number  { return this.currentPageNumber + 1; }
+  getDisplayTotalPages(): number   { return this.totalPages || (this.filteredCustomers.length > 0 ? 1 : 0); }
+  getDisplayTotalRecords(): number { return this.totalRecords || this.filteredCustomers.length; }
 
   private toCustomerRow(customer: any): CustomerRow {
     const firstName = customer.firstName || customer.name || customer.customerName || 'Customer';
     const lastName = customer.lastName || '';
     const username = customer.username || customer.userName || customer.accountNo || customer.accountNumber || '';
-    const serviceArea = customer.serviceArea || customer.shiftFromCity || 'ACT';
+    const serviceArea = customer.serviceArea || customer.shiftings?.[0]?.shiftFromCity || 'ACT';
     const accountNo = customer.accountNo || customer.accountNumber || username || String(customer.customerId || '');
-    const rawStatus = customer.status || customer.connectionStatus || (customer.shiftCompleted ? 'Online' : 'Offline');
+    const rawStatus = customer.status || customer.connectionStatus || (customer.shiftings?.[0]?.isShiftCompleted ? 'Online' : 'Offline');
     const connectionStatus: ConnectionStatus = String(rawStatus).toLowerCase() === 'online' ? 'Online' : 'Offline';
 
     return {
       ...customer,
-      firstName,
-      lastName,
-      username,
-      serviceArea,
-      accountNo,
+      firstName, lastName, username, serviceArea, accountNo,
       isp: customer.isp || customer.ispName || 'admin',
       connectionStatus,
       mobileNo: customer.mobileNo || customer.mobile || customer.mobileNumber || ''
@@ -425,10 +495,9 @@ private updatePagination(response: any, loadedRecords: number): void {
     const csv = [
       ['Customer ID', 'Name', 'Username', 'Mobile', 'Account No', 'Service Area', 'Connection Status', 'ISP Name'],
       ...rows
-    ].map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\n');
+    ].map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-
     link.href = URL.createObjectURL(blob);
     link.download = 'customers.csv';
     link.click();
@@ -446,11 +515,9 @@ private updatePagination(response: any, loadedRecords: number): void {
       workEmail: customer.workEmail || '',
       uuid: customer.uuid || ''
     };
-
     this.isDeleting = true;
     this.deleteMessage = '';
     this.deleteError = '';
-
     this.customersService.deleteCustomer(payload).subscribe({
       next: () => {
         this.isDeleting = false;
@@ -465,52 +532,42 @@ private updatePagination(response: any, loadedRecords: number): void {
     });
   }
 
-  private getEmptyCustomerForm(): any {
+  private getEmptyShiftingForm(): any {
     return {
-      firstName: '',
-      lastName: '',
-      mobileNo: '',
-      alternateMobileNo: '',
-      email: '',
-      workEmail: '',
-      shiftings: [
-        {
-          isShiftCompleted: false,
-          shiftFromCity: '',
-          shiftToCity: '',
-          fromAddress: '',
-          toAddress: '',
-          shiftingType: '',
-          shiftingStartDate: new Date().toISOString().slice(0, 10),
-          shiftReachedDate: '',
-          shiftCompletedBy: '',
-          shiftCompletedById: null,
-          customerId: null,
-          charges: {
-            transportCharge: 0,
-            packingCharge: 0,
-            loadingCharge: 0,
-            unloadingCharge: 0,
-            unpackingCharge: 0,
-            carTransportCharge: 0,
-            riskInsureCharge: 0,
-            storageCharge: 0,
-            statisticalCharge: 0,
-            serviceCharge: 0,
-            serviceRate: 0,
-            gstRate: 18,
-            gstCharge: 0,
-            extracharges: [
-              { chargeName: 'Toll Charge', chargeValue: 0, chargeRate: 0 },
-              { chargeName: 'Lift Handling Charge', chargeValue: 0, chargeRate: 0 }
-            ]
-          }
-        }
-      ]
+      isShiftCompleted: false,
+      shiftFromCity: '',
+      shiftToCity: '',
+      fromAddress: '',
+      toAddress: '',
+      shiftingType: '',
+      shiftingStartDate: new Date().toISOString().slice(0, 10),
+      shiftReachedDate: '',
+      shiftCompletedBy: '',
+      shiftCompletedById: null,
+      customerId: null,
+      charges: {
+        transportCharge: 0,
+        packingCharge: 0,
+        loadingCharge: 0,
+        unloadingCharge: 0,
+        unpackingCharge: 0,
+        carTransportCharge: 0,
+        riskInsureCharge: 0,
+        storageCharge: 0,
+        statisticalCharge: 0,
+        serviceCharge: 0,
+        serviceRate: 0,
+        gstRate: 18,
+        gstCharge: 0,
+        extracharges: [
+          { chargeName: 'Toll Charge', chargeValue: 0, chargeRate: 0 },
+          { chargeName: 'Lift Handling Charge', chargeValue: 0, chargeRate: 0 }
+        ]
+      }
     };
   }
 
-  private getEmptyUpdateForm(): any {
+  private getEmptyCustomerForm(): any {
     return {
       customerId: null,
       firstName: '',
@@ -519,7 +576,8 @@ private updatePagination(response: any, loadedRecords: number): void {
       alternateMobileNo: '',
       email: '',
       workEmail: '',
-      uuid: ''
+      uuid: '',
+      shiftings: [this.getEmptyShiftingForm()]
     };
   }
 }
