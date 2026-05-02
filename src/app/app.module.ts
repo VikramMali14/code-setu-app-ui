@@ -63,6 +63,7 @@ import { CompanyComponent } from './component/company/company.component';
 import { PermissionComponent } from './component/permission/permission.component';
 import { VehicleManagementComponent } from './component/vehicle-management/vehicle-management.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { DriverLocationComponent } from './component/driver-location/driver-location.component';
 
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
