@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { DriverService } from 'src/app/services/driver.service';
 import { VehicleService } from 'src/app/services/vehicle.service';
 
 @Component({
   selector: 'app-assignment',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './assignment.component.html',
   styleUrls: ['./assignment.component.css']
 })

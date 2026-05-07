@@ -8,9 +8,15 @@
         <p class="sub-title">Create, search, update, and maintain driver records</p>
       </div>
 
-      <button class="circle-btn" type="button" (click)="reset()">
-        <span class="material-icons">add</span>
-      </button>
+      <div class="header-actions">
+        <a class="back-btn" routerLink="/vehicle-management">
+          <span class="material-icons">arrow_back</span>
+          Back
+        </a>
+        <button class="circle-btn" type="button" (click)="reset()">
+          <span class="material-icons">add</span>
+        </button>
+      </div>
     </div>
 
     <div class="action-grid">
