@@ -2,12 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { LoaderComponent } from '../loader/loader.component';
 import { DriverPayload, DriverService } from 'src/app/services/driver.service';
 
 @Component({
   selector: 'app-driver',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, LoaderComponent],
   templateUrl: './driver.component.html',
   styleUrls: ['./driver.component.css']
 })
@@ -32,6 +33,10 @@ export class DriverComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.loadDrivers();
+  }
+
+  get isApiBusy(): boolean {
+    return this.isLoading || this.isSaving || this.isDeleting;
   }
 
   get filteredDrivers(): any[] {

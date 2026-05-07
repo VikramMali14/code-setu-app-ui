@@ -5,11 +5,12 @@ import { RouterModule } from '@angular/router';
 import { AssignmentService } from 'src/app/services/assignment.service';
 import { DriverService } from 'src/app/services/driver.service';
 import { VehicleService } from 'src/app/services/vehicle.service';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-assignment',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, LoaderComponent],
   templateUrl: './assignment.component.html',
   styleUrls: ['./assignment.component.css']
 })
@@ -35,6 +36,10 @@ export class AssignmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  get isApiBusy(): boolean {
+    return this.isLoading || this.isAssigning;
   }
 
   get filteredDrivers(): any[] {
