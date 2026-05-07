@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AssignmentService } from 'src/app/services/assignment.service';
 import { DriverService } from 'src/app/services/driver.service';
 import { VehicleService } from 'src/app/services/vehicle.service';
 
@@ -24,8 +25,10 @@ export class AssignmentComponent implements OnInit {
   message = '';
   error = '';
   isLoading = false;
+  isAssigning = false;
 
   constructor(
+    private assignmentService: AssignmentService,
     private driverService: DriverService,
     private vehicleService: VehicleService
   ) {}
@@ -101,8 +104,31 @@ export class AssignmentComponent implements OnInit {
       return;
     }
 
-    this.message = `${this.selectedDriver.name} assigned to ${this.selectedVehicle.registrationNumber}.`;
+    const driverId = this.selectedDriver.id || this.selectedDriver.driverId;
+    const vehicleId = this.selectedVehicle.id || this.selectedVehicle.vehicleId;
+
+    if (!driverId || !vehicleId) {
+      this.error = 'Selected driver or vehicle is missing an id.';
+      return;
+    }
+
+    this.isAssigning = true;
+    this.message = '';
     this.error = '';
+
+    this.assignmentService.assignVehicleToDriver(driverId, vehicleId).subscribe({
+      next: () => {
+        this.isAssigning = false;
+        this.message = `${this.selectedDriver.name} assigned to ${this.selectedVehicle.registrationNumber}.`;
+        this.clearSelectionAfterAssign();
+        this.loadData();
+      },
+      error: error => {
+        console.error('Assignment failed:', error);
+        this.isAssigning = false;
+        this.error = error?.error?.responseMessege || error?.error?.message || 'Unable to assign vehicle to driver.';
+      }
+    });
   }
 
   clearSelection(): void {
@@ -116,6 +142,11 @@ export class AssignmentComponent implements OnInit {
     console.error('Assignment data failed:', error);
     this.error = error?.error?.responseMessege || error?.error?.message || 'Unable to load assignment data.';
     this.isLoading = false;
+  }
+
+  private clearSelectionAfterAssign(): void {
+    this.selectedDriver = null;
+    this.selectedVehicle = null;
   }
 
   private extractList(response: any): any[] {

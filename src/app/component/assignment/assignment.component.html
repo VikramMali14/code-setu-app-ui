@@ -131,7 +131,9 @@
         <span>Vehicle</span>
         <strong>{{ selectedVehicle?.registrationNumber || 'Not selected' }}</strong>
       </div>
-      <button class="save-btn" type="button" (click)="assignSelected()">Assign Selected</button>
+      <button class="save-btn" type="button" (click)="assignSelected()" [disabled]="isAssigning">
+        {{ isAssigning ? 'Assigning...' : 'Assign Selected' }}
+      </button>
       <button class="cancel-btn" type="button" (click)="clearSelection()">Clear</button>
     </div>
 
