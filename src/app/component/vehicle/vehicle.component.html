@@ -1,0 +1,52 @@
+<div class="container">
+
+  <!-- FORM -->
+  <form [formGroup]="vehicleForm" (ngSubmit)="submit()" class="form-card">
+    <h2>{{ isEditMode ? 'Edit Vehicle' : 'Add Vehicle' }}</h2>
+
+    <div class="grid">
+      <input formControlName="registrationNumber" placeholder="Registration No">
+      <input formControlName="model" placeholder="Model">
+      <input formControlName="manufacturer" placeholder="Manufacturer">
+      <input type="number" formControlName="capacityKg" placeholder="Capacity">
+      <input formControlName="fuelType" placeholder="Fuel Type">
+
+      <select formControlName="status">
+        <option value="AVAILABLE">Available</option>
+        <option value="MAINTENANCE">Maintenance</option>
+      </select>
+    </div>
+
+    <button type="submit">{{ isEditMode ? 'Update' : 'Create' }}</button>
+  </form>
+
+  <!-- SEARCH -->
+  <input class="search" [(ngModel)]="searchText" (input)="appl()" placeholder="Search...">
+
+  <!-- LIST -->
+  <div class="card-grid">
+    <div *ngFor="let v of filteredVehicles" class="card">
+
+      <div class="card-header">
+        <h3>{{ v.registrationNumber }}</h3>
+        <span class="status" [ngClass]="v.status.toLowerCase()">
+          {{ v.status }}
+        </span>
+      </div>
+
+      <p>{{ v.model }} • {{ v.manufacturer }}</p>
+
+      <div class="details">
+        <span>{{ v.capacityKg }} kg</span>
+        <span>{{ v.fuelType }}</span>
+      </div>
+
+      <div class="actions">
+        <button (click)="edit(v)">Edit</button>
+        <button class="danger" (click)="delete(v.id)">Delete</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

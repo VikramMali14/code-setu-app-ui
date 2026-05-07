@@ -1,0 +1,50 @@
+<div class="management-panel">
+
+  <div class="panel-title">
+    <h2>Driver List</h2>
+    <button class="primary-action" (click)="createDriver()">
+      Add Driver
+    </button>
+  </div>
+
+  <div *ngFor="let d of drivers" class="info-card">
+
+    <div class="card-header">
+      <div>
+        <h3>{{ d.name }}</h3>
+        <p>{{ d.email }}</p>
+      </div>
+
+      <span class="status-badge"
+            [ngClass]="{
+              'available': d.status === 'ACTIVE',
+              'maintenance': d.status === 'INACTIVE'
+            }">
+        {{ d.status }}
+      </span>
+    </div>
+
+    <div class="detail-row">
+      <span>Phone</span>
+      <strong>{{ d.phoneNumber }}</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>Experience</span>
+      <strong>{{ d.experienceYears }} yrs</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>License</span>
+      <strong>{{ d.licenseNumber }}</strong>
+    </div>
+
+    <div class="card-actions">
+      <button class="danger-action" (click)="deleteDriver(d.id!)">
+        Delete
+      </button>
+    </div>
+
+  </div>
+
+</div>
