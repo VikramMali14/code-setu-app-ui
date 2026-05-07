@@ -1,96 +1,168 @@
-<section class="assignment-page">
-  <header class="page-header">
-    <div>
-      <h1>Assignments</h1>
-      <p>Select an available driver and vehicle, then assign them.</p>
-    </div>
-  </header>
+<div class="page-wrapper">
+  <div class="top-card">
+    <div class="gradient-line"></div>
 
-  <div class="filters">
-    <input [(ngModel)]="driverSearch" placeholder="Search Driver">
-    <input [(ngModel)]="vehicleSearch" placeholder="Search Vehicle">
-    <select [(ngModel)]="driverStatusFilter">
-      <option value="ALL">All Drivers</option>
-      <option value="AVAILABLE">Available Drivers</option>
-      <option value="ASSIGNED">Assigned Drivers</option>
-      <option value="INACTIVE">Inactive Drivers</option>
-    </select>
-    <select [(ngModel)]="vehicleStatusFilter">
-      <option value="ALL">All Vehicles</option>
-      <option value="AVAILABLE">Available Vehicles</option>
-      <option value="ASSIGNED">Assigned Vehicles</option>
-      <option value="MAINTENANCE">Maintenance Vehicles</option>
-    </select>
+    <div class="card-header">
+      <div>
+        <h1>Assignment Management</h1>
+        <p class="sub-title">Select an available driver and vehicle, then create an assignment</p>
+      </div>
+    </div>
+
+    <div class="action-grid">
+      <div class="action-card active-card">
+        <div class="icon-box">
+          <span class="material-icons">person_search</span>
+        </div>
+        <div class="card-content">
+          <h3>Step 1: Driver</h3>
+          <p>{{ selectedDriver?.name || 'Choose an available driver' }}</p>
+        </div>
+      </div>
+
+      <div class="action-card active-card">
+        <div class="icon-box vehicle-icon">
+          <span class="material-icons">local_shipping</span>
+        </div>
+        <div class="card-content">
+          <h3>Step 2: Vehicle</h3>
+          <p>{{ selectedVehicle?.registrationNumber || 'Choose an available vehicle' }}</p>
+        </div>
+      </div>
+
+      <div class="action-card">
+        <div class="icon-box assign-icon">
+          <span class="material-icons">link</span>
+        </div>
+        <div class="card-content">
+          <h3>Step 3: Assign</h3>
+          <p>Confirm the selected pair</p>
+        </div>
+        <span class="material-icons arrow">arrow_forward</span>
+      </div>
+    </div>
   </div>
 
-  <p class="api-message" *ngIf="isLoading">Loading drivers and vehicles...</p>
-  <p class="api-message" *ngIf="message">{{ message }}</p>
-  <p class="api-message error" *ngIf="error">{{ error }}</p>
+  <div class="list-card">
+    <div class="gradient-line"></div>
+
+    <div class="card-header">
+      <h2>Filters</h2>
+    </div>
+
+    <div class="filters">
+      <div class="search-box">
+        <span class="material-icons">search</span>
+        <input [(ngModel)]="driverSearch" placeholder="Search driver">
+      </div>
+      <div class="search-box">
+        <span class="material-icons">search</span>
+        <input [(ngModel)]="vehicleSearch" placeholder="Search vehicle">
+      </div>
+      <select [(ngModel)]="driverStatusFilter">
+        <option value="ALL">All Drivers</option>
+        <option value="AVAILABLE">Available Drivers</option>
+        <option value="ASSIGNED">Assigned Drivers</option>
+        <option value="INACTIVE">Inactive Drivers</option>
+      </select>
+      <select [(ngModel)]="vehicleStatusFilter">
+        <option value="ALL">All Vehicles</option>
+        <option value="AVAILABLE">Available Vehicles</option>
+        <option value="ASSIGNED">Assigned Vehicles</option>
+        <option value="MAINTENANCE">Maintenance Vehicles</option>
+      </select>
+    </div>
+
+    <p class="api-message" *ngIf="isLoading">Loading drivers and vehicles...</p>
+    <p class="api-message" *ngIf="message">{{ message }}</p>
+    <p class="api-message error" *ngIf="error">{{ error }}</p>
+  </div>
 
   <div class="assignment-layout">
-    <section class="panel">
-      <h2>Available Drivers</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Driver</th>
-            <th>License</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let driver of filteredDrivers"
-            [class.selected]="selectedDriver === driver"
-            (click)="selectDriver(driver)">
-            <td>{{ driver.name }}</td>
-            <td>{{ driver.licenseNumber }}</td>
-            <td>{{ driver.status }}</td>
-          </tr>
-          <tr *ngIf="!isLoading && filteredDrivers.length === 0">
-            <td colspan="3" class="empty-state">No drivers found.</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="assign-panel">
-      <div>
-        <span>Step 1</span>
-        <strong>{{ selectedDriver?.name || 'Select driver' }}</strong>
+    <div class="list-card panel-card">
+      <div class="gradient-line"></div>
+      <div class="card-header">
+        <h2>Available Drivers</h2>
       </div>
-      <div>
-        <span>Step 2</span>
-        <strong>{{ selectedVehicle?.registrationNumber || 'Select vehicle' }}</strong>
-      </div>
-      <button type="button" (click)="assignSelected()">Assign Selected</button>
-      <button type="button" class="secondary" (click)="clearSelection()">Clear</button>
-    </section>
 
-    <section class="panel">
-      <h2>Available Vehicles</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Vehicle</th>
-            <th>Type</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let vehicle of filteredVehicles"
-            [class.selected]="selectedVehicle === vehicle"
-            (click)="selectVehicle(vehicle)">
-            <td>{{ vehicle.registrationNumber }}</td>
-            <td>{{ vehicle.vehicleType }}</td>
-            <td>{{ vehicle.status }}</td>
-          </tr>
-          <tr *ngIf="!isLoading && filteredVehicles.length === 0">
-            <td colspan="3" class="empty-state">No vehicles found.</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Driver</th>
+              <th>License</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let driver of filteredDrivers"
+              [class.selected]="selectedDriver === driver"
+              (click)="selectDriver(driver)">
+              <td>
+                <strong>{{ driver.name }}</strong>
+                <span>{{ driver.phoneNumber }}</span>
+              </td>
+              <td>{{ driver.licenseNumber }}</td>
+              <td><span class="status-badge" [ngClass]="driver.status?.toLowerCase()">{{ driver.status }}</span></td>
+            </tr>
+            <tr *ngIf="!isLoading && filteredDrivers.length === 0">
+              <td colspan="3" class="empty-row">No drivers found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="assign-panel">
+      <div class="assign-summary">
+        <span>Driver</span>
+        <strong>{{ selectedDriver?.name || 'Not selected' }}</strong>
+      </div>
+      <div class="connector">
+        <span class="material-icons">sync_alt</span>
+      </div>
+      <div class="assign-summary">
+        <span>Vehicle</span>
+        <strong>{{ selectedVehicle?.registrationNumber || 'Not selected' }}</strong>
+      </div>
+      <button class="save-btn" type="button" (click)="assignSelected()">Assign Selected</button>
+      <button class="cancel-btn" type="button" (click)="clearSelection()">Clear</button>
+    </div>
+
+    <div class="list-card panel-card">
+      <div class="gradient-line"></div>
+      <div class="card-header">
+        <h2>Available Vehicles</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Vehicle</th>
+              <th>Type</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let vehicle of filteredVehicles"
+              [class.selected]="selectedVehicle === vehicle"
+              (click)="selectVehicle(vehicle)">
+              <td>
+                <strong>{{ vehicle.registrationNumber }}</strong>
+                <span>{{ vehicle.model }}</span>
+              </td>
+              <td>{{ vehicle.vehicleType }}</td>
+              <td><span class="status-badge" [ngClass]="vehicle.status?.toLowerCase()">{{ vehicle.status }}</span></td>
+            </tr>
+            <tr *ngIf="!isLoading && filteredVehicles.length === 0">
+              <td colspan="3" class="empty-row">No vehicles found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-</section>
+</div>

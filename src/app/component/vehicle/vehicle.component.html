@@ -1,100 +1,194 @@
-<section class="crud-page">
-  <header class="page-header">
-    <div>
-      <h1>Vehicles</h1>
-      <p>Vehicle table, add vehicle, edit vehicle, and delete vehicle.</p>
-    </div>
-  </header>
+<div class="page-wrapper">
+  <div class="top-card">
+    <div class="gradient-line"></div>
 
-  <form [formGroup]="vehicleForm" (ngSubmit)="submit()" class="form-card">
-    <h2>{{ isEditMode ? 'Edit Vehicle' : 'Add Vehicle' }}</h2>
+    <div class="card-header">
+      <div>
+        <h1>Vehicle Management</h1>
+        <p class="sub-title">Create, search, update, and maintain fleet records</p>
+      </div>
 
-    <div class="grid">
-      <input formControlName="registrationNumber" placeholder="Registration No">
-      <input formControlName="vehicleType" placeholder="Vehicle Type">
-      <input formControlName="chassisNumber" placeholder="Chassis Number">
-      <input formControlName="engineNumber" placeholder="Engine Number">
-      <input formControlName="model" placeholder="Model">
-      <input formControlName="manufacturer" placeholder="Manufacturer">
-      <input type="number" formControlName="mileage" placeholder="Mileage">
-      <input type="number" formControlName="capacityKg" placeholder="Capacity Kg">
-      <select formControlName="status">
-        <option value="AVAILABLE">Available</option>
-        <option value="ASSIGNED">Assigned</option>
-        <option value="MAINTENANCE">Maintenance</option>
-        <option value="INACTIVE">Inactive</option>
-      </select>
-      <select formControlName="fuelType">
-        <option value="DIESEL">Diesel</option>
-        <option value="PETROL">Petrol</option>
-        <option value="CNG">CNG</option>
-        <option value="EV">EV</option>
-      </select>
-      <input type="date" formControlName="registrationDate">
-      <input type="date" formControlName="insuranceExpiryDate">
-      <input type="date" formControlName="pollutionExpiryDate">
-      <input formControlName="currentLocation" placeholder="Current Location">
-    </div>
-
-    <div class="form-actions">
-      <button type="button" class="secondary" (click)="reset()">Reset</button>
-      <button type="submit" [disabled]="vehicleForm.invalid || isSaving">
-        {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Vehicle' : 'Create Vehicle') }}
+      <button class="circle-btn" type="button" (click)="reset()">
+        <span class="material-icons">add</span>
       </button>
     </div>
-  </form>
 
-  <div class="toolbar">
-    <input class="search" [(ngModel)]="searchText" placeholder="Search vehicle" [ngModelOptions]="{standalone: true}">
-    <select [(ngModel)]="statusFilter" [ngModelOptions]="{standalone: true}">
-      <option value="ALL">All Status</option>
-      <option value="AVAILABLE">Available</option>
-      <option value="ASSIGNED">Assigned</option>
-      <option value="MAINTENANCE">Maintenance</option>
-      <option value="INACTIVE">Inactive</option>
-    </select>
+    <div class="action-grid">
+      <div class="action-card active-card">
+        <div class="icon-box">
+          <span class="material-icons">local_shipping</span>
+        </div>
+        <div class="card-content">
+          <h3>{{ isEditMode ? 'Edit Vehicle' : 'Create Vehicle' }}</h3>
+          <p>Maintain vehicle registration and compliance details</p>
+        </div>
+        <span class="material-icons arrow">arrow_forward</span>
+      </div>
+
+      <div class="action-card">
+        <div class="icon-box soft">
+          <span class="material-icons">manage_search</span>
+        </div>
+        <div class="card-content">
+          <h3>Search Fleet</h3>
+          <p>Filter by registration, model, status, or location</p>
+        </div>
+        <span class="material-icons arrow">arrow_forward</span>
+      </div>
+    </div>
   </div>
 
-  <p class="api-message" *ngIf="isLoading">Loading vehicles...</p>
-  <p class="api-message" *ngIf="message">{{ message }}</p>
-  <p class="api-message error" *ngIf="error">{{ error }}</p>
+  <div class="list-card">
+    <div class="gradient-line"></div>
 
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Vehicle</th>
-          <th>Type</th>
-          <th>Capacity</th>
-          <th>Fuel</th>
-          <th>Status</th>
-          <th>Location</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let v of filteredVehicles">
-          <td>
-            <strong>{{ v.registrationNumber }}</strong>
-            <span>{{ v.manufacturer }} {{ v.model }}</span>
-          </td>
-          <td>{{ v.vehicleType }}</td>
-          <td>{{ v.capacityKg }} kg</td>
-          <td>{{ v.fuelType }}</td>
-          <td><span class="status" [ngClass]="v.status?.toLowerCase()">{{ v.status }}</span></td>
-          <td>{{ v.currentLocation }}</td>
-          <td>
-            <div class="actions">
-              <button type="button" (click)="edit(v)">Edit</button>
-              <button type="button" class="danger" (click)="delete(v.id || v.vehicleId)" [disabled]="isDeleting">Delete</button>
-            </div>
-          </td>
-        </tr>
+    <div class="card-header">
+      <h2>{{ isEditMode ? 'Edit Vehicle' : 'Create Vehicle' }}</h2>
+    </div>
 
-        <tr *ngIf="!isLoading && filteredVehicles.length === 0">
-          <td colspan="7" class="empty-state">No vehicles found.</td>
-        </tr>
-      </tbody>
-    </table>
+    <form [formGroup]="vehicleForm" (ngSubmit)="submit()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Registration No *</label>
+          <input formControlName="registrationNumber" placeholder="MH-12-AB-1234">
+        </div>
+        <div class="form-group">
+          <label>Vehicle Type *</label>
+          <input formControlName="vehicleType" placeholder="TRUCK">
+        </div>
+        <div class="form-group">
+          <label>Chassis Number *</label>
+          <input formControlName="chassisNumber" placeholder="Chassis number">
+        </div>
+        <div class="form-group">
+          <label>Engine Number *</label>
+          <input formControlName="engineNumber" placeholder="Engine number">
+        </div>
+        <div class="form-group">
+          <label>Model *</label>
+          <input formControlName="model" placeholder="LPT 1613">
+        </div>
+        <div class="form-group">
+          <label>Manufacturer *</label>
+          <input formControlName="manufacturer" placeholder="Tata Motors">
+        </div>
+        <div class="form-group">
+          <label>Mileage *</label>
+          <input type="number" formControlName="mileage" placeholder="5.5">
+        </div>
+        <div class="form-group">
+          <label>Capacity Kg *</label>
+          <input type="number" formControlName="capacityKg" placeholder="15000">
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select formControlName="status">
+            <option value="AVAILABLE">Available</option>
+            <option value="ASSIGNED">Assigned</option>
+            <option value="MAINTENANCE">Maintenance</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fuel Type *</label>
+          <select formControlName="fuelType">
+            <option value="DIESEL">Diesel</option>
+            <option value="PETROL">Petrol</option>
+            <option value="CNG">CNG</option>
+            <option value="EV">EV</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Registration Date *</label>
+          <input type="date" formControlName="registrationDate">
+        </div>
+        <div class="form-group">
+          <label>Insurance Expiry *</label>
+          <input type="date" formControlName="insuranceExpiryDate">
+        </div>
+        <div class="form-group">
+          <label>Pollution Expiry *</label>
+          <input type="date" formControlName="pollutionExpiryDate">
+        </div>
+        <div class="form-group">
+          <label>Current Location *</label>
+          <input formControlName="currentLocation" placeholder="Mumbai Warehouse">
+        </div>
+      </div>
+
+      <div class="form-action">
+        <button class="cancel-btn" type="button" (click)="reset()">Reset</button>
+        <button class="save-btn" type="submit" [disabled]="vehicleForm.invalid || isSaving">
+          {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Vehicle' : 'Create Vehicle') }}
+        </button>
+      </div>
+    </form>
   </div>
-</section>
+
+  <div class="list-card">
+    <div class="gradient-line"></div>
+
+    <div class="card-header">
+      <h2>Vehicle List</h2>
+
+      <div class="search-tools">
+        <div class="search-box">
+          <span class="material-icons">search</span>
+          <input [(ngModel)]="searchText" placeholder="Search vehicle..." [ngModelOptions]="{standalone: true}">
+        </div>
+        <select [(ngModel)]="statusFilter" [ngModelOptions]="{standalone: true}">
+          <option value="ALL">All Status</option>
+          <option value="AVAILABLE">Available</option>
+          <option value="ASSIGNED">Assigned</option>
+          <option value="MAINTENANCE">Maintenance</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="api-message" *ngIf="isLoading">Loading vehicles...</p>
+    <p class="api-message" *ngIf="message">{{ message }}</p>
+    <p class="api-message error" *ngIf="error">{{ error }}</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Vehicle</th>
+            <th>Type</th>
+            <th>Capacity</th>
+            <th>Fuel</th>
+            <th>Status</th>
+            <th>Location</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of filteredVehicles">
+            <td>
+              <strong>{{ v.registrationNumber }}</strong>
+              <span>{{ v.manufacturer }} {{ v.model }}</span>
+            </td>
+            <td>{{ v.vehicleType }}</td>
+            <td>{{ v.capacityKg }} kg</td>
+            <td>{{ v.fuelType }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="v.status?.toLowerCase()">{{ v.status }}</span>
+            </td>
+            <td>{{ v.currentLocation }}</td>
+            <td class="action-td">
+              <button class="table-btn edit-btn" type="button" (click)="edit(v)">
+                <span class="material-icons">edit</span>
+              </button>
+              <button class="table-btn delete-btn" type="button" (click)="delete(v.id || v.vehicleId)" [disabled]="isDeleting">
+                <span class="material-icons">delete</span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="!isLoading && filteredVehicles.length === 0">
+            <td colspan="7" class="empty-row">No vehicles found. Create one to get started!</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

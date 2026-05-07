@@ -1,23 +1,30 @@
 <section class="vehicle-management-page">
   <header class="vehicle-management-header">
     <div>
-      <h1>Vehicle Management</h1>
-      <p>Choose a module to manage vehicles, drivers, or assignments.</p>
+      <p class="eyebrow">Vehicle Management</p>
+      <h1>Logistics Control</h1>
     </div>
   </header>
 
-  <div class="dashboard-card-grid">
-    <article class="dashboard-card" *ngFor="let card of cards">
-      <div class="dashboard-card-icon">
-        <mat-icon>{{ card.icon }}</mat-icon>
-      </div>
+  <section class="module-section">
+    <div class="section-title">
+      <mat-icon>apps</mat-icon>
+      <h2>Modules</h2>
+    </div>
 
-      <div>
-        <h2>{{ card.title }}</h2>
-        <p>{{ card.description }}</p>
-      </div>
-
-      <a class="primary-action" [routerLink]="card.route">Open</a>
-    </article>
-  </div>
+    <div class="module-grid">
+      <a
+        class="module-card"
+        [ngClass]="'accent-' + card.accent"
+        *ngFor="let card of cards"
+        [routerLink]="card.route">
+        <span class="icon-wrapper">
+          <mat-icon>{{ card.icon }}</mat-icon>
+        </span>
+        <span class="card-title">{{ card.title }}</span>
+        <span class="card-subtitle">{{ card.description }}</span>
+        <span class="open-link">Open</span>
+      </a>
+    </div>
+  </section>
 </section>

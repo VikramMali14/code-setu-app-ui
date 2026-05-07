@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-vehicle-management',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule],
+  imports: [CommonModule, RouterModule, MatIconModule,RouterModule],
   templateUrl: './vehicle-management.component.html',
   styleUrls: ['./vehicle-management.component.css']
 })
@@ -16,19 +16,22 @@ export class VehicleManagementComponent {
       icon: 'local_shipping',
       title: 'Vehicles',
       description: 'Manage all vehicles',
-      route: '/vehicle-management/vehicles'
+      route: '/vehicle-management/vehicles',
+      accent: 'blue'
     },
     {
       icon: 'person',
       title: 'Drivers',
       description: 'Manage all drivers',
-      route: '/vehicle-management/drivers'
+      route: '/vehicle-management/drivers',
+      accent: 'orange'
     },
     {
       icon: 'link',
       title: 'Assignments',
       description: 'Assign vehicle to driver',
-      route: '/vehicle-management/assignments'
+      route: '/vehicle-management/assignments',
+      accent: 'green'
     }
   ];
 }

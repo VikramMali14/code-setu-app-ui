@@ -1,86 +1,165 @@
-<section class="crud-page">
-  <header class="page-header">
-    <div>
-      <h1>Drivers</h1>
-      <p>Driver table, add driver, edit driver, and delete driver.</p>
-    </div>
-  </header>
+<div class="page-wrapper">
+  <div class="top-card">
+    <div class="gradient-line"></div>
 
-  <form [formGroup]="driverForm" (ngSubmit)="submit()" class="form-card">
-    <h2>{{ isEditMode ? 'Edit Driver' : 'Add Driver' }}</h2>
+    <div class="card-header">
+      <div>
+        <h1>Driver Management</h1>
+        <p class="sub-title">Create, search, update, and maintain driver records</p>
+      </div>
 
-    <div class="grid">
-      <input formControlName="name" placeholder="Name">
-      <input formControlName="phoneNumber" placeholder="Phone Number">
-      <input formControlName="email" type="email" placeholder="Email">
-      <input formControlName="licenseNumber" placeholder="License Number">
-      <input type="date" formControlName="licenseExpiryDate">
-      <input type="number" formControlName="experienceYears" placeholder="Experience Years">
-      <select formControlName="status">
-        <option value="AVAILABLE">Available</option>
-        <option value="ASSIGNED">Assigned</option>
-        <option value="INACTIVE">Inactive</option>
-      </select>
-      <input type="date" formControlName="joiningDate">
-      <textarea formControlName="address" placeholder="Address" rows="3"></textarea>
-    </div>
-
-    <div class="form-actions">
-      <button type="button" class="secondary" (click)="reset()">Reset</button>
-      <button type="submit" [disabled]="driverForm.invalid || isSaving">
-        {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Driver' : 'Create Driver') }}
+      <button class="circle-btn" type="button" (click)="reset()">
+        <span class="material-icons">add</span>
       </button>
     </div>
-  </form>
 
-  <div class="toolbar">
-    <input class="search" [(ngModel)]="searchText" placeholder="Search driver" [ngModelOptions]="{standalone: true}">
-    <select [(ngModel)]="statusFilter" [ngModelOptions]="{standalone: true}">
-      <option value="ALL">All Status</option>
-      <option value="AVAILABLE">Available</option>
-      <option value="ASSIGNED">Assigned</option>
-      <option value="INACTIVE">Inactive</option>
-    </select>
+    <div class="action-grid">
+      <div class="action-card active-card">
+        <div class="icon-box">
+          <span class="material-icons">person</span>
+        </div>
+        <div class="card-content">
+          <h3>{{ isEditMode ? 'Edit Driver' : 'Create Driver' }}</h3>
+          <p>Maintain license, contact, and experience details</p>
+        </div>
+        <span class="material-icons arrow">arrow_forward</span>
+      </div>
+
+      <div class="action-card">
+        <div class="icon-box soft">
+          <span class="material-icons">manage_search</span>
+        </div>
+        <div class="card-content">
+          <h3>Search Drivers</h3>
+          <p>Filter by name, license, phone, or status</p>
+        </div>
+        <span class="material-icons arrow">arrow_forward</span>
+      </div>
+    </div>
   </div>
 
-  <p class="api-message" *ngIf="isLoading">Loading drivers...</p>
-  <p class="api-message" *ngIf="message">{{ message }}</p>
-  <p class="api-message error" *ngIf="error">{{ error }}</p>
+  <div class="list-card">
+    <div class="gradient-line"></div>
 
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Driver</th>
-          <th>Phone</th>
-          <th>License</th>
-          <th>Experience</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let d of filteredDrivers">
-          <td>
-            <strong>{{ d.name }}</strong>
-            <span>{{ d.email }}</span>
-          </td>
-          <td>{{ d.phoneNumber }}</td>
-          <td>{{ d.licenseNumber }}</td>
-          <td>{{ d.experienceYears }} yrs</td>
-          <td><span class="status" [ngClass]="d.status?.toLowerCase()">{{ d.status }}</span></td>
-          <td>
-            <div class="actions">
-              <button type="button" (click)="edit(d)">Edit</button>
-              <button type="button" class="danger" (click)="delete(d.id || d.driverId)" [disabled]="isDeleting">Delete</button>
-            </div>
-          </td>
-        </tr>
+    <div class="card-header">
+      <h2>{{ isEditMode ? 'Edit Driver' : 'Create Driver' }}</h2>
+    </div>
 
-        <tr *ngIf="!isLoading && filteredDrivers.length === 0">
-          <td colspan="6" class="empty-state">No drivers found.</td>
-        </tr>
-      </tbody>
-    </table>
+    <form [formGroup]="driverForm" (ngSubmit)="submit()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Name *</label>
+          <input formControlName="name" placeholder="Driver name">
+        </div>
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input formControlName="phoneNumber" placeholder="+91 XXXXX XXXXX">
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input formControlName="email" type="email" placeholder="driver@example.com">
+        </div>
+        <div class="form-group">
+          <label>License Number *</label>
+          <input formControlName="licenseNumber" placeholder="DL-1420230001234">
+        </div>
+        <div class="form-group">
+          <label>License Expiry *</label>
+          <input type="date" formControlName="licenseExpiryDate">
+        </div>
+        <div class="form-group">
+          <label>Experience Years *</label>
+          <input type="number" formControlName="experienceYears" placeholder="8">
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select formControlName="status">
+            <option value="AVAILABLE">Available</option>
+            <option value="ASSIGNED">Assigned</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Joining Date *</label>
+          <input type="date" formControlName="joiningDate">
+        </div>
+        <div class="form-group full-width">
+          <label>Address *</label>
+          <textarea formControlName="address" placeholder="Driver address" rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="form-action">
+        <button class="cancel-btn" type="button" (click)="reset()">Reset</button>
+        <button class="save-btn" type="submit" [disabled]="driverForm.invalid || isSaving">
+          {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Driver' : 'Create Driver') }}
+        </button>
+      </div>
+    </form>
   </div>
-</section>
+
+  <div class="list-card">
+    <div class="gradient-line"></div>
+
+    <div class="card-header">
+      <h2>Driver List</h2>
+
+      <div class="search-tools">
+        <div class="search-box">
+          <span class="material-icons">search</span>
+          <input [(ngModel)]="searchText" placeholder="Search driver..." [ngModelOptions]="{standalone: true}">
+        </div>
+        <select [(ngModel)]="statusFilter" [ngModelOptions]="{standalone: true}">
+          <option value="ALL">All Status</option>
+          <option value="AVAILABLE">Available</option>
+          <option value="ASSIGNED">Assigned</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="api-message" *ngIf="isLoading">Loading drivers...</p>
+    <p class="api-message" *ngIf="message">{{ message }}</p>
+    <p class="api-message error" *ngIf="error">{{ error }}</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Driver</th>
+            <th>Phone</th>
+            <th>License</th>
+            <th>Experience</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of filteredDrivers">
+            <td>
+              <strong>{{ d.name }}</strong>
+              <span>{{ d.email }}</span>
+            </td>
+            <td>{{ d.phoneNumber }}</td>
+            <td>{{ d.licenseNumber }}</td>
+            <td>{{ d.experienceYears }} yrs</td>
+            <td>
+              <span class="status-badge" [ngClass]="d.status?.toLowerCase()">{{ d.status }}</span>
+            </td>
+            <td class="action-td">
+              <button class="table-btn edit-btn" type="button" (click)="edit(d)">
+                <span class="material-icons">edit</span>
+              </button>
+              <button class="table-btn delete-btn" type="button" (click)="delete(d.id || d.driverId)" [disabled]="isDeleting">
+                <span class="material-icons">delete</span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="!isLoading && filteredDrivers.length === 0">
+            <td colspan="6" class="empty-row">No drivers found. Create one to get started!</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
