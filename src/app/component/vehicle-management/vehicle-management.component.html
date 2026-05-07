@@ -2,187 +2,22 @@
   <header class="vehicle-management-header">
     <div>
       <h1>Vehicle Management</h1>
-      <p>Manage drivers, vehicles, and current assignments.</p>
+      <p>Choose a module to manage vehicles, drivers, or assignments.</p>
     </div>
   </header>
 
-  <div class="management-grid">
-    <section class="management-panel">
-      <div class="panel-title">
-        <div>
-          <mat-icon>person</mat-icon>
-          <h2>Drivers</h2>
-        </div>
-        <button class="primary-action" type="button" (click)="openCreateDriver()">
-          <mat-icon>add</mat-icon>
-          Add Driver
-        </button>
+  <div class="dashboard-card-grid">
+    <article class="dashboard-card" *ngFor="let card of cards">
+      <div class="dashboard-card-icon">
+        <mat-icon>{{ card.icon }}</mat-icon>
       </div>
 
-      <form class="driver-form" *ngIf="showDriverForm" (ngSubmit)="saveDriver()" #driverNgForm="ngForm">
-        <div class="form-title">
-          <h3>{{ editingDriverId ? 'Update Driver' : 'Create Driver' }}</h3>
-          <button type="button" class="icon-button" (click)="closeDriverForm()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-
-        <div class="form-grid">
-          <label>
-            Name
-            <input name="name" [(ngModel)]="driverForm.name" required>
-          </label>
-          <label>
-            Phone Number
-            <input name="phoneNumber" [(ngModel)]="driverForm.phoneNumber" required>
-          </label>
-          <label>
-            Email
-            <input name="email" type="email" [(ngModel)]="driverForm.email" required>
-          </label>
-          <label>
-            License Number
-            <input name="licenseNumber" [(ngModel)]="driverForm.licenseNumber" required>
-          </label>
-          <label>
-            License Expiry Date
-            <input name="licenseExpiryDate" type="date" [(ngModel)]="driverForm.licenseExpiryDate" required>
-          </label>
-          <label>
-            Experience Years
-            <input name="experienceYears" type="number" min="0" [(ngModel)]="driverForm.experienceYears" required>
-          </label>
-          <label>
-            Status
-            <select name="status" [(ngModel)]="driverForm.status" required>
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="INACTIVE">INACTIVE</option>
-              <option value="SUSPENDED">SUSPENDED</option>
-            </select>
-          </label>
-          <label>
-            Joining Date
-            <input name="joiningDate" type="date" [(ngModel)]="driverForm.joiningDate" required>
-          </label>
-          <label class="full-width">
-            Address
-            <textarea name="address" rows="3" [(ngModel)]="driverForm.address" required></textarea>
-          </label>
-        </div>
-
-        <div class="form-actions">
-          <button class="secondary-action" type="button" (click)="closeDriverForm()">Cancel</button>
-          <button class="primary-action" type="submit" [disabled]="driverNgForm.invalid || isSavingDriver">
-            <mat-icon>save</mat-icon>
-            {{ isSavingDriver ? 'Saving...' : 'Save Driver' }}
-          </button>
-        </div>
-      </form>
-
-      <p class="api-message" *ngIf="isLoadingDrivers">Loading drivers...</p>
-      <p class="api-message" *ngIf="driverMessage">{{ driverMessage }}</p>
-      <p class="api-message error" *ngIf="driverError">{{ driverError }}</p>
-
-      <article class="info-card" *ngFor="let driver of drivers">
-        <div class="card-header">
-          <div>
-            <h3>{{ driver.name }}</h3>
-            <p>{{ driver.phone }}</p>
-          </div>
-          <span class="status-badge" [class.available]="driver.status === 'ACTIVE'">
-            {{ driver.status }}
-          </span>
-        </div>
-
-        <div class="detail-row">
-          <span>License No.</span>
-          <strong>{{ driver.licenseNo }}</strong>
-        </div>
-        <div class="detail-row">
-          <span>Experience</span>
-          <strong>{{ driver.experienceYears }} years</strong>
-        </div>
-        <div class="detail-row">
-          <span>Email</span>
-          <strong>{{ driver.email }}</strong>
-        </div>
-
-        <div class="card-actions">
-          <button type="button" class="secondary-action" (click)="openEditDriver(driver)">
-            <mat-icon>edit</mat-icon>
-            Edit
-          </button>
-          <button type="button" class="danger-action" (click)="deleteDriver(driver)" [disabled]="isDeletingDriver">
-            <mat-icon>delete</mat-icon>
-            Delete
-          </button>
-        </div>
-      </article>
-
-      <div class="empty-state" *ngIf="!isLoadingDrivers && drivers.length === 0">
-        No drivers found.
-      </div>
-    </section>
-
-    <section class="management-panel">
-      <div class="panel-title">
-        <mat-icon>local_shipping</mat-icon>
-        <h2>Vehicles</h2>
+      <div>
+        <h2>{{ card.title }}</h2>
+        <p>{{ card.description }}</p>
       </div>
 
-      <article class="info-card" *ngFor="let vehicle of vehicles">
-        <div class="card-header">
-          <div>
-            <h3>{{ vehicle.vehicleNo }}</h3>
-            <p>{{ vehicle.vehicleType }}</p>
-          </div>
-          <span class="status-badge" [class.maintenance]="vehicle.status === 'Maintenance'">
-            {{ vehicle.status }}
-          </span>
-        </div>
-
-        <div class="detail-row">
-          <span>Capacity</span>
-          <strong>{{ vehicle.capacity }}</strong>
-        </div>
-      </article>
-    </section>
-  </div>
-
-  <section class="assignment-section">
-    <div class="panel-title">
-      <mat-icon>assignment_ind</mat-icon>
-      <h2>Assigned Driver With Vehicle Details</h2>
-    </div>
-
-    <article class="assignment-card" *ngFor="let assignment of assignments">
-      <div class="assignment-summary">
-        <div>
-          <span class="eyebrow">Current Route</span>
-          <h3>{{ assignment.route }}</h3>
-          <p>Assigned on {{ assignment.assignedAt }}</p>
-        </div>
-      </div>
-
-      <div class="assignment-details">
-        <div class="assigned-block">
-          <mat-icon>person_pin</mat-icon>
-          <div>
-            <span>Assigned Driver</span>
-            <strong>{{ assignment.driver.name }}</strong>
-            <p>{{ assignment.driver.phone }} | {{ assignment.driver.licenseNo }}</p>
-          </div>
-        </div>
-
-        <div class="assigned-block">
-          <mat-icon>local_shipping</mat-icon>
-          <div>
-            <span>Assigned Vehicle</span>
-            <strong>{{ assignment.vehicle.vehicleNo }}</strong>
-            <p>{{ assignment.vehicle.vehicleType }} | {{ assignment.vehicle.capacity }}</p>
-          </div>
-        </div>
-      </div>
+      <a class="primary-action" [routerLink]="card.route">Open</a>
     </article>
-  </section>
+  </div>
 </section>

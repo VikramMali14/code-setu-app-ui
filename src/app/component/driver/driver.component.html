@@ -1,50 +1,86 @@
-<div class="management-panel">
+<section class="crud-page">
+  <header class="page-header">
+    <div>
+      <h1>Drivers</h1>
+      <p>Driver table, add driver, edit driver, and delete driver.</p>
+    </div>
+  </header>
 
-  <div class="panel-title">
-    <h2>Driver List</h2>
-    <button class="primary-action" (click)="createDriver()">
-      Add Driver
-    </button>
-  </div>
+  <form [formGroup]="driverForm" (ngSubmit)="submit()" class="form-card">
+    <h2>{{ isEditMode ? 'Edit Driver' : 'Add Driver' }}</h2>
 
-  <div *ngFor="let d of drivers" class="info-card">
-
-    <div class="card-header">
-      <div>
-        <h3>{{ d.name }}</h3>
-        <p>{{ d.email }}</p>
-      </div>
-
-      <span class="status-badge"
-            [ngClass]="{
-              'available': d.status === 'ACTIVE',
-              'maintenance': d.status === 'INACTIVE'
-            }">
-        {{ d.status }}
-      </span>
+    <div class="grid">
+      <input formControlName="name" placeholder="Name">
+      <input formControlName="phoneNumber" placeholder="Phone Number">
+      <input formControlName="email" type="email" placeholder="Email">
+      <input formControlName="licenseNumber" placeholder="License Number">
+      <input type="date" formControlName="licenseExpiryDate">
+      <input type="number" formControlName="experienceYears" placeholder="Experience Years">
+      <select formControlName="status">
+        <option value="AVAILABLE">Available</option>
+        <option value="ASSIGNED">Assigned</option>
+        <option value="INACTIVE">Inactive</option>
+      </select>
+      <input type="date" formControlName="joiningDate">
+      <textarea formControlName="address" placeholder="Address" rows="3"></textarea>
     </div>
 
-    <div class="detail-row">
-      <span>Phone</span>
-      <strong>{{ d.phoneNumber }}</strong>
-    </div>
-
-    <div class="detail-row">
-      <span>Experience</span>
-      <strong>{{ d.experienceYears }} yrs</strong>
-    </div>
-
-    <div class="detail-row">
-      <span>License</span>
-      <strong>{{ d.licenseNumber }}</strong>
-    </div>
-
-    <div class="card-actions">
-      <button class="danger-action" (click)="deleteDriver(d.id!)">
-        Delete
+    <div class="form-actions">
+      <button type="button" class="secondary" (click)="reset()">Reset</button>
+      <button type="submit" [disabled]="driverForm.invalid || isSaving">
+        {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Driver' : 'Create Driver') }}
       </button>
     </div>
+  </form>
 
+  <div class="toolbar">
+    <input class="search" [(ngModel)]="searchText" placeholder="Search driver" [ngModelOptions]="{standalone: true}">
+    <select [(ngModel)]="statusFilter" [ngModelOptions]="{standalone: true}">
+      <option value="ALL">All Status</option>
+      <option value="AVAILABLE">Available</option>
+      <option value="ASSIGNED">Assigned</option>
+      <option value="INACTIVE">Inactive</option>
+    </select>
   </div>
 
-</div>
+  <p class="api-message" *ngIf="isLoading">Loading drivers...</p>
+  <p class="api-message" *ngIf="message">{{ message }}</p>
+  <p class="api-message error" *ngIf="error">{{ error }}</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Driver</th>
+          <th>Phone</th>
+          <th>License</th>
+          <th>Experience</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of filteredDrivers">
+          <td>
+            <strong>{{ d.name }}</strong>
+            <span>{{ d.email }}</span>
+          </td>
+          <td>{{ d.phoneNumber }}</td>
+          <td>{{ d.licenseNumber }}</td>
+          <td>{{ d.experienceYears }} yrs</td>
+          <td><span class="status" [ngClass]="d.status?.toLowerCase()">{{ d.status }}</span></td>
+          <td>
+            <div class="actions">
+              <button type="button" (click)="edit(d)">Edit</button>
+              <button type="button" class="danger" (click)="delete(d.id || d.driverId)" [disabled]="isDeleting">Delete</button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="!isLoading && filteredDrivers.length === 0">
+          <td colspan="6" class="empty-state">No drivers found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

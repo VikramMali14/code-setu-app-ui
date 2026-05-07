@@ -28,6 +28,51 @@
   gap: 16px;
 }
 
+.dashboard-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.dashboard-card {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-height: 190px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.dashboard-card-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.dashboard-card-icon mat-icon {
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
+}
+
+.dashboard-card h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 20px;
+}
+
+.dashboard-card p {
+  margin: 6px 0 0;
+  color: #64748b;
+}
+
 .management-panel,
 .assignment-section {
   display: grid;
@@ -319,6 +364,7 @@
 
 @media (max-width: 860px) {
   .management-grid,
+  .dashboard-card-grid,
   .assignment-details,
   .form-grid {
     grid-template-columns: 1fr;

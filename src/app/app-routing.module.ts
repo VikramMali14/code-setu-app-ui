@@ -22,6 +22,9 @@ import { CustomerComponent } from './component/customer/customer.component';
 import { CompanyComponent } from './component/company/company.component';
 import { PermissionComponent } from './component/permission/permission.component';
 import { VehicleManagementComponent } from './component/vehicle-management/vehicle-management.component';
+import { VehicleComponent } from './component/vehicle/vehicle.component';
+import { DriverComponent } from './component/driver/driver.component';
+import { AssignmentComponent } from './component/assignment/assignment.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -48,7 +51,11 @@ const routes: Routes = [
   { path: 'company-list', component: CompanyComponent , pathMatch: 'full', canActivate: [AuthGuard] },
 { path: 'company-create', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
 { path: 'company-edit/:id', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'vehicle', component: VehicleManagementComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
+{ path: 'vehicle', redirectTo: 'vehicle-management', pathMatch: 'full' },
+{ path: 'vehicle-management', component: VehicleManagementComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+{ path: 'vehicle-management/vehicles', component: VehicleComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+{ path: 'vehicle-management/drivers', component: DriverComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+{ path: 'vehicle-management/assignments', component: AssignmentComponent, pathMatch: 'full', canActivate: [AuthGuard] },
 
 ];
 

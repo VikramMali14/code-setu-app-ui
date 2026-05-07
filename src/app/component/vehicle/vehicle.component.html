@@ -1,52 +1,100 @@
-<div class="container">
+<section class="crud-page">
+  <header class="page-header">
+    <div>
+      <h1>Vehicles</h1>
+      <p>Vehicle table, add vehicle, edit vehicle, and delete vehicle.</p>
+    </div>
+  </header>
 
-  <!-- FORM -->
   <form [formGroup]="vehicleForm" (ngSubmit)="submit()" class="form-card">
     <h2>{{ isEditMode ? 'Edit Vehicle' : 'Add Vehicle' }}</h2>
 
     <div class="grid">
       <input formControlName="registrationNumber" placeholder="Registration No">
+      <input formControlName="vehicleType" placeholder="Vehicle Type">
+      <input formControlName="chassisNumber" placeholder="Chassis Number">
+      <input formControlName="engineNumber" placeholder="Engine Number">
       <input formControlName="model" placeholder="Model">
       <input formControlName="manufacturer" placeholder="Manufacturer">
-      <input type="number" formControlName="capacityKg" placeholder="Capacity">
-      <input formControlName="fuelType" placeholder="Fuel Type">
-
+      <input type="number" formControlName="mileage" placeholder="Mileage">
+      <input type="number" formControlName="capacityKg" placeholder="Capacity Kg">
       <select formControlName="status">
         <option value="AVAILABLE">Available</option>
+        <option value="ASSIGNED">Assigned</option>
         <option value="MAINTENANCE">Maintenance</option>
+        <option value="INACTIVE">Inactive</option>
       </select>
+      <select formControlName="fuelType">
+        <option value="DIESEL">Diesel</option>
+        <option value="PETROL">Petrol</option>
+        <option value="CNG">CNG</option>
+        <option value="EV">EV</option>
+      </select>
+      <input type="date" formControlName="registrationDate">
+      <input type="date" formControlName="insuranceExpiryDate">
+      <input type="date" formControlName="pollutionExpiryDate">
+      <input formControlName="currentLocation" placeholder="Current Location">
     </div>
 
-    <button type="submit">{{ isEditMode ? 'Update' : 'Create' }}</button>
+    <div class="form-actions">
+      <button type="button" class="secondary" (click)="reset()">Reset</button>
+      <button type="submit" [disabled]="vehicleForm.invalid || isSaving">
+        {{ isSaving ? 'Saving...' : (isEditMode ? 'Update Vehicle' : 'Create Vehicle') }}
+      </button>
+    </div>
   </form>
 
-  <!-- SEARCH -->
-  <input class="search" [(ngModel)]="searchText" (input)="appl()" placeholder="Search...">
-
-  <!-- LIST -->
-  <div class="card-grid">
-    <div *ngFor="let v of filteredVehicles" class="card">
-
-      <div class="card-header">
-        <h3>{{ v.registrationNumber }}</h3>
-        <span class="status" [ngClass]="v.status.toLowerCase()">
-          {{ v.status }}
-        </span>
-      </div>
-
-      <p>{{ v.model }} • {{ v.manufacturer }}</p>
-
-      <div class="details">
-        <span>{{ v.capacityKg }} kg</span>
-        <span>{{ v.fuelType }}</span>
-      </div>
-
-      <div class="actions">
-        <button (click)="edit(v)">Edit</button>
-        <button class="danger" (click)="delete(v.id)">Delete</button>
-      </div>
-
-    </div>
+  <div class="toolbar">
+    <input class="search" [(ngModel)]="searchText" placeholder="Search vehicle" [ngModelOptions]="{standalone: true}">
+    <select [(ngModel)]="statusFilter" [ngModelOptions]="{standalone: true}">
+      <option value="ALL">All Status</option>
+      <option value="AVAILABLE">Available</option>
+      <option value="ASSIGNED">Assigned</option>
+      <option value="MAINTENANCE">Maintenance</option>
+      <option value="INACTIVE">Inactive</option>
+    </select>
   </div>
 
-</div>
+  <p class="api-message" *ngIf="isLoading">Loading vehicles...</p>
+  <p class="api-message" *ngIf="message">{{ message }}</p>
+  <p class="api-message error" *ngIf="error">{{ error }}</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Vehicle</th>
+          <th>Type</th>
+          <th>Capacity</th>
+          <th>Fuel</th>
+          <th>Status</th>
+          <th>Location</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let v of filteredVehicles">
+          <td>
+            <strong>{{ v.registrationNumber }}</strong>
+            <span>{{ v.manufacturer }} {{ v.model }}</span>
+          </td>
+          <td>{{ v.vehicleType }}</td>
+          <td>{{ v.capacityKg }} kg</td>
+          <td>{{ v.fuelType }}</td>
+          <td><span class="status" [ngClass]="v.status?.toLowerCase()">{{ v.status }}</span></td>
+          <td>{{ v.currentLocation }}</td>
+          <td>
+            <div class="actions">
+              <button type="button" (click)="edit(v)">Edit</button>
+              <button type="button" class="danger" (click)="delete(v.id || v.vehicleId)" [disabled]="isDeleting">Delete</button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="!isLoading && filteredVehicles.length === 0">
+          <td colspan="7" class="empty-state">No vehicles found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
