@@ -75,9 +75,14 @@
     <!-- SHARED PAGINATION COMPONENT -->
     <!-- Table and other content above ... -->
 
-    <app-pagination [currentPage]="currentPageNumber" [totalPages]="totalPages" [totalRecords]="totalElements"
-      [pageSize]="pageSize" [pageRecords]="assignments.length" (pageChange)="handlePageChange($event)"
-      (sizeChange)="handleSizeChange($event)">
-    </app-pagination>
+<app-shared-pagination
+  [currentPage]="currentPageNumber"
+  [totalPages]="totalPages"
+  [totalRecords]="totalRecords"
+  [pageSize]="pageSize"
+  [pageRecords]="filteredAssignments.length"
+  (pageChange)="goToPage($event)"
+  (sizeChange)="changePageSize($event)">
+</app-shared-pagination>
   </div>
 </section>

@@ -18,7 +18,7 @@ export class VehicleManagementComponent implements OnInit {
   // 1. Data storage
   private allAssignments: Assignments[] = []; 
   public assignments: Assignments[] = []; 
-
+  public totalRecords :number = 0;
   // 2. Pagination State
   public currentPageNumber: number = 0; 
   public pageSize: number = 5;
@@ -26,6 +26,10 @@ export class VehicleManagementComponent implements OnInit {
   public totalPages: number = 0;
   public Math = Math;
 
+  public searchText: string = '';
+  public selectedStatus: string = 'All';
+  public startDate: string = '';
+  public endDate: string = '';
   public cards = [
     { icon: 'local_shipping', title: 'Vehicles', description: 'Manage all vehicles', route: '/vehicle-management/vehicles', accent: 'blue' },
     { icon: 'person', title: 'Drivers', description: 'Manage all drivers', route: '/vehicle-management/drivers', accent: 'orange' },
@@ -58,11 +62,11 @@ export class VehicleManagementComponent implements OnInit {
     });
   }
 
-  updatePagedView(): void {
-    const start = this.currentPageNumber * this.pageSize;
-    const end = start + this.pageSize;
-    this.assignments = this.allAssignments.slice(start, end);
-  }
+  // updatePagedView(): void {
+  //   const start = this.currentPageNumber * this.pageSize;
+  //   const end = start + this.pageSize;
+  //   this.assignments = this.allAssignments.slice(start, end);
+  // }
 
   // 4. FIXED: Logic for size change
   handleSizeChange(newSize: number): void {
@@ -73,5 +77,60 @@ export class VehicleManagementComponent implements OnInit {
 
   addAssigne(): void {
     this.router.navigate(['/vehicle-management/assignments']);
+  }
+  goToPage(pageNumber: number): void {
+    this.currentPageNumber = pageNumber;
+    this.handlePageChange(pageNumber);
+}
+
+changePageSize(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPageNumber = 0;
+    this.handlePageChange(0);
+}
+
+  // Use a getter for real-time filtering
+  get filteredAssignments(): Assignments[] {
+    const search = this.searchText.trim().toLowerCase();
+    const start = this.startDate ? new Date(this.startDate) : null;
+    const end = this.endDate ? new Date(this.endDate) : null;
+
+    return this.allAssignments.filter(item => {
+      // 1. Search Logic: Check names, IDs, and registration numbers
+      const searchableText = [
+        item.driverName,
+        item.registrationNumber,
+        item.driverId,
+        item.vehicleId
+      ].join(' ').toLowerCase();
+
+      const assignmentDate = item.assignedAt ? new Date(item.assignedAt) : null;
+
+      // 2. Matching Conditions
+      const matchesSearch = !search || searchableText.includes(search);
+      const matchesStatus = this.selectedStatus === 'All' || 
+                            (this.selectedStatus === 'Active' ? item.active : !item.active);
+      const matchesStart = !start || (assignmentDate !== null && assignmentDate >= start);
+      const matchesEnd = !end || (assignmentDate !== null && assignmentDate <= end);
+
+      return matchesSearch && matchesStatus && matchesStart && matchesEnd;
+    });
+  }
+
+  // Update this to use the filtered list for pagination
+  updatePagedView(): void {
+    const dataToPage = this.filteredAssignments;
+    this.totalRecords = dataToPage.length; // Ensure totalRecords updates based on filter
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+
+    const start = this.currentPageNumber * this.pageSize;
+    const end = start + this.pageSize;
+    this.assignments = dataToPage.slice(start, end);
+  }
+
+  // Trigger update whenever a filter changes
+  onFilterChange(): void {
+    this.currentPageNumber = 0;
+    this.updatePagedView();
   }
 }
