@@ -18,7 +18,7 @@
         <mat-menu #servicesMenu="matMenu" [overlapTrigger]="false">
             <div (mouseleave)="servicesTrigger.closeMenu()">
                 <button mat-menu-item routerLink="#">Generate Bilty</button>
-                <button mat-menu-item routerLink="#">Create Quotation</button>
+                <button mat-menu-item routerLink="/quotations">Create Quotation</button>
                 <button mat-menu-item routerLink="#">Invoicing</button>
                 <button mat-menu-item routerLink="#">Manage Staff</button>
                 <button mat-menu-item routerLink="#">Manage Vehicles</button>
@@ -129,7 +129,7 @@
     </a>
     <div *ngIf="servicesSubmenuOpen" style="background: rgba(0,0,0,0.1);">
         <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Generate Bilty</a>
-        <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create Quotation</a>
+        <a mat-button routerLink="/quotations" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Create Quotation</a>
         <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Invoicing</a>
         <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage Staff</a>
         <a mat-button routerLink="#" (click)="closeMobileMenu()" style="padding-left: 60px !important;">Manage Vehicles</a>

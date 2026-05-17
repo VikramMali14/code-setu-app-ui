@@ -1,0 +1,139 @@
+:host {
+  display: block;
+  --cargo-blue: #2563eb;
+  --cargo-orange: #f97316;
+  --cargo-green: #059669;
+}
+
+.vehicle-management-page {
+  width: 100%;
+  display: grid;
+  gap: 24px;
+}
+
+.vehicle-management-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 2px 0;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.vehicle-management-header h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.module-section {
+  display: grid;
+  gap: 14px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #334155;
+}
+
+.section-title h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.module-card {
+  position: relative;
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  text-align: left;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.module-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd5e1;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
+}
+
+.icon-wrapper {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-bottom: 6px;
+}
+
+.accent-blue .icon-wrapper {
+  background: #eff6ff;
+  color: var(--cargo-blue);
+}
+
+.accent-orange .icon-wrapper {
+  background: #fff7ed;
+  color: var(--cargo-orange);
+}
+
+.accent-green .icon-wrapper {
+  background: #ecfdf5;
+  color: var(--cargo-green);
+}
+
+.card-title {
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.card-subtitle {
+  max-width: 190px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.open-link {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  color: #db2777;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .vehicle-management-header h1 {
+    font-size: 24px;
+  }
+
+  .module-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,19 @@
+@import url("../vehicle/vehicle.component.css");
+
+.gradient-line {
+  background: linear-gradient(90deg, #667eea 0%, #f97316 50%, #db2777 100%);
+}
+
+.icon-box {
+  background: linear-gradient(135deg, #f97316 0%, #db2777 100%);
+}
+
+.icon-box.soft {
+  background: linear-gradient(135deg, #667eea 0%, #2563eb 100%);
+}
+
+.circle-btn,
+.save-btn {
+  background: linear-gradient(135deg, #f97316 0%, #db2777 100%);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+}

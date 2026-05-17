@@ -1,0 +1,88 @@
+<section class="vehicle-management-page">
+  <header class="vehicle-management-header">
+    <div>
+      <p class="eyebrow">Vehicle Management</p>
+      <h1>Logistics Control</h1>
+    </div>
+  </header>
+
+  <section class="module-section">
+    <div class="section-title">
+      <mat-icon>apps</mat-icon>
+      <h2>Modules</h2>
+    </div>
+
+    <div class="module-grid">
+      <a class="module-card" [ngClass]="'accent-' + card.accent" *ngFor="let card of cards" [routerLink]="card.route">
+        <span class="icon-wrapper">
+          <mat-icon>{{ card.icon }}</mat-icon>
+        </span>
+        <span class="card-title">{{ card.title }}</span>
+        <span class="card-subtitle">{{ card.description }}</span>
+        <span class="open-link">Open</span>
+      </a>
+    </div>
+  </section>
+</section>
+<section>
+
+  <!-- Table Section -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Vehicle Assignments</h1>
+    <button (click)="addAssigne()"
+      class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 shadow-sm transition">
+      Assign Driver
+    </button>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <table class="w-full text-left">
+      <thead class="bg-gray-50 text-gray-600 uppercase text-xs font-bold border-b">
+        <tr>
+          <th class="px-6 py-4">Status</th>
+          <th class="px-6 py-4">Driver Details</th>
+          <th class="px-6 py-4">Vehicle Info</th>
+          <th class="px-6 py-4">Assigned At</th>
+          <th class="px-6 py-4 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <tr *ngFor="let item of assignments" class="hover:bg-gray-50 transition-colors">
+          <td class="px-6 py-4">
+            <span [ngClass]="item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'"
+              class="px-3 py-1 rounded-full text-xs font-semibold">
+              {{ item.active ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <div class="font-bold text-gray-900">{{ item.driverName }}</div>
+            <div class="text-xs text-gray-400">ID: {{ item.driverId }}</div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="font-medium text-gray-800">{{ item.registrationNumber | uppercase }}</div>
+            <div class="text-xs text-gray-400">ID: {{ item.vehicleId }}</div>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-500">
+            {{ item.assignedAt | date:'medium' }}
+          </td>
+          <td class="px-6 py-4 text-right">
+            <button class="text-blue-600 hover:text-blue-800 text-sm font-bold">Manage</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- SHARED PAGINATION COMPONENT -->
+    <!-- Table and other content above ... -->
+
+<app-shared-pagination
+  [currentPage]="currentPageNumber"
+  [totalPages]="totalPages"
+  [totalRecords]="totalRecords"
+  [pageSize]="pageSize"
+  [pageRecords]="filteredAssignments.length"
+  (pageChange)="goToPage($event)"
+  (sizeChange)="changePageSize($event)">
+</app-shared-pagination>
+  </div>
+</section>

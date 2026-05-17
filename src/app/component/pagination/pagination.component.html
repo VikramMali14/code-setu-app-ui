@@ -1,0 +1,37 @@
+<div class="pagination-row" *ngIf="totalPages > 0">
+  <span class="pagination-summary">
+    Page {{ currentPage + 1 }} of {{ totalPages }}
+    | {{ pageRecords }} of {{ totalRecords }} records
+  </span>
+
+  <div class="pagination-controls">
+    <button 
+      type="button" 
+      [disabled]="currentPage === 0" 
+      (click)="onPageChange(currentPage - 1)">
+      &laquo;
+    </button>
+
+    <button
+      type="button"
+      *ngFor="let page of visiblePageNumbers"
+      [class.active]="(page - 1) === currentPage"
+      (click)="onPageChange(page - 1)">
+      {{ page }}
+    </button>
+
+    <button
+      type="button"
+      [disabled]="currentPage >= totalPages - 1"
+      (click)="onPageChange(currentPage + 1)">
+      &raquo;
+    </button>
+
+    <select class="page-size browser-default" [ngModel]="pageSize" (ngModelChange)="onSizeChange($event)">
+      <option [ngValue]="5">5</option>
+      <option [ngValue]="10">10</option>
+      <option [ngValue]="25">25</option>
+      <option [ngValue]="50">50</option>
+    </select>
+  </div>
+</div>

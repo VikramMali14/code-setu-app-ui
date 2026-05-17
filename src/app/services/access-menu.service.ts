@@ -30,7 +30,7 @@ export class AccessMenuService {
       items: [
         { id: 'dashboard', label: 'Dashboard', subtitle: 'Role based workspace', icon: 'dashboard', route: '/dashboard', accent: 'blue' },
         { id: 'customers', label: 'Customers', subtitle: 'Create and manage CRM entries', icon: 'groups', route: '/customers', accent: 'blue', permissions: ['CUSTOMER', 'CUSTOMER_VIEW', 'CUSTOMER_CREATE', 'MANAGE_CUSTOMER'] },
-        { id: 'vehicles', label: 'Vehicles', subtitle: 'Fleet tracking', icon: 'local_shipping', accent: 'orange', comingSoon: true, permissions: ['VEHICLE', 'VEHICLE_VIEW', 'MANAGE_VEHICLE'] },
+        { id: 'vehicles', label: 'Vehicles', subtitle: 'Fleet tracking', icon: 'local_shipping', route: '/vehicle', accent: 'orange', permissions: ['VEHICLE', 'VEHICLE_VIEW', 'MANAGE_VEHICLE'] },
         { id: 'staff', label: 'Staff', subtitle: 'Staff profiles and access', icon: 'badge', route: '/staffdetails', accent: 'green', permissions: ['STAFF', 'STAFF_VIEW', 'USER', 'USER_VIEW', 'MANAGE_STAFF'] },
         { id: 'company', label: 'Company', subtitle: 'Company profile and setup', icon: 'corporate_fare', route: '/company-list', accent: 'blue', permissions: ['COMPANY', 'COMPANY_VIEW', 'MANAGE_COMPANY'] },
         { id: 'plans', label: 'Plans', subtitle: 'Subscription plans', icon: 'category', route: '/plan', accent: 'pink', permissions: ['PLAN', 'PLAN_VIEW', 'MANAGE_PLAN'] },
@@ -42,7 +42,7 @@ export class AccessMenuService {
       label: 'Operation',
       icon: 'workspaces',
       items: [
-        { id: 'quotation', label: 'Quotation', subtitle: 'Prepare customer estimates', icon: 'request_quote', accent: 'orange', comingSoon: true, permissions: ['QUOTATION', 'QUOTATION_VIEW', 'QUOTATION_CREATE', 'MANAGE_QUOTATION'] },
+        { id: 'quotation', label: 'quotation', subtitle: 'Manage system quotation', icon: 'request_quote', route: '/quotations', accent: 'orange', permissions: ['QUOTATION', 'QUOTATION_VIEW', 'QUOTATION_CREATE', 'MANAGE_QUOTATION'] },
         { id: 'billing', label: 'Billing', subtitle: 'Invoices, GST and receipts', icon: 'receipt_long', accent: 'green', comingSoon: true, permissions: ['BILLING', 'BILLING_VIEW', 'INVOICE', 'MANAGE_BILLING'] }
       ]
     },
@@ -53,7 +53,9 @@ export class AccessMenuService {
       items: [
         { id: 'roles', label: 'Roles', subtitle: 'Create and update role access', icon: 'admin_panel_settings', route: '/roles', accent: 'blue', permissions: ['ROLE', 'ROLE_VIEW', 'ROLE_CREATE', 'MANAGE_ROLE'] },
         { id: 'permission', label: 'Permission', subtitle: 'Review permission mapping', icon: 'vpn_key', route: '/permission-list', accent: 'pink', permissions: ['PERMISSION', 'PERMISSION_VIEW', 'MANAGE_PERMISSION'] },
-        { id: 'department', label: 'Department', subtitle: 'Maintain department master', icon: 'domain', route: '/department', accent: 'green', permissions: ['DEPARTMENT', 'DEPARTMENT_VIEW', 'DEPARTMENT_CREATE', 'MANAGE_DEPARTMENT'] }
+        { id: 'department', label: 'Department', subtitle: 'Maintain department master', icon: 'domain', route: '/department', accent: 'green', permissions: ['DEPARTMENT', 'DEPARTMENT_VIEW', 'DEPARTMENT_CREATE', 'MANAGE_DEPARTMENT'] },
+        { id: 'systemconfig', label: 'System Configuration', subtitle: 'Manage system settings', icon: 'settings', route: '/system-configuration', accent: 'blue', permissions: ['SYSTEMCONFIG', 'SYSTEMCONFIG_VIEW', 'SYSTEMCONFIG_CREATE', 'SYSTEMCONFIG_DEPARTMENT'] }
+
       ]
     }
   ];

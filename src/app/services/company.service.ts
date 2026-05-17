@@ -19,7 +19,7 @@ export class CompanyService {
   }
 
   // Create Company
-  createCompany(payload: any): Observable<any> {
+  createCompany(payload: FormData): Observable<any> {
     return this.http.post<any>(this.BASE_URL, payload);
   }
 

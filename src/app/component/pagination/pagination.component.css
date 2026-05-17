@@ -1,0 +1,77 @@
+/* Inherit the layout from your existing pagination-row class */
+.pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures summary is left, buttons right */
+  gap: 12px;
+  margin-top: 24px;
+  padding: 0 10px;
+}
+
+.pagination-summary {
+  font-size: 13.5px;
+  color: #718096;
+  font-weight: 600;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-controls button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  color: #2d3748;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  border-color: #667eea;
+  background: #f8fafc;
+}
+
+.pagination-controls button:disabled {
+  color: #cbd5e0;
+  cursor: not-allowed;
+  background: #f1f5f9;
+}
+
+/* Matching the "Action-Button" gradient from your CSS */
+.pagination-controls button.active {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #667eea, #ec4b80);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25);
+}
+
+.page-size {
+  width: 85px;
+  height: 36px;
+  margin-left: 10px;
+  padding: 0 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #2d3748;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+.page-size:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}

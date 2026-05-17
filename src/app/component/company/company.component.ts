@@ -16,12 +16,17 @@ export class CompanyComponent implements OnInit {
   @ViewChild('confirmDialog') confirmDialogTemplate!: TemplateRef<any>;
 
   companyList: any[] = [];
+  assetTypes: string[] = ['LOGO', 'SEAL', 'Signature', 'STAMP'];
   companyForm!: FormGroup;
 
   showForm = false;
   isEditMode = false;
   searchText = '';
   isLoading = false;
+  selectedAssetFile: File | null = null;
+  selectedAssetFileName = '';
+  currentPageNumber = 0;
+  pageSize = 5;
 
   constructor(
     private fb: FormBuilder,
@@ -57,7 +62,10 @@ export class CompanyComponent implements OnInit {
       city: [''],
       branch: [''],
       mainBranch: [''],
-      isActive: [true]
+      website: [''],
+      isActive: [true],
+      assetType: [''],
+      assetFile: [null]
     });
   }
 
@@ -65,6 +73,7 @@ export class CompanyComponent implements OnInit {
     this.companyService.getCompany().subscribe({
       next: (res: any) => {
         this.companyList = res.dataList || res.data || [];
+        this.syncCurrentPage();
       },
       error: (err) => {
         console.error(err);
@@ -80,11 +89,13 @@ export class CompanyComponent implements OnInit {
       country: 'India',
       isActive: true
     });
+    this.clearAssetFile();
   }
 
   cancelForm() {
     this.showForm = false;
     this.companyForm.reset();
+    this.clearAssetFile();
   }
 
   submitForm() {
@@ -94,10 +105,9 @@ export class CompanyComponent implements OnInit {
       return;
     }
 
-    const payload = this.companyForm.value;
-
     if (this.isEditMode) {
 
+      const payload = this.getCompanyPayload();
       this.companyService.updateCompany(payload).subscribe({
         next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
@@ -110,6 +120,7 @@ export class CompanyComponent implements OnInit {
 
     } else {
 
+      const payload = this.buildCreateCompanyFormData();
       this.companyService.createCompany(payload).subscribe({
         next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
@@ -126,6 +137,55 @@ export class CompanyComponent implements OnInit {
     this.showForm = true;
     this.isEditMode = true;
     this.companyForm.patchValue(company);
+    this.clearAssetFile();
+  }
+
+  onAssetFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+
+    this.selectedAssetFile = file;
+    this.selectedAssetFileName = file?.name || '';
+    this.companyForm.patchValue({ assetFile: file });
+    this.companyForm.get('assetFile')?.updateValueAndValidity();
+  }
+
+  clearAssetFile(): void {
+    this.selectedAssetFile = null;
+    this.selectedAssetFileName = '';
+    this.companyForm?.patchValue({ assetFile: null });
+    this.companyForm?.get('assetFile')?.updateValueAndValidity();
+  }
+
+  private getCompanyPayload(): any {
+    const { assetFile, ...payload } = this.companyForm.value;
+    return payload;
+  }
+
+  private buildCreateCompanyFormData(): FormData {
+    const formData = new FormData();
+    const payload = this.getCompanyPayload();
+
+    Object.keys(payload).forEach((key) => {
+      if (key === 'assetType') {
+        return;
+      }
+
+      const value = payload[key];
+      if (value !== null && value !== undefined && value !== '') {
+        formData.append(key, value);
+      }
+    });
+
+    if (payload.assetType) {
+      formData.append('assets[0].assetType', payload.assetType);
+    }
+
+    if (this.selectedAssetFile) {
+      formData.append('assets[0].file', this.selectedAssetFile, this.selectedAssetFile.name);
+    }
+
+    return formData;
   }
 
   // deleteCompany(id: number) {
@@ -141,7 +201,7 @@ export class CompanyComponent implements OnInit {
   //   });
   // }
 
-  filteredCompanies() {
+  get filteredCompanyList() {
 
     if (!this.searchText) return this.companyList;
 
@@ -150,6 +210,48 @@ export class CompanyComponent implements OnInit {
       x.companyEmail?.toLowerCase().includes(this.searchText.toLowerCase()) ||
       x.city?.toLowerCase().includes(this.searchText.toLowerCase())
     );
+  }
+
+  filteredCompanies() {
+    return this.filteredCompanyList;
+  }
+
+  get totalRecords(): number {
+    return this.filteredCompanyList.length;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalRecords / this.pageSize);
+  }
+
+  get paginatedCompanies() {
+    const start = this.currentPageNumber * this.pageSize;
+    return this.filteredCompanyList.slice(start, start + this.pageSize);
+  }
+
+  get pageRecords(): number {
+    return this.paginatedCompanies.length;
+  }
+
+  goToPage(pageNumber: number): void {
+    this.currentPageNumber = pageNumber;
+    this.syncCurrentPage();
+  }
+
+  changePageSize(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPageNumber = 0;
+  }
+
+  onSearchChange(): void {
+    this.currentPageNumber = 0;
+  }
+
+  private syncCurrentPage(): void {
+    const lastPage = Math.max(this.totalPages - 1, 0);
+    if (this.currentPageNumber > lastPage) {
+      this.currentPageNumber = lastPage;
+    }
   }
 
   focusSearch(): void {
