@@ -23,6 +23,8 @@ export class CompanyComponent implements OnInit {
   isEditMode = false;
   searchText = '';
   isLoading = false;
+  selectedAssetFile: File | null = null;
+  selectedAssetFileName = '';
   currentPageNumber = 0;
   pageSize = 5;
 
@@ -60,8 +62,10 @@ export class CompanyComponent implements OnInit {
       city: [''],
       branch: [''],
       mainBranch: [''],
+      website: [''],
       isActive: [true],
-      assetType: ['']
+      assetType: [''],
+      assetFile: [null]
     });
   }
 
@@ -85,11 +89,13 @@ export class CompanyComponent implements OnInit {
       country: 'India',
       isActive: true
     });
+    this.clearAssetFile();
   }
 
   cancelForm() {
     this.showForm = false;
     this.companyForm.reset();
+    this.clearAssetFile();
   }
 
   submitForm() {
@@ -99,10 +105,9 @@ export class CompanyComponent implements OnInit {
       return;
     }
 
-    const payload = this.companyForm.value;
-
     if (this.isEditMode) {
 
+      const payload = this.getCompanyPayload();
       this.companyService.updateCompany(payload).subscribe({
         next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
@@ -115,6 +120,7 @@ export class CompanyComponent implements OnInit {
 
     } else {
 
+      const payload = this.buildCreateCompanyFormData();
       this.companyService.createCompany(payload).subscribe({
         next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
@@ -131,6 +137,55 @@ export class CompanyComponent implements OnInit {
     this.showForm = true;
     this.isEditMode = true;
     this.companyForm.patchValue(company);
+    this.clearAssetFile();
+  }
+
+  onAssetFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+
+    this.selectedAssetFile = file;
+    this.selectedAssetFileName = file?.name || '';
+    this.companyForm.patchValue({ assetFile: file });
+    this.companyForm.get('assetFile')?.updateValueAndValidity();
+  }
+
+  clearAssetFile(): void {
+    this.selectedAssetFile = null;
+    this.selectedAssetFileName = '';
+    this.companyForm?.patchValue({ assetFile: null });
+    this.companyForm?.get('assetFile')?.updateValueAndValidity();
+  }
+
+  private getCompanyPayload(): any {
+    const { assetFile, ...payload } = this.companyForm.value;
+    return payload;
+  }
+
+  private buildCreateCompanyFormData(): FormData {
+    const formData = new FormData();
+    const payload = this.getCompanyPayload();
+
+    Object.keys(payload).forEach((key) => {
+      if (key === 'assetType') {
+        return;
+      }
+
+      const value = payload[key];
+      if (value !== null && value !== undefined && value !== '') {
+        formData.append(key, value);
+      }
+    });
+
+    if (payload.assetType) {
+      formData.append('assets[0].assetType', payload.assetType);
+    }
+
+    if (this.selectedAssetFile) {
+      formData.append('assets[0].file', this.selectedAssetFile, this.selectedAssetFile.name);
+    }
+
+    return formData;
   }
 
   // deleteCompany(id: number) {
