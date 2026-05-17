@@ -22,6 +22,8 @@ export class CompanyComponent implements OnInit {
   isEditMode = false;
   searchText = '';
   isLoading = false;
+  currentPageNumber = 0;
+  pageSize = 5;
 
   constructor(
     private fb: FormBuilder,
@@ -65,6 +67,7 @@ export class CompanyComponent implements OnInit {
     this.companyService.getCompany().subscribe({
       next: (res: any) => {
         this.companyList = res.dataList || res.data || [];
+        this.syncCurrentPage();
       },
       error: (err) => {
         console.error(err);
@@ -141,7 +144,7 @@ export class CompanyComponent implements OnInit {
   //   });
   // }
 
-  filteredCompanies() {
+  get filteredCompanyList() {
 
     if (!this.searchText) return this.companyList;
 
@@ -150,6 +153,48 @@ export class CompanyComponent implements OnInit {
       x.companyEmail?.toLowerCase().includes(this.searchText.toLowerCase()) ||
       x.city?.toLowerCase().includes(this.searchText.toLowerCase())
     );
+  }
+
+  filteredCompanies() {
+    return this.filteredCompanyList;
+  }
+
+  get totalRecords(): number {
+    return this.filteredCompanyList.length;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalRecords / this.pageSize);
+  }
+
+  get paginatedCompanies() {
+    const start = this.currentPageNumber * this.pageSize;
+    return this.filteredCompanyList.slice(start, start + this.pageSize);
+  }
+
+  get pageRecords(): number {
+    return this.paginatedCompanies.length;
+  }
+
+  goToPage(pageNumber: number): void {
+    this.currentPageNumber = pageNumber;
+    this.syncCurrentPage();
+  }
+
+  changePageSize(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPageNumber = 0;
+  }
+
+  onSearchChange(): void {
+    this.currentPageNumber = 0;
+  }
+
+  private syncCurrentPage(): void {
+    const lastPage = Math.max(this.totalPages - 1, 0);
+    if (this.currentPageNumber > lastPage) {
+      this.currentPageNumber = lastPage;
+    }
   }
 
   focusSearch(): void {

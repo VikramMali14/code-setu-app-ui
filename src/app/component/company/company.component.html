@@ -11,9 +11,6 @@
         <p class="sub-title">Manage all company records in one place</p>
       </div>
 
-      <button class="circle-btn" (click)="openCreateForm()">
-        <span class="material-icons">add</span>
-      </button>
     </div>
 
     <!-- Action Cards -->
@@ -157,7 +154,7 @@
 
       <div class="search-box">
         <span class="material-icons">search</span>
-        <input type="text" [(ngModel)]="searchText" placeholder="Search company..." #searchInput>
+        <input type="text" [(ngModel)]="searchText" (ngModelChange)="onSearchChange()" placeholder="Search company..." #searchInput>
       </div>
     </div>
 
@@ -176,7 +173,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let company of filteredCompanies()">
+          <tr *ngFor="let company of paginatedCompanies">
             <td>{{ company.companyId }}</td>
             <td><strong>{{ company.companyName }}</strong></td>
             <td>{{ company.companyEmail }}</td>
@@ -207,6 +204,16 @@
         </tbody>
       </table>
     </div>
+
+    <app-shared-pagination
+      [currentPage]="currentPageNumber"
+      [totalPages]="totalPages"
+      [totalRecords]="totalRecords"
+      [pageSize]="pageSize"
+      [pageRecords]="pageRecords"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="changePageSize($event)">
+    </app-shared-pagination>
   </div>
 
 </div>

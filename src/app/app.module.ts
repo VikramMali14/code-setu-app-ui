@@ -123,6 +123,7 @@ import { PaginationComponent } from './component/pagination/pagination.component
     AboutComponent,
     FeaturescreenComponent,
     VehicleManagementComponent,
+    PaginationComponent,
 
   ],
   providers: [
