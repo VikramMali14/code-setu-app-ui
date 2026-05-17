@@ -107,8 +107,7 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Client</th>
+            <!-- <th>Client</th> -->
             <th>Module</th>
             <th>Name</th>
             <th>Value</th>
@@ -120,8 +119,7 @@
 
         <tbody>
           <tr *ngFor="let configuration of paginatedConfigurations">
-            <td>{{ getConfigurationId(configuration) }}</td>
-            <td>{{ configuration.clientId }}</td>
+            <!-- <td>{{ configuration.clientId }}</td> -->
             <td>{{ configuration.module }}</td>
             <td><strong>{{ configuration.name }}</strong></td>
             <td>{{ configuration.value }}</td>
