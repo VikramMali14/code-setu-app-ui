@@ -16,6 +16,7 @@ export class CompanyComponent implements OnInit {
   @ViewChild('confirmDialog') confirmDialogTemplate!: TemplateRef<any>;
 
   companyList: any[] = [];
+  assetTypes: string[] = ['LOGO', 'SEAL', 'Signature', 'STAMP'];
   companyForm!: FormGroup;
 
   showForm = false;
@@ -59,7 +60,8 @@ export class CompanyComponent implements OnInit {
       city: [''],
       branch: [''],
       mainBranch: [''],
-      isActive: [true]
+      isActive: [true],
+      assetType: ['']
     });
   }
 

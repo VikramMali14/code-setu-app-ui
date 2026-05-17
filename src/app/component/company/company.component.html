@@ -132,6 +132,17 @@
           <label>Main Branch</label>
           <input type="text" formControlName="mainBranch" placeholder="Main branch">
         </div>
+        <div class="form-group">
+          <label>Asset Type</label>
+          <mat-form-field appearance="outline" class="asset-type-select">
+            <mat-select formControlName="assetType" placeholder="Select asset type">
+              <mat-option [value]="''">Select asset type</mat-option>
+              <mat-option *ngFor="let type of assetTypes" [value]="type">
+                {{ type }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
 
       <div class="form-action">
@@ -154,7 +165,8 @@
 
       <div class="search-box">
         <span class="material-icons">search</span>
-        <input type="text" [(ngModel)]="searchText" (ngModelChange)="onSearchChange()" placeholder="Search company..." #searchInput>
+        <input type="text" [(ngModel)]="searchText" (ngModelChange)="onSearchChange()" placeholder="Search company..."
+          #searchInput>
       </div>
     </div>
 
@@ -180,9 +192,7 @@
             <td>{{ company.city }}</td>
             <td>{{ company.state }}</td>
             <td>
-              <span class="status-badge"
-                [class.active]="company.isActive"
-                [class.inactive]="!company.isActive">
+              <span class="status-badge" [class.active]="company.isActive" [class.inactive]="!company.isActive">
                 {{ company.isActive ? 'Active' : 'Inactive' }}
               </span>
             </td>
@@ -205,13 +215,8 @@
       </table>
     </div>
 
-    <app-shared-pagination
-      [currentPage]="currentPageNumber"
-      [totalPages]="totalPages"
-      [totalRecords]="totalRecords"
-      [pageSize]="pageSize"
-      [pageRecords]="pageRecords"
-      (pageChange)="goToPage($event)"
+    <app-shared-pagination [currentPage]="currentPageNumber" [totalPages]="totalPages" [totalRecords]="totalRecords"
+      [pageSize]="pageSize" [pageRecords]="pageRecords" (pageChange)="goToPage($event)"
       (sizeChange)="changePageSize($event)">
     </app-shared-pagination>
   </div>
