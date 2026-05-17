@@ -65,6 +65,7 @@ import { VehicleManagementComponent } from './component/vehicle-management/vehic
 import { GoogleMapsModule } from '@angular/google-maps';
 import { DriverLocationComponent } from './component/driver-location/driver-location.component';
 import { PaginationComponent } from './component/pagination/pagination.component';
+import { SyetemconfigurationComponent } from './component/syetemconfiguration/syetemconfiguration.component';
 
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
@@ -86,6 +87,7 @@ import { PaginationComponent } from './component/pagination/pagination.component
     CustomerComponent,
     CompanyComponent,
     PermissionComponent,
+    SyetemconfigurationComponent,
   ],
   imports: [
     BrowserModule,
