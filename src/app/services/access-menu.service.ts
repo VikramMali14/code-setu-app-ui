@@ -42,7 +42,7 @@ export class AccessMenuService {
       label: 'Operation',
       icon: 'workspaces',
       items: [
-        { id: 'quotation', label: 'Quotation', subtitle: 'Prepare customer estimates', icon: 'request_quote', accent: 'orange', comingSoon: true, permissions: ['QUOTATION', 'QUOTATION_VIEW', 'QUOTATION_CREATE', 'MANAGE_QUOTATION'] },
+        { id: 'quotation', label: 'quotation', subtitle: 'Manage system quotation', icon: 'request_quote', route: '/quotations', accent: 'orange', permissions: ['QUOTATION', 'QUOTATION_VIEW', 'QUOTATION_CREATE', 'MANAGE_QUOTATION'] },
         { id: 'billing', label: 'Billing', subtitle: 'Invoices, GST and receipts', icon: 'receipt_long', accent: 'green', comingSoon: true, permissions: ['BILLING', 'BILLING_VIEW', 'INVOICE', 'MANAGE_BILLING'] }
       ]
     },

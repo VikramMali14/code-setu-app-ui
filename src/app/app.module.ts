@@ -66,6 +66,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { DriverLocationComponent } from './component/driver-location/driver-location.component';
 import { PaginationComponent } from './component/pagination/pagination.component';
 import { SyetemconfigurationComponent } from './component/syetemconfiguration/syetemconfiguration.component';
+import { QuotaionComponent } from './component/quotaion/quotaion.component';
 
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
@@ -88,6 +89,7 @@ import { SyetemconfigurationComponent } from './component/syetemconfiguration/sy
     CompanyComponent,
     PermissionComponent,
     SyetemconfigurationComponent,
+    QuotaionComponent,
   ],
   imports: [
     BrowserModule,

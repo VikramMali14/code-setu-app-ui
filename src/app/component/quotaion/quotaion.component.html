@@ -1,0 +1,83 @@
+<div class="page-wrapper">
+  <section class="top-card">
+    <div class="gradient-line"></div>
+    <div class="card-header">
+      <div>
+        <h1>Quotation Templates</h1>
+        <p class="sub-title">Upload quotation templates and generate quotation PDFs</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel-grid">
+    <div class="list-card">
+      <div class="gradient-line"></div>
+      <div class="card-header">
+        <h2>Create Template</h2>
+      </div>
+
+      <form [formGroup]="templateForm" (ngSubmit)="createTemplate()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Template Name *</label>
+            <input type="text" formControlName="name" placeholder="quotation template v1">
+          </div>
+
+          <div class="form-group">
+            <label>Template Type *</label>
+            <mat-form-field appearance="outline" class="template-select">
+              <mat-select formControlName="type">
+                <mat-option *ngFor="let type of templateTypes" [value]="type">
+                  {{ type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <label class="checkbox-field">
+            <input type="checkbox" formControlName="isActive">
+            <span>Active</span>
+          </label>
+
+          <div class="form-group full-width">
+            <label>Template File *</label>
+            <label class="file-upload-box">
+              <span class="material-icons">upload_file</span>
+              <span>{{ selectedTemplateFileName || 'Choose template file' }}</span>
+              <input type="file" (change)="onTemplateFileChange($event)">
+            </label>
+          </div>
+        </div>
+
+        <div class="form-action">
+          <button class="cancel-btn" type="button" (click)="clearTemplateFile()">Clear File</button>
+          <button class="save-btn" type="submit" [disabled]="templateForm.invalid || isUploading">
+            {{ isUploading ? 'Uploading...' : 'Create Template' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="list-card">
+      <div class="gradient-line"></div>
+      <div class="card-header">
+        <h2>Generate Quotation PDF</h2>
+      </div>
+
+      <form [formGroup]="pdfForm" (ngSubmit)="downloadQuotationPdf()">
+        <div class="form-grid single-column">
+          <div class="form-group">
+            <label>Shifting ID *</label>
+            <input type="number" formControlName="shiftingId" placeholder="Enter shifting ID">
+          </div>
+        </div>
+
+        <div class="form-action">
+          <button class="save-btn" type="submit" [disabled]="pdfForm.invalid || isDownloading">
+            {{ isDownloading ? 'Generating...' : 'Download PDF' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
