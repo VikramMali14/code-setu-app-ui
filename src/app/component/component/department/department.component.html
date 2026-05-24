@@ -41,6 +41,16 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+
+    <app-shared-pagination
+      [currentPage]="currentPageNumber"
+      [totalPages]="totalPages"
+      [totalRecords]="totalRecords"
+      [pageSize]="pageSize"
+      [pageRecords]="pageRecords"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="changePageSize($event)">
+    </app-shared-pagination>
   </mat-card>
 
   <!-- RIGHT : FORM -->

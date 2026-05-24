@@ -15,10 +15,13 @@ export class DepartmentComponent implements OnInit {
 
   displayedColumns = ['name', 'code', 'isActive', 'actions'];
   dataSource = new MatTableDataSource<Department>();
+  departmentList: Department[] = [];
 
   departmentForm!: FormGroup;
   isEditMode = false;
   selectedDepartmentId?: number;
+  currentPageNumber = 0;
+  pageSize = 5;
 
   constructor(
     private deptService: DepartmentService,
@@ -40,11 +43,15 @@ export class DepartmentComponent implements OnInit {
 
   loadDepartments(): void {
     this.deptService.getAll().subscribe(res => {
-      this.dataSource.data = res.dataList;
+      this.departmentList = res.dataList || [];
+      this.syncCurrentPage();
+      this.updateTableData();
     });
   }
   deleteDepartment(id:number){
-    this.deptService.delete(id);
+    this.deptService.delete(id).subscribe(() => {
+      this.loadDepartments();
+    });
   }
   openEdit(dept: Department): void {
     this.isEditMode = true;
@@ -74,5 +81,45 @@ export class DepartmentComponent implements OnInit {
     this.departmentForm.reset({ isActive: true });
     this.isEditMode = false;
     this.selectedDepartmentId = undefined;
+  }
+
+  get totalRecords(): number {
+    return this.departmentList.length;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalRecords / this.pageSize);
+  }
+
+  get paginatedDepartments(): Department[] {
+    const start = this.currentPageNumber * this.pageSize;
+    return this.departmentList.slice(start, start + this.pageSize);
+  }
+
+  get pageRecords(): number {
+    return this.paginatedDepartments.length;
+  }
+
+  goToPage(pageNumber: number): void {
+    this.currentPageNumber = pageNumber;
+    this.syncCurrentPage();
+    this.updateTableData();
+  }
+
+  changePageSize(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPageNumber = 0;
+    this.updateTableData();
+  }
+
+  private syncCurrentPage(): void {
+    const lastPage = Math.max(this.totalPages - 1, 0);
+    if (this.currentPageNumber > lastPage) {
+      this.currentPageNumber = lastPage;
+    }
+  }
+
+  private updateTableData(): void {
+    this.dataSource.data = this.paginatedDepartments;
   }
 }
