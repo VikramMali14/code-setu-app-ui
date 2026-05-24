@@ -138,7 +138,7 @@
       <div class="search-box">
         <span class="material-icons">search</span>
 
-        <input type="text" [(ngModel)]="searchText" placeholder="Search role...">
+        <input type="text" [(ngModel)]="searchText" (ngModelChange)="onSearchChange()" placeholder="Search role...">
       </div>
 
     </div>
@@ -149,7 +149,6 @@
 
         <thead>
           <tr>
-            <th>ID</th>
             <th>ROLE</th>
             <th>CODE</th>
             <th>SCOPE</th>
@@ -160,9 +159,8 @@
 
         <tbody>
 
-          <tr *ngFor="let item of filteredRoles()">
+          <tr *ngFor="let item of paginatedRoles">
 
-            <td>{{ item.rolesId }}</td>
 
             <td>{{ item.roleName }}</td>
 
@@ -192,7 +190,7 @@
 
           </tr>
 
-          <tr *ngIf="roleList.length === 0">
+          <tr *ngIf="filteredRoleList.length === 0">
             <td colspan="6" class="empty-row">
               No roles found
             </td>
@@ -203,6 +201,16 @@
       </table>
 
     </div>
+
+    <app-shared-pagination
+      [currentPage]="currentPageNumber"
+      [totalPages]="totalPages"
+      [totalRecords]="totalRecords"
+      [pageSize]="pageSize"
+      [pageRecords]="pageRecords"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="changePageSize($event)">
+    </app-shared-pagination>
 
   </div>
 

@@ -27,6 +27,8 @@ export class RolesDetailsComponent implements OnInit {
   selectedId = 0;
 
   isLoading = false;
+  currentPageNumber = 0;
+  pageSize = 5;
 
   constructor(
     private fb: FormBuilder,
@@ -58,6 +60,7 @@ export class RolesDetailsComponent implements OnInit {
     this.roleService.getRole().subscribe({
       next: (res: any) => {
         this.roleList = res.dataList || res.data || [];
+        this.syncCurrentPage();
       },
       error: err => console.error(err)
     });
@@ -255,15 +258,59 @@ export class RolesDetailsComponent implements OnInit {
       Search
   =============================== */
   filteredRoles() {
+    return this.filteredRoleList;
+  }
 
-    if (!this.searchText) return this.roleList;
+  get filteredRoleList(): any[] {
+    const search = this.searchText.trim().toLowerCase();
+
+    if (!search) return this.roleList;
 
     return this.roleList.filter(x =>
-      x.roleName?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-      x.code?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-      x.scope?.toLowerCase().includes(this.searchText.toLowerCase())
+      x.roleName?.toLowerCase().includes(search) ||
+      x.code?.toLowerCase().includes(search) ||
+      x.scope?.toLowerCase().includes(search)
     );
   }
+
+  get totalRecords(): number {
+    return this.filteredRoleList.length;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalRecords / this.pageSize);
+  }
+
+  get paginatedRoles(): any[] {
+    const start = this.currentPageNumber * this.pageSize;
+    return this.filteredRoleList.slice(start, start + this.pageSize);
+  }
+
+  get pageRecords(): number {
+    return this.paginatedRoles.length;
+  }
+
+  onSearchChange(): void {
+    this.currentPageNumber = 0;
+  }
+
+  goToPage(pageNumber: number): void {
+    this.currentPageNumber = pageNumber;
+    this.syncCurrentPage();
+  }
+
+  changePageSize(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPageNumber = 0;
+  }
+
+  private syncCurrentPage(): void {
+    const lastPage = Math.max(this.totalPages - 1, 0);
+    if (this.currentPageNumber > lastPage) {
+      this.currentPageNumber = lastPage;
+    }
+  }
+
   toggleAllPermissions(event: any) {
 
     const checked = event.target.checked;
