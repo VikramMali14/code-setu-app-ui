@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RoleserviceService } from 'src/app/services/role/roleservice.service';
 
@@ -19,7 +18,6 @@ export class PermissionComponent implements OnInit {
   selectedId: number | null = null;
   pageIndex = 0;
   pageSize = 10;
-  pageSizeOptions = [5, 10, 25, 50];
   totalRecords = 0;
   totalPages = 0;
   pageRecords = 0;
@@ -85,8 +83,12 @@ export class PermissionComponent implements OnInit {
     });
   }
 
-  onPageChange(event: PageEvent): void {
-    this.loadPermissions(event.pageIndex, event.pageSize);
+  goToPage(pageNumber: number): void {
+    this.loadPermissions(pageNumber, this.pageSize);
+  }
+
+  changePageSize(newSize: number): void {
+    this.loadPermissions(0, newSize);
   }
 
   searchPermissions(): void {

@@ -90,16 +90,17 @@
     </article>
   </div>
 
-  <mat-paginator
+  <app-shared-pagination
     *ngIf="!isLoading && !errorMessage && (totalRecords > 0 || permissions.length > 0)"
     class="permission-paginator"
-    [length]="totalRecords"
-    [pageIndex]="pageIndex"
+    [currentPage]="pageIndex"
+    [totalPages]="totalPages"
+    [totalRecords]="totalRecords"
     [pageSize]="pageSize"
-    [pageSizeOptions]="pageSizeOptions"
-    showFirstLastButtons
-    (page)="onPageChange($event)">
-  </mat-paginator>
+    [pageRecords]="pageRecords"
+    (pageChange)="goToPage($event)"
+    (sizeChange)="changePageSize($event)">
+  </app-shared-pagination>
 
   <div class="state-box" *ngIf="!isLoading && !errorMessage && permissions.length === 0">
     No permissions found.

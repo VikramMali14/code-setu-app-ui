@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { PaginationComponent } from '../pagination/pagination.component';
 
 // Define an interface for type safety (optional but recommended)
 interface Plan {
@@ -31,7 +32,8 @@ interface PaymentDetails {
     MatIconModule, 
     MatFormFieldModule, 
     MatInputModule, 
-    MatButtonModule
+    MatButtonModule,
+    PaginationComponent
   ],
   styleUrls: ['./planscreen.component.css']
 })
@@ -41,6 +43,8 @@ export class PlanscreenComponent implements OnInit {
   // Make these properties public so they can be accessed in the template
   public isPaymentModalVisible : boolean = false;
   public selectedPlan: Plan | null = null; // To hold the selected plan object
+  currentPageNumber = 0;
+  pageSize = 5;
 
   
   plans: Plan[] = [
@@ -74,6 +78,33 @@ export class PlanscreenComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  get totalRecords(): number {
+    return this.plans.length;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalRecords / this.pageSize);
+  }
+
+  get paginatedPlans(): Plan[] {
+    const start = this.currentPageNumber * this.pageSize;
+    return this.plans.slice(start, start + this.pageSize);
+  }
+
+  get pageRecords(): number {
+    return this.paginatedPlans.length;
+  }
+
+  goToPage(pageNumber: number): void {
+    this.currentPageNumber = pageNumber;
+    this.syncCurrentPage();
+  }
+
+  changePageSize(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPageNumber = 0;
+  }
     
   // Function to open the modal, now accepts the specific plan as an argument
   openPaymentModal(plan: Plan): void {
@@ -102,6 +133,13 @@ calculatePaymentBreakdown(planPrice: number): void {
 
   // 3. Final Amount
   this.payment.totalPayable = planPrice + totalGst;
+}
+
+private syncCurrentPage(): void {
+  const lastPage = Math.max(this.totalPages - 1, 0);
+  if (this.currentPageNumber > lastPage) {
+    this.currentPageNumber = lastPage;
+  }
 }
 }
 
