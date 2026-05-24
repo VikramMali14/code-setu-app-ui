@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   isMobileView = false;
 
   private internalRoutes: string[] = [];
+  private readonly publicHomeRoutes = ['/', '/home'];
 
   userdata: any;
 
@@ -51,12 +52,19 @@ export class AppComponent implements OnInit {
 
     // Set initial layout
     this.setLayout(this.router.url);
+    this.redirectLoggedInHome(this.router.url);
+
+    this.loginService.loggedIn$.subscribe(() => {
+      this.setLayout(this.router.url);
+      this.redirectLoggedInHome(this.router.url);
+    });
 
     // Listen to route changes
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.setLayout(event.urlAfterRedirects);
+        this.redirectLoggedInHome(event.urlAfterRedirects);
         this.showProfileMenu = false; // Close profile menu on route change
         this.closeSidebarOnMobile(); // Close sidebar on mobile after navigation
       });
@@ -202,9 +210,11 @@ export class AppComponent implements OnInit {
   }
 
   private setLayout(url: string): void {
+    const path = this.getPath(url);
+
     this.refreshAccessMenu();
     this.isInternalApp = this.loginService.isLoggedIn() && 
-                         this.internalRoutes.some(route => url.startsWith(route));
+                         this.internalRoutes.some(route => path.startsWith(route));
 
     const session = localStorage.getItem('user_session');
     if (session) {
@@ -215,6 +225,17 @@ export class AppComponent implements OnInit {
         console.error('Error parsing user session in setLayout:', error);
       }
     }
+  }
+
+  private redirectLoggedInHome(url: string): void {
+    if (this.loginService.isLoggedIn() && this.publicHomeRoutes.includes(this.getPath(url))) {
+      this.router.navigateByUrl('/dashboard');
+    }
+  }
+
+  private getPath(url: string): string {
+    const path = url.split('?')[0].split('#')[0] || '/';
+    return path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
   }
 
   private refreshAccessMenu(): void {

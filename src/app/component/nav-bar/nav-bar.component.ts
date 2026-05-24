@@ -39,13 +39,12 @@ export class NavBarComponent implements OnInit {
 
 
 ngOnInit(): void {
-  this.userdata = this.parseJson(localStorage.getItem('user_session'));
-
   this.loginservice.loggedIn$.subscribe(status => {
+    this.userdata = this.parseJson(localStorage.getItem('user_session'));
     this.loggedIn = status;
 
     if (status && this.userdata) {
-      this.username = this.userdata.userName;
+      this.username = this.userdata.userName || this.userdata.firstName || '';
     } else {
       this.username = '';
     }
