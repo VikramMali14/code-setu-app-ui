@@ -16,7 +16,7 @@ export class QuotaionComponent implements OnInit {
   isUploading = false;
   isDownloading = false;
 
-  templateTypes = ['QUOTATION'];
+  templateTypes = ['None','QUOTATION','INVOICE','RECEIPT'];
 
   constructor(
     private fb: FormBuilder,

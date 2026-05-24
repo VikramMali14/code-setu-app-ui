@@ -141,6 +141,18 @@
   align-items: center;
 }
 
+::ng-deep .template-select .mat-select-value,
+::ng-deep .template-select .mat-select-placeholder {
+  color: #2d3748;
+  font-size: 0.95rem;
+  max-width: none;
+  width: 100%;
+}
+
+::ng-deep .template-select .mat-select-placeholder {
+  color: #a0aec0;
+}
+
 ::ng-deep .template-select .mat-select-arrow,
 ::ng-deep .template-select .mat-form-field-outline-thick {
   color: #667eea;

@@ -26,7 +26,10 @@
           <div class="form-group">
             <label>Template Type *</label>
             <mat-form-field appearance="outline" class="template-select">
-              <mat-select formControlName="type">
+              <mat-select formControlName="type" placeholder="Select template type">
+                <mat-select-trigger>
+                  {{ templateForm.get('type')?.value || 'Select template type' }}
+                </mat-select-trigger>
                 <mat-option *ngFor="let type of templateTypes" [value]="type">
                   {{ type }}
                 </mat-option>
