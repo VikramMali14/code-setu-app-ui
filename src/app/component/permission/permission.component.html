@@ -1,17 +1,32 @@
-<section class="permission-page">
-  <header class="page-header">
-    <div>
-      <p class="eyebrow">Settings</p>
-      <h1>Permission</h1>
-    </div>
+<section class="permission-page page-wrapper">
+  <header class="top-card">
+    <div class="gradient-line"></div>
 
-    <button type="button" class="refresh-btn" (click)="loadPermissions()">
-      <mat-icon>refresh</mat-icon>
-      <span>Refresh</span>
-    </button>
+    <div class="card-header">
+      <div class="header-left">
+        <div class="title-icon">
+          <mat-icon>vpn_key</mat-icon>
+        </div>
+
+        <div>
+          <h1>Permission Management</h1>
+          <p class="sub-title">Create, update and manage permissions</p>
+        </div>
+      </div>
+
+      <button type="button" class="circle-btn" (click)="loadPermissions()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
   </header>
 
-  <form class="permission-form" [formGroup]="permissionForm" (ngSubmit)="submitPermission()">
+  <form class="permission-form list-card" [formGroup]="permissionForm" (ngSubmit)="submitPermission()">
+    <div class="gradient-line"></div>
+
+    <div class="card-header">
+      <h2>{{ selectedId ? 'Update Permission' : 'Create Permission' }}</h2>
+    </div>
+
     <div class="form-group">
       <label>Name *</label>
       <input type="text" formControlName="name" placeholder="Create Customer">
@@ -46,63 +61,71 @@
     </div>
   </form>
 
-  <div class="search-panel">
-    <mat-icon>search</mat-icon>
-    <input
-      type="search"
-      [(ngModel)]="searchText"
-      placeholder="Search permission, module, code..."
-      (keyup.enter)="searchPermissions()">
-    <button type="button" class="ghost-btn" (click)="searchPermissions()">
-      <mat-icon>search</mat-icon>
-      <span>Search</span>
-    </button>
-    <button type="button" class="ghost-btn" (click)="clearSearch()" *ngIf="searchText">
-      <mat-icon>close</mat-icon>
-      <span>Clear</span>
-    </button>
-  </div>
+  <div class="list-card">
+    <div class="gradient-line"></div>
 
-  <div class="state-box" *ngIf="isLoading">
-    <mat-spinner diameter="36"></mat-spinner>
-  </div>
+    <div class="card-header">
+      <h2>Permissions List</h2>
 
-  <div class="state-box error" *ngIf="!isLoading && errorMessage">
-    {{ errorMessage }}
-  </div>
-
-  <div class="permission-grid" *ngIf="!isLoading && !errorMessage && permissions.length > 0">
-    <article class="permission-card" *ngFor="let item of permissions">
-      <mat-icon>vpn_key</mat-icon>
-      <div class="permission-info">
-        <h2>{{ getPermissionName(item) }}</h2>
-        <p>{{ item.module || 'Other' }}</p>
-        <span>{{ getPermissionCode(item) }}</span>
-      </div>
-      <div class="card-actions">
-        <button type="button" aria-label="Edit permission" (click)="editPermission(item)">
-          <mat-icon>edit</mat-icon>
+      <div class="search-panel">
+        <mat-icon>search</mat-icon>
+        <input
+          type="search"
+          [(ngModel)]="searchText"
+          placeholder="Search permission, module, code..."
+          (keyup.enter)="searchPermissions()">
+        <button type="button" class="ghost-btn" (click)="searchPermissions()">
+          <mat-icon>search</mat-icon>
+          <span>Search</span>
         </button>
-        <button type="button" aria-label="Delete permission" class="danger" (click)="deletePermission(item)">
-          <mat-icon>delete</mat-icon>
+        <button type="button" class="ghost-btn" (click)="clearSearch()" *ngIf="searchText">
+          <mat-icon>close</mat-icon>
+          <span>Clear</span>
         </button>
       </div>
-    </article>
-  </div>
+    </div>
 
-  <app-shared-pagination
-    *ngIf="!isLoading && !errorMessage && (totalRecords > 0 || permissions.length > 0)"
-    class="permission-paginator"
-    [currentPage]="pageIndex"
-    [totalPages]="totalPages"
-    [totalRecords]="totalRecords"
-    [pageSize]="pageSize"
-    [pageRecords]="pageRecords"
-    (pageChange)="goToPage($event)"
-    (sizeChange)="changePageSize($event)">
-  </app-shared-pagination>
+    <div class="state-box" *ngIf="isLoading">
+      <mat-spinner diameter="36"></mat-spinner>
+    </div>
 
-  <div class="state-box" *ngIf="!isLoading && !errorMessage && permissions.length === 0">
-    No permissions found.
+    <div class="state-box error" *ngIf="!isLoading && errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="permission-grid" *ngIf="!isLoading && !errorMessage && permissions.length > 0">
+      <article class="permission-card" *ngFor="let item of permissions">
+        <mat-icon>vpn_key</mat-icon>
+        <div class="permission-info">
+          <h2>{{ getPermissionName(item) }}</h2>
+          <p>{{ item.module || 'Other' }}</p>
+          <span>{{ getPermissionCode(item) }}</span>
+        </div>
+        <div class="card-actions">
+          <button type="button" aria-label="Edit permission" (click)="editPermission(item)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button type="button" aria-label="Delete permission" class="danger" (click)="deletePermission(item)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </article>
+    </div>
+
+    <app-shared-pagination
+      *ngIf="!isLoading && !errorMessage && (totalRecords > 0 || permissions.length > 0)"
+      class="permission-paginator"
+      [currentPage]="pageIndex"
+      [totalPages]="totalPages"
+      [totalRecords]="totalRecords"
+      [pageSize]="pageSize"
+      [pageRecords]="pageRecords"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="changePageSize($event)">
+    </app-shared-pagination>
+
+    <div class="state-box" *ngIf="!isLoading && !errorMessage && permissions.length === 0">
+      No permissions found.
+    </div>
   </div>
 </section>
