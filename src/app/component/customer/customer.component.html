@@ -527,7 +527,13 @@
               <div class="action-cell">
                 <!-- <button type="button" title="Billing"><i class="material-icons">receipt</i></button> -->
                 <button type="button" title="Edit" (click)="openUpdateForm(customer)"><i class="material-icons">edit</i></button>
-                <button type="button" title="Document"><i class="material-icons">description</i></button>
+                <button
+                  type="button"
+                  title="Download Quotation"
+                  (click)="downloadCustomerQuotation(customer)"
+                  [disabled]="isQuotationDownloading(customer)">
+                  <i class="material-icons">{{ isQuotationDownloading(customer) ? 'hourglass_empty' : 'description' }}</i>
+                </button>
                 <button type="button" title="Location"><i class="material-icons">hub</i></button>
                 <button type="button" title="Delete" (click)="deleteCustomer(customer)" [disabled]="isDeleting">
                   <i class="material-icons">radio_button_unchecked</i>

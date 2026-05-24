@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerModels } from 'src/app/models/customer-models';
 import { CustomersService } from 'src/app/services/customers.service';
+import { TemplateService } from 'src/app/services/template.service';
 
 type ConnectionStatus = 'Online' | 'Offline';
 type CustomerRow = CustomerModels & {
@@ -29,6 +30,7 @@ export class CustomerComponent implements OnInit {
   isDeleting = false;
   deleteMessage = '';
   deleteError = '';
+  downloadingQuotationId: number | string | null = null;
 
   // ── Create Form ─────────────────────────────────────────────────────
   showCreateForm = false;
@@ -56,7 +58,10 @@ export class CustomerComponent implements OnInit {
   currentPageNumber = 0;
   totalPages = 0;
 
-  constructor(private customersService: CustomersService) { }
+  constructor(
+    private customersService: CustomersService,
+    private templateService: TemplateService
+  ) { }
 
   ngOnInit(): void {
     this.loadCustomers();
@@ -530,6 +535,54 @@ export class CustomerComponent implements OnInit {
         this.deleteError = error.error?.responseMessege || error.error?.message || 'Unable to delete customer.';
       }
     });
+  }
+
+  downloadCustomerQuotation(customer: CustomerRow): void {
+    const shiftingId = this.getCustomerShiftingId(customer);
+
+    this.deleteMessage = '';
+    this.deleteError = '';
+
+    if (!shiftingId) {
+      this.deleteError = 'No shifting id found for this customer.';
+      return;
+    }
+
+    this.downloadingQuotationId = shiftingId;
+    this.templateService.getQuotationPdf(shiftingId).subscribe({
+      next: (blob) => {
+        this.downloadBlob(blob, `quotation-${shiftingId}.pdf`);
+        this.deleteMessage = 'Quotation PDF downloaded successfully.';
+        this.downloadingQuotationId = null;
+      },
+      error: (error) => {
+        console.error('Quotation PDF download failed:', error);
+        this.deleteError = 'Unable to generate quotation PDF.';
+        this.downloadingQuotationId = null;
+      }
+    });
+  }
+
+  isQuotationDownloading(customer: CustomerRow): boolean {
+    const shiftingId = this.getCustomerShiftingId(customer);
+    return !!shiftingId && this.downloadingQuotationId === shiftingId;
+  }
+
+  private getCustomerShiftingId(customer: any): number | string | null {
+    return customer?.shiftingId
+      || customer?.shiftId
+      || customer?.shiftings?.[0]?.shiftingId
+      || customer?.shiftings?.[0]?.id
+      || null;
+  }
+
+  private downloadBlob(blob: Blob, fileName: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
+    window.URL.revokeObjectURL(url);
   }
 
   private getEmptyShiftingForm(): any {

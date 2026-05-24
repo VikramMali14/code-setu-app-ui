@@ -61,26 +61,5 @@
       </form>
     </div>
 
-    <div class="list-card">
-      <div class="gradient-line"></div>
-      <div class="card-header">
-        <h2>Generate Quotation PDF</h2>
-      </div>
-
-      <form [formGroup]="pdfForm" (ngSubmit)="downloadQuotationPdf()">
-        <div class="form-grid single-column">
-          <div class="form-group">
-            <label>Shifting ID *</label>
-            <input type="number" formControlName="shiftingId" placeholder="Enter shifting ID">
-          </div>
-        </div>
-
-        <div class="form-action">
-          <button class="save-btn" type="submit" [disabled]="pdfForm.invalid || isDownloading">
-            {{ isDownloading ? 'Generating...' : 'Download PDF' }}
-          </button>
-        </div>
-      </form>
-    </div>
   </section>
 </div>

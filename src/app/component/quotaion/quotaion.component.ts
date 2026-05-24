@@ -10,11 +10,9 @@ import { TemplateService } from 'src/app/services/template.service';
 })
 export class QuotaionComponent implements OnInit {
   templateForm!: FormGroup;
-  pdfForm!: FormGroup;
   selectedTemplateFile: File | null = null;
   selectedTemplateFileName = '';
   isUploading = false;
-  isDownloading = false;
 
   templateTypes = ['None','QUOTATION','INVOICE','RECEIPT'];
 
@@ -36,9 +34,6 @@ export class QuotaionComponent implements OnInit {
       file: [null, Validators.required]
     });
 
-    this.pdfForm = this.fb.group({
-      shiftingId: ['', [Validators.required, Validators.min(1)]]
-    });
   }
 
   onTemplateFileChange(event: Event): void {
@@ -92,38 +87,6 @@ export class QuotaionComponent implements OnInit {
         this.isUploading = false;
       }
     });
-  }
-
-  downloadQuotationPdf(): void {
-    if (this.pdfForm.invalid) {
-      this.pdfForm.markAllAsTouched();
-      return;
-    }
-
-    const shiftingId = this.pdfForm.value.shiftingId;
-    this.isDownloading = true;
-
-    this.templateService.getQuotationPdf(shiftingId).subscribe({
-      next: (blob) => {
-        this.downloadBlob(blob, `quotation-${shiftingId}.pdf`);
-        this.showpopup.showSuccess('Quotation PDF downloaded');
-        this.isDownloading = false;
-      },
-      error: (error) => {
-        console.error(error);
-        this.showpopup.showError('Unable to generate quotation PDF');
-        this.isDownloading = false;
-      }
-    });
-  }
-
-  private downloadBlob(blob: Blob, fileName: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = fileName;
-    anchor.click();
-    window.URL.revokeObjectURL(url);
   }
 
   private showResponse(response: any, fallbackMessage: string): void {
