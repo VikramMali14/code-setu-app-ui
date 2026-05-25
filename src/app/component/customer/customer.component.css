@@ -1,21 +1,26 @@
 .postpaid-page {
+  width: 100%;
   min-height: 100vh;
-  padding: 96px 5vw 64px;
+  padding: 24px 24px 40px;
   background: #f8fafc;
   color: #2d3748;
   font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .panel {
   position: relative;
   margin: 0 auto 24px;
   padding: 28px 32px 30px;
+  width: 100%;
   max-width: 1730px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(226, 232, 240, 0.95);
   border-radius: 26px;
   box-shadow: 0 26px 70px rgba(45, 55, 72, 0.12);
+  box-sizing: border-box;
 }
 
 .panel::before {
@@ -338,12 +343,12 @@
 
 .table-wrap {
   margin-top: 18px;
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 table {
   width: 100%;
-  min-width: 1120px;
+  table-layout: fixed;
   border-collapse: collapse;
 }
 
@@ -364,6 +369,7 @@ th,
 td {
   padding: 15px 12px;
   text-align: left;
+  overflow-wrap: anywhere;
 }
 
 th {
@@ -406,13 +412,18 @@ td {
 
 .action-cell {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 6px;
-  white-space: nowrap;
+  min-width: 154px;
 }
 
 .action-cell button {
   width: 34px;
+  min-width: 34px;
+  max-width: 34px;
   height: 34px;
+  flex: 0 0 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -425,8 +436,17 @@ td {
 }
 
 .action-cell i {
+  width: 19px;
+  min-width: 19px;
   color: #fff;
   font-size: 19px;
+  line-height: 1;
+  text-align: center;
+}
+
+th:last-child,
+td:last-child {
+  width: 174px;
 }
 
 .empty-state {
@@ -482,7 +502,7 @@ td {
 
 @media (max-width: 700px) {
   .postpaid-page {
-    padding: 72px 14px 42px;
+    padding: 16px 10px 32px;
   }
 
   .panel {
@@ -513,6 +533,21 @@ td {
   .button-row button,
   .form-actions button {
     width: 100%;
+  }
+
+  th,
+  td {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+
+  .action-cell {
+    min-width: 74px;
+  }
+
+  th:last-child,
+  td:last-child {
+    width: 86px;
   }
 }
 

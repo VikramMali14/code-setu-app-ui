@@ -11,14 +11,14 @@
       <button class="quick-action" type="button" [class.active]="showCreateForm" (click)="openCreateForm()">
         <i class="material-icons">language</i>
         <span>Create Customer</span>
-        <i class="material-icons corner-icon">crop_free</i>
+        <!-- <i class="material-icons corner-icon">crop_free</i> -->
       </button>
 
       <button class="quick-action" type="button" [class.active]="!showCreateForm && !showUpdateForm"
         (click)="closeCreateForm(); closeUpdateForm()">
         <i class="material-icons">language</i>
         <span>Search Customer</span>
-        <i class="material-icons corner-icon">crop_free</i>
+        <!-- <i class="material-icons corner-icon">crop_free</i> -->
       </button>
     </div>
   </section>
@@ -561,7 +561,7 @@
                 </button>
                 <button type="button" title="Location"><i class="material-icons">hub</i></button>
                 <button type="button" title="Delete" (click)="deleteCustomer(customer)" [disabled]="isDeleting">
-                  <i class="material-icons">radio_button_unchecked</i>
+                  <i class="material-icons">delete</i>
                 </button>
                 <!-- <button type="button" title="Refresh">
                   <i class="material-icons">refresh</i>
