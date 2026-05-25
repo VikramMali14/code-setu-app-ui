@@ -106,6 +106,9 @@ export class CustomerComponent implements OnInit {
   getCustomerName(customer: CustomerModels): string {
     return [customer.firstName, customer.lastName].filter(Boolean).join(' ') || 'Customer';
   }
+    getSerialNumber(customer: CustomerModels): string {
+    return [customer.firstName, customer.lastName].filter(Boolean).join(' ') || 'Customer';
+  }
 
   getStatusClass(customer: CustomerRow): string {
     return customer.connectionStatus === 'Online' ? 'online' : 'offline';

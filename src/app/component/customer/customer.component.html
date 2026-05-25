@@ -14,7 +14,8 @@
         <i class="material-icons corner-icon">crop_free</i>
       </button>
 
-      <button class="quick-action" type="button" [class.active]="!showCreateForm && !showUpdateForm" (click)="closeCreateForm(); closeUpdateForm()">
+      <button class="quick-action" type="button" [class.active]="!showCreateForm && !showUpdateForm"
+        (click)="closeCreateForm(); closeUpdateForm()">
         <i class="material-icons">language</i>
         <span>Search Customer</span>
         <i class="material-icons corner-icon">crop_free</i>
@@ -66,7 +67,8 @@
         </div>
         <div class="form-field">
           <label>Alternate Mobile</label>
-          <input name="upAlternateMobileNo" placeholder="Alternate Mobile" [(ngModel)]="customerToUpdate.alternateMobileNo">
+          <input name="upAlternateMobileNo" placeholder="Alternate Mobile"
+            [(ngModel)]="customerToUpdate.alternateMobileNo">
         </div>
         <div class="form-field">
           <label>Email <span class="req">*</span></label>
@@ -83,15 +85,13 @@
     <div *ngIf="updateStep === 1" class="stepper-body">
       <h3 class="step-section-title">Shifting Details</h3>
       <div class="shifting-tabs">
-        <button
-          *ngFor="let s of customerToUpdate.shiftings; let i = index; trackBy: trackByIndex"
-          class="shift-tab" type="button"
-          [class.active]="i === activeUpdateShiftIndex"
-          (click)="activeUpdateShiftIndex = i">
+        <button *ngFor="let s of customerToUpdate.shiftings; let i = index; trackBy: trackByIndex" class="shift-tab"
+          type="button" [class.active]="i === activeUpdateShiftIndex" (click)="activeUpdateShiftIndex = i">
           {{ getShiftLabel(s, i) }}
         </button>
         <button class="shift-tab add-tab" type="button" (click)="addUpdateShifting()">+ Add Shifting</button>
-        <button *ngIf="customerToUpdate.shiftings.length > 1" class="shift-tab remove-tab" type="button" (click)="removeUpdateShifting(activeUpdateShiftIndex)">Remove</button>
+        <button *ngIf="customerToUpdate.shiftings.length > 1" class="shift-tab remove-tab" type="button"
+          (click)="removeUpdateShifting(activeUpdateShiftIndex)">Remove</button>
       </div>
 
       <ng-container *ngFor="let s of customerToUpdate.shiftings; let i = index; trackBy: trackByIndex">
@@ -142,11 +142,8 @@
     <div *ngIf="updateStep === 2" class="stepper-body">
       <h3 class="step-section-title">Charges</h3>
       <div class="shifting-tabs">
-        <button
-          *ngFor="let s of customerToUpdate.shiftings; let i = index; trackBy: trackByIndex"
-          class="shift-tab" type="button"
-          [class.active]="i === activeUpdateShiftIndex"
-          (click)="activeUpdateShiftIndex = i">
+        <button *ngFor="let s of customerToUpdate.shiftings; let i = index; trackBy: trackByIndex" class="shift-tab"
+          type="button" [class.active]="i === activeUpdateShiftIndex" (click)="activeUpdateShiftIndex = i">
           {{ getShiftLabel(s, i) }}
         </button>
       </div>
@@ -155,26 +152,40 @@
         <ng-container *ngIf="si === activeUpdateShiftIndex">
           <p class="charges-subtitle">Base Charges</p>
           <div class="charges-grid">
-            <div class="form-field"><label>Transport</label><input type="number" min="0" [name]="'upTransport_'+si" [(ngModel)]="s.charges.transportCharge"></div>
-            <div class="form-field"><label>Packing</label><input type="number" min="0" [name]="'upPacking_'+si" [(ngModel)]="s.charges.packingCharge"></div>
-            <div class="form-field"><label>Loading</label><input type="number" min="0" [name]="'upLoading_'+si" [(ngModel)]="s.charges.loadingCharge"></div>
-            <div class="form-field"><label>Unloading</label><input type="number" min="0" [name]="'upUnloading_'+si" [(ngModel)]="s.charges.unloadingCharge"></div>
-            <div class="form-field"><label>Unpacking</label><input type="number" min="0" [name]="'upUnpacking_'+si" [(ngModel)]="s.charges.unpackingCharge"></div>
-            <div class="form-field"><label>Car Transport</label><input type="number" min="0" [name]="'upCarTransport_'+si" [(ngModel)]="s.charges.carTransportCharge"></div>
-            <div class="form-field"><label>Risk / Insurance</label><input type="number" min="0" [name]="'upRisk_'+si" [(ngModel)]="s.charges.riskInsureCharge"></div>
-            <div class="form-field"><label>Storage</label><input type="number" min="0" [name]="'upStorage_'+si" [(ngModel)]="s.charges.storageCharge"></div>
-            <div class="form-field"><label>Statistical</label><input type="number" min="0" [name]="'upStatistical_'+si" [(ngModel)]="s.charges.statisticalCharge"></div>
-            <div class="form-field"><label>Service</label><input type="number" min="0" [name]="'upService_'+si" [(ngModel)]="s.charges.serviceCharge"></div>
-            <div class="form-field"><label>Service Rate (%)</label><input type="number" min="0" [name]="'upServiceRate_'+si" [(ngModel)]="s.charges.serviceRate"></div>
-            <div class="form-field"><label>GST Rate (%)</label><input type="number" min="0" [name]="'upGstRate_'+si" [(ngModel)]="s.charges.gstRate"></div>
-            <div class="form-field"><label>GST Charge</label><input type="number" min="0" [name]="'upGstCharge_'+si" [(ngModel)]="s.charges.gstCharge"></div>
+            <div class="form-field"><label>Transport</label><input type="number" min="0" [name]="'upTransport_'+si"
+                [(ngModel)]="s.charges.transportCharge"></div>
+            <div class="form-field"><label>Packing</label><input type="number" min="0" [name]="'upPacking_'+si"
+                [(ngModel)]="s.charges.packingCharge"></div>
+            <div class="form-field"><label>Loading</label><input type="number" min="0" [name]="'upLoading_'+si"
+                [(ngModel)]="s.charges.loadingCharge"></div>
+            <div class="form-field"><label>Unloading</label><input type="number" min="0" [name]="'upUnloading_'+si"
+                [(ngModel)]="s.charges.unloadingCharge"></div>
+            <div class="form-field"><label>Unpacking</label><input type="number" min="0" [name]="'upUnpacking_'+si"
+                [(ngModel)]="s.charges.unpackingCharge"></div>
+            <div class="form-field"><label>Car Transport</label><input type="number" min="0"
+                [name]="'upCarTransport_'+si" [(ngModel)]="s.charges.carTransportCharge"></div>
+            <div class="form-field"><label>Risk / Insurance</label><input type="number" min="0" [name]="'upRisk_'+si"
+                [(ngModel)]="s.charges.riskInsureCharge"></div>
+            <div class="form-field"><label>Storage</label><input type="number" min="0" [name]="'upStorage_'+si"
+                [(ngModel)]="s.charges.storageCharge"></div>
+            <div class="form-field"><label>Statistical</label><input type="number" min="0" [name]="'upStatistical_'+si"
+                [(ngModel)]="s.charges.statisticalCharge"></div>
+            <div class="form-field"><label>Service</label><input type="number" min="0" [name]="'upService_'+si"
+                [(ngModel)]="s.charges.serviceCharge"></div>
+            <div class="form-field"><label>Service Rate (%)</label><input type="number" min="0"
+                [name]="'upServiceRate_'+si" [(ngModel)]="s.charges.serviceRate"></div>
+            <div class="form-field"><label>GST Rate (%)</label><input type="number" min="0" [name]="'upGstRate_'+si"
+                [(ngModel)]="s.charges.gstRate"></div>
+            <div class="form-field"><label>GST Charge</label><input type="number" min="0" [name]="'upGstCharge_'+si"
+                [(ngModel)]="s.charges.gstCharge"></div>
           </div>
 
           <p class="charges-subtitle" style="margin-top:1.25rem;">Extra Charges</p>
           <div class="extra-charges-header">
             <span>Name</span><span>Rate</span><span>Value</span><span></span>
           </div>
-          <div *ngFor="let ec of s.charges.extracharges; let ei = index; trackBy: trackByIndex" class="extra-charge-row">
+          <div *ngFor="let ec of s.charges.extracharges; let ei = index; trackBy: trackByIndex"
+            class="extra-charge-row">
             <input type="text" placeholder="Charge name" [name]="'upEcName_'+si+'_'+ei" [(ngModel)]="ec.chargeName">
             <input type="number" min="0" placeholder="Rate" [name]="'upEcRate_'+si+'_'+ei" [(ngModel)]="ec.chargeRate">
             <input type="number" min="0" placeholder="Value" [name]="'upEcVal_'+si+'_'+ei" [(ngModel)]="ec.chargeValue">
@@ -190,11 +201,16 @@
       <h3 class="step-section-title">Review & Update</h3>
       <p class="charges-subtitle" style="margin-top:0">Customer Information</p>
       <div class="review-grid">
-        <div class="review-row"><span class="review-label">Full Name</span><span class="review-val">{{ customerToUpdate.firstName }} {{ customerToUpdate.lastName }}</span></div>
-        <div class="review-row"><span class="review-label">Mobile</span><span class="review-val">{{ customerToUpdate.mobileNo || '—' }}</span></div>
-        <div class="review-row"><span class="review-label">Alternate Mobile</span><span class="review-val">{{ customerToUpdate.alternateMobileNo || '—' }}</span></div>
-        <div class="review-row"><span class="review-label">Email</span><span class="review-val">{{ customerToUpdate.email || '—' }}</span></div>
-        <div class="review-row"><span class="review-label">Work Email</span><span class="review-val">{{ customerToUpdate.workEmail || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Full Name</span><span class="review-val">{{
+            customerToUpdate.firstName }} {{ customerToUpdate.lastName }}</span></div>
+        <div class="review-row"><span class="review-label">Mobile</span><span class="review-val">{{
+            customerToUpdate.mobileNo || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Alternate Mobile</span><span class="review-val">{{
+            customerToUpdate.alternateMobileNo || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Email</span><span class="review-val">{{
+            customerToUpdate.email || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Work Email</span><span class="review-val">{{
+            customerToUpdate.workEmail || '—' }}</span></div>
       </div>
 
       <p class="charges-subtitle">Shiftings ({{ customerToUpdate.shiftings.length }})</p>
@@ -218,7 +234,8 @@
       <button class="clear-button" type="button" *ngIf="!isFirstUpdateStep" (click)="prevUpdateStep()">← Back</button>
       <button class="clear-button" type="button" *ngIf="isFirstUpdateStep" (click)="resetUpdateForm()">Reset</button>
       <button class="export-button" type="button" *ngIf="!isLastUpdateStep" (click)="nextUpdateStep()">Next →</button>
-      <button class="export-button" type="button" *ngIf="isLastUpdateStep" [disabled]="isUpdating" (click)="updateCustomer()">
+      <button class="export-button" type="button" *ngIf="isLastUpdateStep" [disabled]="isUpdating"
+        (click)="updateCustomer()">
         {{ isUpdating ? 'Updating...' : 'Update Customer' }}
       </button>
     </div>
@@ -288,15 +305,13 @@
     <div *ngIf="createStep === 1" class="stepper-body">
       <h3 class="step-section-title">Shifting Details</h3>
       <div class="shifting-tabs">
-        <button
-          *ngFor="let s of newCustomer.shiftings; let i = index; trackBy: trackByIndex"
-          class="shift-tab" type="button"
-          [class.active]="i === activeShiftIndex"
-          (click)="activeShiftIndex = i">
+        <button *ngFor="let s of newCustomer.shiftings; let i = index; trackBy: trackByIndex" class="shift-tab"
+          type="button" [class.active]="i === activeShiftIndex" (click)="activeShiftIndex = i">
           {{ getShiftLabel(s, i) }}
         </button>
         <button class="shift-tab add-tab" type="button" (click)="addShifting()">+ Add Shifting</button>
-        <button *ngIf="newCustomer.shiftings.length > 1" class="shift-tab remove-tab" type="button" (click)="removeShifting(activeShiftIndex)">Remove</button>
+        <button *ngIf="newCustomer.shiftings.length > 1" class="shift-tab remove-tab" type="button"
+          (click)="removeShifting(activeShiftIndex)">Remove</button>
       </div>
 
       <ng-container *ngFor="let s of newCustomer.shiftings; let i = index; trackBy: trackByIndex">
@@ -347,11 +362,8 @@
     <div *ngIf="createStep === 2" class="stepper-body">
       <h3 class="step-section-title">Charges</h3>
       <div class="shifting-tabs">
-        <button
-          *ngFor="let s of newCustomer.shiftings; let i = index; trackBy: trackByIndex"
-          class="shift-tab" type="button"
-          [class.active]="i === activeShiftIndex"
-          (click)="activeShiftIndex = i">
+        <button *ngFor="let s of newCustomer.shiftings; let i = index; trackBy: trackByIndex" class="shift-tab"
+          type="button" [class.active]="i === activeShiftIndex" (click)="activeShiftIndex = i">
           {{ getShiftLabel(s, i) }}
         </button>
       </div>
@@ -360,26 +372,40 @@
         <ng-container *ngIf="si === activeShiftIndex">
           <p class="charges-subtitle">Base Charges</p>
           <div class="charges-grid">
-            <div class="form-field"><label>Transport</label><input type="number" min="0" [name]="'transport_'+si" [(ngModel)]="s.charges.transportCharge"></div>
-            <div class="form-field"><label>Packing</label><input type="number" min="0" [name]="'packing_'+si" [(ngModel)]="s.charges.packingCharge"></div>
-            <div class="form-field"><label>Loading</label><input type="number" min="0" [name]="'loading_'+si" [(ngModel)]="s.charges.loadingCharge"></div>
-            <div class="form-field"><label>Unloading</label><input type="number" min="0" [name]="'unloading_'+si" [(ngModel)]="s.charges.unloadingCharge"></div>
-            <div class="form-field"><label>Unpacking</label><input type="number" min="0" [name]="'unpacking_'+si" [(ngModel)]="s.charges.unpackingCharge"></div>
-            <div class="form-field"><label>Car Transport</label><input type="number" min="0" [name]="'carTransport_'+si" [(ngModel)]="s.charges.carTransportCharge"></div>
-            <div class="form-field"><label>Risk / Insurance</label><input type="number" min="0" [name]="'risk_'+si" [(ngModel)]="s.charges.riskInsureCharge"></div>
-            <div class="form-field"><label>Storage</label><input type="number" min="0" [name]="'storage_'+si" [(ngModel)]="s.charges.storageCharge"></div>
-            <div class="form-field"><label>Statistical</label><input type="number" min="0" [name]="'statistical_'+si" [(ngModel)]="s.charges.statisticalCharge"></div>
-            <div class="form-field"><label>Service</label><input type="number" min="0" [name]="'service_'+si" [(ngModel)]="s.charges.serviceCharge"></div>
-            <div class="form-field"><label>Service Rate (%)</label><input type="number" min="0" [name]="'serviceRate_'+si" [(ngModel)]="s.charges.serviceRate"></div>
-            <div class="form-field"><label>GST Rate (%)</label><input type="number" min="0" [name]="'gstRate_'+si" [(ngModel)]="s.charges.gstRate"></div>
-            <div class="form-field"><label>GST Charge</label><input type="number" min="0" [name]="'gstCharge_'+si" [(ngModel)]="s.charges.gstCharge"></div>
+            <div class="form-field"><label>Transport</label><input type="number" min="0" [name]="'transport_'+si"
+                [(ngModel)]="s.charges.transportCharge"></div>
+            <div class="form-field"><label>Packing</label><input type="number" min="0" [name]="'packing_'+si"
+                [(ngModel)]="s.charges.packingCharge"></div>
+            <div class="form-field"><label>Loading</label><input type="number" min="0" [name]="'loading_'+si"
+                [(ngModel)]="s.charges.loadingCharge"></div>
+            <div class="form-field"><label>Unloading</label><input type="number" min="0" [name]="'unloading_'+si"
+                [(ngModel)]="s.charges.unloadingCharge"></div>
+            <div class="form-field"><label>Unpacking</label><input type="number" min="0" [name]="'unpacking_'+si"
+                [(ngModel)]="s.charges.unpackingCharge"></div>
+            <div class="form-field"><label>Car Transport</label><input type="number" min="0" [name]="'carTransport_'+si"
+                [(ngModel)]="s.charges.carTransportCharge"></div>
+            <div class="form-field"><label>Risk / Insurance</label><input type="number" min="0" [name]="'risk_'+si"
+                [(ngModel)]="s.charges.riskInsureCharge"></div>
+            <div class="form-field"><label>Storage</label><input type="number" min="0" [name]="'storage_'+si"
+                [(ngModel)]="s.charges.storageCharge"></div>
+            <div class="form-field"><label>Statistical</label><input type="number" min="0" [name]="'statistical_'+si"
+                [(ngModel)]="s.charges.statisticalCharge"></div>
+            <div class="form-field"><label>Service</label><input type="number" min="0" [name]="'service_'+si"
+                [(ngModel)]="s.charges.serviceCharge"></div>
+            <div class="form-field"><label>Service Rate (%)</label><input type="number" min="0"
+                [name]="'serviceRate_'+si" [(ngModel)]="s.charges.serviceRate"></div>
+            <div class="form-field"><label>GST Rate (%)</label><input type="number" min="0" [name]="'gstRate_'+si"
+                [(ngModel)]="s.charges.gstRate"></div>
+            <div class="form-field"><label>GST Charge</label><input type="number" min="0" [name]="'gstCharge_'+si"
+                [(ngModel)]="s.charges.gstCharge"></div>
           </div>
 
           <p class="charges-subtitle" style="margin-top:1.25rem;">Extra Charges</p>
           <div class="extra-charges-header">
             <span>Name</span><span>Rate</span><span>Value</span><span></span>
           </div>
-          <div *ngFor="let ec of s.charges.extracharges; let ei = index; trackBy: trackByIndex" class="extra-charge-row">
+          <div *ngFor="let ec of s.charges.extracharges; let ei = index; trackBy: trackByIndex"
+            class="extra-charge-row">
             <input type="text" placeholder="Charge name" [name]="'ecName_'+si+'_'+ei" [(ngModel)]="ec.chargeName">
             <input type="number" min="0" placeholder="Rate" [name]="'ecRate_'+si+'_'+ei" [(ngModel)]="ec.chargeRate">
             <input type="number" min="0" placeholder="Value" [name]="'ecVal_'+si+'_'+ei" [(ngModel)]="ec.chargeValue">
@@ -395,11 +421,16 @@
       <h3 class="step-section-title">Review & Create</h3>
       <p class="charges-subtitle" style="margin-top:0">Customer Information</p>
       <div class="review-grid">
-        <div class="review-row"><span class="review-label">Full Name</span><span class="review-val">{{ newCustomer.firstName }} {{ newCustomer.lastName }}</span></div>
-        <div class="review-row"><span class="review-label">Mobile</span><span class="review-val">{{ newCustomer.mobileNo || '—' }}</span></div>
-        <div class="review-row"><span class="review-label">Alternate Mobile</span><span class="review-val">{{ newCustomer.alternateMobileNo || '—' }}</span></div>
-        <div class="review-row"><span class="review-label">Email</span><span class="review-val">{{ newCustomer.email || '—' }}</span></div>
-        <div class="review-row"><span class="review-label">Work Email</span><span class="review-val">{{ newCustomer.workEmail || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Full Name</span><span class="review-val">{{
+            newCustomer.firstName }} {{ newCustomer.lastName }}</span></div>
+        <div class="review-row"><span class="review-label">Mobile</span><span class="review-val">{{ newCustomer.mobileNo
+            || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Alternate Mobile</span><span class="review-val">{{
+            newCustomer.alternateMobileNo || '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Email</span><span class="review-val">{{ newCustomer.email ||
+            '—' }}</span></div>
+        <div class="review-row"><span class="review-label">Work Email</span><span class="review-val">{{
+            newCustomer.workEmail || '—' }}</span></div>
       </div>
 
       <p class="charges-subtitle">Shiftings ({{ newCustomer.shiftings.length }})</p>
@@ -423,7 +454,8 @@
       <button class="clear-button" type="button" *ngIf="!isFirstCreateStep" (click)="prevCreateStep()">← Back</button>
       <button class="clear-button" type="button" *ngIf="isFirstCreateStep" (click)="resetCreateForm()">Reset</button>
       <button class="export-button" type="button" *ngIf="!isLastCreateStep" (click)="nextCreateStep()">Next →</button>
-      <button class="export-button" type="button" *ngIf="isLastCreateStep" [disabled]="isCreating" (click)="createCustomer()">
+      <button class="export-button" type="button" *ngIf="isLastCreateStep" [disabled]="isCreating"
+        (click)="createCustomer()">
         {{ isCreating ? 'Saving...' : 'Create Customer' }}
       </button>
     </div>
@@ -498,41 +530,34 @@
       <table>
         <thead>
           <tr>
+            <th>S.No.</th>
             <th>Name</th>
-            <th>Username</th>
+            <th>Customer Number</th>
             <th>Email</th>
             <th>Work Email</th>
             <th>Mobile Number</th>
-            <th>Account No</th>
-            <th>Connection Status</th>
             <th>Company Id</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let customer of filteredCustomers">
+          <tr *ngFor="let customer of filteredCustomers; let i = index">
+            <td class="sno-cell">{{ i + 1 }}</td>
             <td class="name-cell">{{ getCustomerName(customer) }}</td>
             <td>{{ customer.uuid }}</td>
             <td>{{ customer.email }}</td>
             <td>{{ customer.workEmail }}</td>
             <td>{{ customer.mobileNo }}</td>
-            <td>{{ customer.accountNo }}</td>
-            <td>
-              <span class="status-pill" [ngClass]="getStatusClass(customer)">
-                {{ customer.connectionStatus }}
-              </span>
-            </td>
             <td>{{ customer.companyId || customer.isp }}</td>
             <td>
               <div class="action-cell">
                 <!-- <button type="button" title="Billing"><i class="material-icons">receipt</i></button> -->
-                <button type="button" title="Edit" (click)="openUpdateForm(customer)"><i class="material-icons">edit</i></button>
-                <button
-                  type="button"
-                  title="Download Quotation"
-                  (click)="downloadCustomerQuotation(customer)"
+                <button type="button" title="Edit" (click)="openUpdateForm(customer)"><i
+                    class="material-icons">edit</i></button>
+                <button type="button" title="Download Quotation" (click)="downloadCustomerQuotation(customer)"
                   [disabled]="isQuotationDownloading(customer)">
-                  <i class="material-icons">{{ isQuotationDownloading(customer) ? 'hourglass_empty' : 'description' }}</i>
+                  <i class="material-icons">{{ isQuotationDownloading(customer) ? 'hourglass_empty' : 'description'
+                    }}</i>
                 </button>
                 <button type="button" title="Location"><i class="material-icons">hub</i></button>
                 <button type="button" title="Delete" (click)="deleteCustomer(customer)" [disabled]="isDeleting">
@@ -561,16 +586,11 @@
       <button type="button" [disabled]="currentPageNumber === 0" (click)="goToPage(currentPageNumber - 1)">
         &laquo;
       </button>
-      <button
-        type="button"
-        *ngFor="let page of visiblePageNumbers"
-        [class.active]="page === getDisplayCurrentPage()"
+      <button type="button" *ngFor="let page of visiblePageNumbers" [class.active]="page === getDisplayCurrentPage()"
         (click)="goToPage(page - 1)">
         {{ page }}
       </button>
-      <button
-        type="button"
-        [disabled]="currentPageNumber >= getDisplayTotalPages() - 1"
+      <button type="button" [disabled]="currentPageNumber >= getDisplayTotalPages() - 1"
         (click)="goToPage(currentPageNumber + 1)">
         &raquo;
       </button>
