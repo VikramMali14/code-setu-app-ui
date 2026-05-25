@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerModels } from 'src/app/models/customer-models';
 import { CustomersService } from 'src/app/services/customers.service';
+import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { TemplateService } from 'src/app/services/template.service';
 
 type ConnectionStatus = 'Online' | 'Offline';
@@ -31,6 +32,8 @@ export class CustomerComponent implements OnInit {
   deleteMessage = '';
   deleteError = '';
   downloadingQuotationId: number | string | null = null;
+  staffList: any[] = [];
+  staffLoadError = '';
 
   // ── Create Form ─────────────────────────────────────────────────────
   showCreateForm = false;
@@ -60,11 +63,13 @@ export class CustomerComponent implements OnInit {
 
   constructor(
     private customersService: CustomersService,
+    private staffService: StaffuserServiceService,
     private templateService: TemplateService
   ) { }
 
   ngOnInit(): void {
     this.loadCustomers();
+    this.loadStaffList();
   }
 
   get visiblePageNumbers(): number[] {
@@ -114,6 +119,16 @@ export class CustomerComponent implements OnInit {
     return customer.connectionStatus === 'Online' ? 'online' : 'offline';
   }
 
+  getStaffName(staff: any): string {
+    return [staff?.firstName, staff?.lastName].filter(Boolean).join(' ') || staff?.userName || staff?.email || 'Staff';
+  }
+
+  setShiftCompletedBy(shifting: any, staffId: number | string | null): void {
+    const selectedStaff = this.staffList.find(staff => String(staff.staffId) === String(staffId));
+    shifting.shiftCompletedById = staffId || null;
+    shifting.shiftCompletedBy = selectedStaff ? this.getStaffName(selectedStaff) : '';
+  }
+
   loadCustomers(pageNumber = this.currentPageNumber): void {
     this.isLoading = true;
     this.loadError = '';
@@ -128,6 +143,20 @@ export class CustomerComponent implements OnInit {
         console.error('Customer API failed:', error);
         this.loadError = 'Unable to load latest customers.';
         this.isLoading = false;
+      }
+    });
+  }
+
+  loadStaffList(): void {
+    this.staffLoadError = '';
+    this.staffService.getAllStaff(0, 10).subscribe({
+      next: response => {
+        this.staffList = this.extractStaff(response);
+      },
+      error: error => {
+        console.error('Staff API failed:', error);
+        this.staffLoadError = 'Unable to load staff list.';
+        this.staffList = [];
       }
     });
   }
@@ -448,6 +477,15 @@ export class CustomerComponent implements OnInit {
     if (Array.isArray(response?.dataList)) return response.dataList;
     if (Array.isArray(response?.data)) return response.data;
     console.warn('Unknown response format:', response);
+    return [];
+  }
+
+  private extractStaff(response: any): any[] {
+    if (!response) return [];
+    if (Array.isArray(response?.data?.content)) return response.data.content;
+    if (Array.isArray(response?.data)) return response.data;
+    if (Array.isArray(response?.dataList)) return response.dataList;
+    if (Array.isArray(response)) return response;
     return [];
   }
 

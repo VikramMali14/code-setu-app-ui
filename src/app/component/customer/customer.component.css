@@ -649,7 +649,8 @@ td:last-child {
   letter-spacing: 0.04em;
 }
 
-.form-field input {
+.form-field input,
+.form-field select {
   height: 36px;
   padding: 0 10px;
   font-size: 13.5px;
@@ -662,9 +663,16 @@ td:last-child {
   width: 100%;
 }
 
-.form-field input:focus {
+.form-field input:focus,
+.form-field select:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.field-error {
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .form-field.full-width { grid-column: 1 / -1; }
