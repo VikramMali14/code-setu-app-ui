@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerModels } from 'src/app/models/customer-models';
+import { CompanyService } from 'src/app/services/company.service';
 import { CustomersService } from 'src/app/services/customers.service';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { TemplateService } from 'src/app/services/template.service';
@@ -34,6 +35,8 @@ export class CustomerComponent implements OnInit {
   downloadingQuotationId: number | string | null = null;
   staffList: any[] = [];
   staffLoadError = '';
+  companyList: any[] = [];
+  companyLoadError = '';
 
   // ── Create Form ─────────────────────────────────────────────────────
   showCreateForm = false;
@@ -62,6 +65,7 @@ export class CustomerComponent implements OnInit {
   totalPages = 0;
 
   constructor(
+    private companyService: CompanyService,
     private customersService: CustomersService,
     private staffService: StaffuserServiceService,
     private templateService: TemplateService
@@ -70,6 +74,7 @@ export class CustomerComponent implements OnInit {
   ngOnInit(): void {
     this.loadCustomers();
     this.loadStaffList();
+    this.loadCompanyList();
   }
 
   get visiblePageNumbers(): number[] {
@@ -129,6 +134,16 @@ export class CustomerComponent implements OnInit {
     shifting.shiftCompletedBy = selectedStaff ? this.getStaffName(selectedStaff) : '';
   }
 
+  getCompanyName(company: any): string {
+    return company?.companyName || company?.name || company?.companyEmail || 'Company';
+  }
+
+  setShiftingCompany(shifting: any, companyId: number | string | null): void {
+    const selectedCompany = this.companyList.find(company => String(company.companyId) === String(companyId));
+    shifting.companyId = companyId || null;
+    shifting.companyName = selectedCompany ? this.getCompanyName(selectedCompany) : '';
+  }
+
   loadCustomers(pageNumber = this.currentPageNumber): void {
     this.isLoading = true;
     this.loadError = '';
@@ -157,6 +172,20 @@ export class CustomerComponent implements OnInit {
         console.error('Staff API failed:', error);
         this.staffLoadError = 'Unable to load staff list.';
         this.staffList = [];
+      }
+    });
+  }
+
+  loadCompanyList(): void {
+    this.companyLoadError = '';
+    this.companyService.getCompany().subscribe({
+      next: response => {
+        this.companyList = this.extractCompanies(response);
+      },
+      error: error => {
+        console.error('Company API failed:', error);
+        this.companyLoadError = 'Unable to load company list.';
+        this.companyList = [];
       }
     });
   }
@@ -489,6 +518,15 @@ export class CustomerComponent implements OnInit {
     return [];
   }
 
+  private extractCompanies(response: any): any[] {
+    if (!response) return [];
+    if (Array.isArray(response?.data?.content)) return response.data.content;
+    if (Array.isArray(response?.dataList)) return response.dataList;
+    if (Array.isArray(response?.data)) return response.data;
+    if (Array.isArray(response)) return response;
+    return [];
+  }
+
   private updatePagination(response: any, loadedRecords: number): void {
     const pageData = response?.data;
     this.pageRecords       = pageData?.numberOfElements ?? loadedRecords;
@@ -634,6 +672,8 @@ export class CustomerComponent implements OnInit {
       fromAddress: '',
       toAddress: '',
       shiftingType: '',
+      companyId: null,
+      companyName: '',
       shiftingStartDate: new Date().toISOString().slice(0, 10),
       shiftReachedDate: '',
       shiftCompletedBy: '',

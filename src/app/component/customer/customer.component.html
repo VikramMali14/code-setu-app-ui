@@ -117,6 +117,15 @@
             <input [name]="'upShiftingType_'+i" placeholder="e.g. Home, Office" [(ngModel)]="s.shiftingType">
           </div>
           <div class="form-field">
+            <label>Company Name</label>
+            <select class="browser-default" [name]="'upCompanyName_'+i" [(ngModel)]="s.companyId"
+              (ngModelChange)="setShiftingCompany(s, $event)">
+              <option [ngValue]="null">Select Company</option>
+              <option *ngFor="let company of companyList" [ngValue]="company.companyId">{{ getCompanyName(company) }}</option>
+            </select>
+            <small class="field-error" *ngIf="companyLoadError">{{ companyLoadError }}</small>
+          </div>
+          <div class="form-field">
             <label>Start Date</label>
             <input [name]="'upStartDate_'+i" type="date" [(ngModel)]="s.shiftingStartDate">
           </div>
@@ -340,6 +349,15 @@
           <div class="form-field">
             <label>Shifting Type</label>
             <input [name]="'shiftingType_'+i" placeholder="e.g. Home, Office" [(ngModel)]="s.shiftingType">
+          </div>
+          <div class="form-field">
+            <label>Company Name</label>
+            <select class="browser-default" [name]="'companyName_'+i" [(ngModel)]="s.companyId"
+              (ngModelChange)="setShiftingCompany(s, $event)">
+              <option [ngValue]="null">Select Company</option>
+              <option *ngFor="let company of companyList" [ngValue]="company.companyId">{{ getCompanyName(company) }}</option>
+            </select>
+            <small class="field-error" *ngIf="companyLoadError">{{ companyLoadError }}</small>
           </div>
           <div class="form-field">
             <label>Start Date</label>
