@@ -241,6 +241,79 @@
   border: 2px solid #e2e8f0;
 }
 
+:host-context(body.app-dark-theme) .page-wrapper {
+  background: var(--app-bg) !important;
+  color: #ffffff !important;
+}
+
+:host-context(body.app-dark-theme) .top-card,
+:host-context(body.app-dark-theme) .list-card {
+  background: var(--app-surface) !important;
+  color: #ffffff !important;
+}
+
+:host-context(body.app-dark-theme) .card-header h1,
+:host-context(body.app-dark-theme) .card-header h2,
+:host-context(body.app-dark-theme) .form-group label,
+:host-context(body.app-dark-theme) .checkbox-field,
+:host-context(body.app-dark-theme) .checkbox-field span {
+  color: #ffffff !important;
+}
+
+:host-context(body.app-dark-theme) .sub-title {
+  color: #cbd5e1 !important;
+}
+
+:host-context(body.app-dark-theme) .form-group input,
+:host-context(body.app-dark-theme) .file-upload-box,
+:host-context(body.app-dark-theme) .cancel-btn {
+  background: var(--app-surface-muted) !important;
+  color: #ffffff !important;
+  border-color: var(--app-border) !important;
+}
+
+:host-context(body.app-dark-theme) .form-group input:focus,
+:host-context(body.app-dark-theme) .file-upload-box:hover {
+  background: var(--app-surface-muted) !important;
+  border-color: var(--app-primary) !important;
+  box-shadow: 0 0 0 3px var(--app-primary-soft) !important;
+}
+
+:host-context(body.app-dark-theme) .file-upload-box span:not(.material-icons) {
+  color: #ffffff !important;
+}
+
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-form-field-flex,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-mdc-text-field-wrapper,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mdc-text-field {
+  background: var(--app-surface-muted) !important;
+  color: #ffffff !important;
+}
+
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-select-value,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-select-min-line,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-select-trigger,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-select-placeholder,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-mdc-select-value,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-mdc-select-min-line,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-mdc-select-placeholder {
+  color: #ffffff !important;
+}
+
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-form-field-outline,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-mdc-form-field-outline,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mdc-notched-outline__leading,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mdc-notched-outline__notch,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mdc-notched-outline__trailing {
+  border-color: var(--app-border) !important;
+  color: var(--app-border) !important;
+}
+
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-select-arrow,
+:host-context(body.app-dark-theme) ::ng-deep .template-select .mat-mdc-select-arrow {
+  color: var(--app-primary) !important;
+}
+
 @media (max-width: 900px) {
   .panel-grid {
     grid-template-columns: 1fr;

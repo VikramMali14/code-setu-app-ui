@@ -112,6 +112,180 @@ textarea,
 button {
   font-family: var(--app-font-family);
 }
+
+body.app-dark-theme,
+body.app-dark-theme app-root,
+body.app-dark-theme .page-wrapper,
+body.app-dark-theme .admin-shell,
+body.app-dark-theme .admin-main,
+body.app-dark-theme .admin-content,
+body.app-dark-theme .dashboard-page,
+body.app-dark-theme .plan-management-container,
+body.app-dark-theme .container,
+body.app-dark-theme .content {
+  background: var(--app-bg) !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .module-card,
+body.app-dark-theme .top-card,
+body.app-dark-theme .list-card,
+body.app-dark-theme .top-toolbar,
+body.app-dark-theme .plan-list-panel,
+body.app-dark-theme .form-card,
+body.app-dark-theme .card,
+body.app-dark-theme .mat-card,
+body.app-dark-theme .mat-mdc-card,
+body.app-dark-theme .profile-menu,
+body.app-dark-theme .mat-menu-panel,
+body.app-dark-theme .mat-mdc-menu-panel,
+body.app-dark-theme .table-wrapper,
+body.app-dark-theme .form-container,
+body.app-dark-theme .section-card,
+body.app-dark-theme .feature-card,
+body.app-dark-theme .action-card,
+body.app-dark-theme .empty-state {
+  background: var(--app-surface) !important;
+  color: #ffffff !important;
+  border-color: var(--app-border) !important;
+}
+
+body.app-dark-theme input,
+body.app-dark-theme select,
+body.app-dark-theme textarea,
+body.app-dark-theme .admin-search,
+body.app-dark-theme .search-box,
+body.app-dark-theme .mat-mdc-text-field-wrapper,
+body.app-dark-theme .mdc-text-field,
+body.app-dark-theme .mat-mdc-form-field-focus-overlay {
+  background: var(--app-surface-muted) !important;
+  color: #ffffff !important;
+  border-color: var(--app-border) !important;
+}
+
+body.app-dark-theme table,
+body.app-dark-theme thead,
+body.app-dark-theme tbody,
+body.app-dark-theme tr,
+body.app-dark-theme th,
+body.app-dark-theme td,
+body.app-dark-theme .mat-table,
+body.app-dark-theme .mat-mdc-table,
+body.app-dark-theme .mat-row,
+body.app-dark-theme .mat-mdc-row,
+body.app-dark-theme .mat-header-row,
+body.app-dark-theme .mat-mdc-header-row,
+body.app-dark-theme .mat-cell,
+body.app-dark-theme .mat-mdc-cell,
+body.app-dark-theme .mat-header-cell,
+body.app-dark-theme .mat-mdc-header-cell {
+  background: var(--app-surface) !important;
+  color: #ffffff !important;
+  border-color: var(--app-border) !important;
+}
+
+body.app-dark-theme thead,
+body.app-dark-theme thead tr,
+body.app-dark-theme .mat-header-row,
+body.app-dark-theme .mat-mdc-header-row {
+  background: var(--app-surface-muted) !important;
+}
+
+body.app-dark-theme h1,
+body.app-dark-theme h2,
+body.app-dark-theme h3,
+body.app-dark-theme h4,
+body.app-dark-theme h5,
+body.app-dark-theme h6,
+body.app-dark-theme label,
+body.app-dark-theme strong,
+body.app-dark-theme a,
+body.app-dark-theme button,
+body.app-dark-theme .card-title,
+body.app-dark-theme .plan-name,
+body.app-dark-theme .price-value,
+body.app-dark-theme .section-title,
+body.app-dark-theme .section-title *,
+body.app-dark-theme .toolbar-title *,
+body.app-dark-theme .card-header *,
+body.app-dark-theme .form-header *,
+body.app-dark-theme .module-card *,
+body.app-dark-theme .profile-menu * {
+  color: #ffffff !important;
+}
+
+body.app-dark-theme p,
+body.app-dark-theme small,
+body.app-dark-theme .card-subtitle,
+body.app-dark-theme .sub-title,
+body.app-dark-theme .subtitle,
+body.app-dark-theme .description,
+body.app-dark-theme .helper-text,
+body.app-dark-theme .empty-row,
+body.app-dark-theme .loading-text,
+body.app-dark-theme .validity-cell,
+body.app-dark-theme ::placeholder {
+  color: #cbd5e1 !important;
+}
+
+body.app-dark-theme tbody tr:hover,
+body.app-dark-theme .module-card:hover,
+body.app-dark-theme .plan-table tbody tr:hover {
+  background: var(--app-surface-muted) !important;
+}
+
+body.app-dark-theme .soon-badge,
+body.app-dark-theme .category-badge {
+  background: var(--app-surface-muted) !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .icon-wrapper {
+  background: var(--app-surface-muted) !important;
+}
+
+body.app-dark-theme .cdk-overlay-pane .mat-select-panel,
+body.app-dark-theme .cdk-overlay-pane .mat-mdc-select-panel,
+body.app-dark-theme .cdk-overlay-pane .mat-autocomplete-panel,
+body.app-dark-theme .cdk-overlay-pane .mat-mdc-autocomplete-panel,
+body.app-dark-theme .cdk-overlay-pane .mat-menu-panel,
+body.app-dark-theme .cdk-overlay-pane .mat-mdc-menu-panel {
+  background: var(--app-surface) !important;
+  color: #ffffff !important;
+  border: 1px solid var(--app-border) !important;
+}
+
+body.app-dark-theme .cdk-overlay-pane .mat-option,
+body.app-dark-theme .cdk-overlay-pane .mat-mdc-option,
+body.app-dark-theme .cdk-overlay-pane .mat-menu-item,
+body.app-dark-theme .cdk-overlay-pane .mat-mdc-menu-item {
+  background: var(--app-surface) !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .cdk-overlay-pane .mat-option:hover,
+body.app-dark-theme .cdk-overlay-pane .mat-mdc-option:hover,
+body.app-dark-theme .cdk-overlay-pane .mat-active,
+body.app-dark-theme .cdk-overlay-pane .mat-mdc-option-active,
+body.app-dark-theme .cdk-overlay-pane .mat-menu-item:hover,
+body.app-dark-theme .cdk-overlay-pane .mat-mdc-menu-item:hover {
+  background: var(--app-surface-muted) !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .mat-select-value,
+body.app-dark-theme .mat-select-min-line,
+body.app-dark-theme .mat-mdc-select-value,
+body.app-dark-theme .mat-mdc-select-min-line,
+body.app-dark-theme .mat-select-placeholder,
+body.app-dark-theme .mat-mdc-select-placeholder {
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .mat-select-arrow,
+body.app-dark-theme .mat-mdc-select-arrow {
+  color: var(--app-primary) !important;
+}
 /* Success - Green */
 .pop-success {
   --mdc-snackbar-container-color: #2e7d32 !important;

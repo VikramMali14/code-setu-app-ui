@@ -174,6 +174,51 @@
     font-size: 13px;
 }
 
+:host-context(body.app-dark-theme) .dashboard-page {
+    background: var(--app-bg);
+    color: #ffffff;
+}
+
+:host-context(body.app-dark-theme) .dashboard-header h1,
+:host-context(body.app-dark-theme) .section-title,
+:host-context(body.app-dark-theme) .section-title h2,
+:host-context(body.app-dark-theme) .card-title,
+:host-context(body.app-dark-theme) .empty-state h2 {
+    color: #ffffff !important;
+}
+
+:host-context(body.app-dark-theme) .eyebrow,
+:host-context(body.app-dark-theme) .card-subtitle,
+:host-context(body.app-dark-theme) .empty-state,
+:host-context(body.app-dark-theme) .empty-state p {
+    color: #cbd5e1 !important;
+}
+
+:host-context(body.app-dark-theme) .module-card,
+:host-context(body.app-dark-theme) .empty-state {
+    background: var(--app-surface) !important;
+    border-color: var(--app-border) !important;
+    color: #ffffff !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+}
+
+:host-context(body.app-dark-theme) .module-card:hover {
+    border-color: var(--app-primary);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+}
+
+:host-context(body.app-dark-theme) .soon-badge {
+    background: var(--app-surface-muted) !important;
+    color: #ffffff !important;
+}
+
+:host-context(body.app-dark-theme) .accent-blue .icon-wrapper,
+:host-context(body.app-dark-theme) .accent-orange .icon-wrapper,
+:host-context(body.app-dark-theme) .accent-green .icon-wrapper,
+:host-context(body.app-dark-theme) .accent-pink .icon-wrapper {
+    background: var(--app-surface-muted) !important;
+}
+
 @media (max-width: 600px) {
     .dashboard-header h1 {
         font-size: 24px;
