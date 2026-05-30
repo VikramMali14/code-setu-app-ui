@@ -26,9 +26,7 @@ const THEME_STORAGE_KEY = 'cargo_setu_theme_settings';
 })
 export class ThemeService {
   private readonly settingsSubject = new BehaviorSubject<AppThemeSettings>(this.getStoredSettings());
-  private readonly panelOpenSubject = new BehaviorSubject<boolean>(false);
   readonly settings$ = this.settingsSubject.asObservable();
-  readonly panelOpen$ = this.panelOpenSubject.asObservable();
 
   initialize(): void {
     this.applyTheme(this.settingsSubject.value);
@@ -47,18 +45,6 @@ export class ThemeService {
     this.settingsSubject.next(nextSettings);
     localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(nextSettings));
     this.applyTheme(nextSettings);
-  }
-
-  openPanel(): void {
-    this.panelOpenSubject.next(true);
-  }
-
-  closePanel(): void {
-    this.panelOpenSubject.next(false);
-  }
-
-  togglePanel(): void {
-    this.panelOpenSubject.next(!this.panelOpenSubject.value);
   }
 
   resetTheme(): void {

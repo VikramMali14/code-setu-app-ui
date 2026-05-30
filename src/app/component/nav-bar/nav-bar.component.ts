@@ -9,7 +9,6 @@ import { GenericDataDTO } from 'src/app/models/generic-data-dto';
 import { JwttokenService } from 'src/app/services/jwttoken.service';
 import { LoginService } from 'src/app/services/login.service';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
-import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -23,8 +22,7 @@ export class NavBarComponent implements OnInit {
     private staffuserservice: StaffuserServiceService,
     private router: Router,
     private jwtdecode: JwttokenService,
-    private fb: FormBuilder,
-    private themeService: ThemeService
+    private fb: FormBuilder
   ) { }
   loggedIn: boolean = false;
   userId: string = '';
@@ -108,11 +106,6 @@ ngOnInit(): void {
 
   goToSettings(): void {
     this.router.navigate(['/settings']);
-  }
-
-  openThemeSettings(): void {
-    this.closeMobileMenu();
-    this.themeService.openPanel();
   }
 
   goToSecurity(): void {

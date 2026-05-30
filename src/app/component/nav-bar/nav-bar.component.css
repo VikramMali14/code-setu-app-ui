@@ -276,6 +276,17 @@
   min-width: 280px;
 }
 
+::ng-deep .profile-menu.mat-mdc-menu-panel,
+::ng-deep .profile-menu.mat-menu-panel {
+  max-width: 360px !important;
+  min-width: 320px !important;
+}
+
+::ng-deep .profile-menu .mat-mdc-menu-content,
+::ng-deep .profile-menu .mat-menu-content {
+  padding: 0 !important;
+}
+
 /* Profile Header */
 .profile-header {
   display: flex;

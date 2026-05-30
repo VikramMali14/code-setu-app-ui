@@ -8,7 +8,6 @@ import { AppThemeSettings, ThemeService } from 'src/app/services/theme.service';
   styleUrls: ['./theme-customizer.component.css']
 })
 export class ThemeCustomizerComponent implements OnInit, OnDestroy {
-  isOpen = false;
   settings!: AppThemeSettings;
 
   readonly fontOptions = [
@@ -24,25 +23,13 @@ export class ThemeCustomizerComponent implements OnInit, OnDestroy {
   constructor(private themeService: ThemeService) {}
 
   ngOnInit(): void {
-    this.subscription = new Subscription();
-    this.subscription.add(this.themeService.settings$.subscribe((settings) => {
+    this.subscription = this.themeService.settings$.subscribe((settings) => {
       this.settings = { ...settings };
-    }));
-    this.subscription.add(this.themeService.panelOpen$.subscribe((isOpen) => {
-      this.isOpen = isOpen;
-    }));
+    });
   }
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
-  }
-
-  togglePanel(): void {
-    this.themeService.togglePanel();
-  }
-
-  closePanel(): void {
-    this.themeService.closePanel();
   }
 
   updateTheme(): void {
@@ -51,5 +38,9 @@ export class ThemeCustomizerComponent implements OnInit, OnDestroy {
 
   resetTheme(): void {
     this.themeService.resetTheme();
+  }
+
+  keepMenuOpen(event: Event): void {
+    event.stopPropagation();
   }
 }
