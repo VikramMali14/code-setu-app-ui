@@ -22,8 +22,9 @@
   --app-border: #e2e8f0;
 }
 
+html,
 body {
-  font-family: var(--app-font-family);
+  font-family: var(--app-font-family) !important;
   color: var(--app-text);
   background: var(--app-bg);
 }
@@ -31,7 +32,39 @@ body {
 
 html, body { height: 100%; }
 body { margin: 0;
-     font-family: var(--app-font-family); }
+     font-family: var(--app-font-family) !important; }
+
+body *:not(mat-icon):not(.mat-icon):not(.material-icons):not(.material-icons-outlined):not(.material-icons-round):not(.material-icons-sharp):not(.material-icons-two-tone) {
+  font-family: var(--app-font-family) !important;
+}
+
+.mat-button,
+.mat-raised-button,
+.mat-stroked-button,
+.mat-flat-button,
+.mat-icon-button,
+.mat-fab,
+.mat-mini-fab,
+.mat-menu-item,
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-icon-button,
+.mat-mdc-menu-item,
+.mat-form-field,
+.mat-mdc-form-field,
+.mat-option,
+.mat-mdc-option,
+.mat-select,
+.mat-mdc-select,
+.mat-input-element,
+.mat-mdc-input-element,
+.mat-toolbar,
+.mat-mdc-card,
+.mat-card {
+  font-family: var(--app-font-family) !important;
+}
 .text-center{
     text-align: center;
 }

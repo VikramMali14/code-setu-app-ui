@@ -79,6 +79,9 @@ export class ThemeService {
     root.style.setProperty('--app-secondary', settings.secondaryColor);
     root.style.setProperty('--app-accent', settings.accentColor);
     root.style.setProperty('--app-font-family', settings.fontFamily);
+    root.style.setProperty('--mat-font-family', settings.fontFamily);
+    root.style.setProperty('--mat-app-font-family', settings.fontFamily);
+    root.style.setProperty('--mdc-typography-font-family', settings.fontFamily);
     root.style.setProperty('--app-header-gradient', `linear-gradient(90deg, ${settings.primaryColor} 0%, ${settings.secondaryColor} 50%, ${settings.accentColor} 100%)`);
     root.style.setProperty('--app-sidebar-gradient', `linear-gradient(180deg, ${settings.primaryColor}, ${settings.secondaryColor}, ${settings.accentColor})`);
     root.style.setProperty('--app-action-gradient', `linear-gradient(135deg, ${settings.primaryColor} 0%, ${settings.secondaryColor} 100%)`);
@@ -94,6 +97,7 @@ export class ThemeService {
 
     document.body.classList.toggle('app-dark-theme', isDark);
     document.body.classList.toggle('app-light-theme', !isDark);
+    document.body.style.fontFamily = settings.fontFamily;
   }
 
   private resolveMode(mode: ThemeMode): 'light' | 'dark' {
