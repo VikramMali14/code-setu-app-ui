@@ -1,0 +1,66 @@
+<div class="theme-backdrop" *ngIf="isOpen" (click)="closePanel()"></div>
+
+<aside class="theme-panel" [class.open]="isOpen" *ngIf="settings">
+  <div class="panel-header">
+    <div>
+      <h2>Theme</h2>
+      <p>Colors and font</p>
+    </div>
+    <button type="button" class="icon-btn" (click)="closePanel()" aria-label="Close theme panel">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+
+  <div class="field-group">
+    <label>Mode</label>
+    <div class="segmented-control">
+      <label>
+        <input type="radio" name="themeMode" [(ngModel)]="settings.mode" value="light" (change)="updateTheme()">
+        <span>Light</span>
+      </label>
+      <label>
+        <input type="radio" name="themeMode" [(ngModel)]="settings.mode" value="dark" (change)="updateTheme()">
+        <span>Dark</span>
+      </label>
+      <label>
+        <input type="radio" name="themeMode" [(ngModel)]="settings.mode" value="system" (change)="updateTheme()">
+        <span>System</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="field-grid">
+    <label class="color-field">
+      <span>Primary</span>
+      <input type="color" [(ngModel)]="settings.primaryColor" (input)="updateTheme()">
+    </label>
+
+    <label class="color-field">
+      <span>Secondary</span>
+      <input type="color" [(ngModel)]="settings.secondaryColor" (input)="updateTheme()">
+    </label>
+
+    <label class="color-field">
+      <span>Accent</span>
+      <input type="color" [(ngModel)]="settings.accentColor" (input)="updateTheme()">
+    </label>
+  </div>
+
+  <label class="select-field">
+    <span>Font</span>
+    <select [(ngModel)]="settings.fontFamily" (change)="updateTheme()">
+      <option *ngFor="let font of fontOptions" [ngValue]="font.value">{{ font.label }}</option>
+    </select>
+  </label>
+
+  <div class="preview-box">
+    <span class="preview-chip">Preview</span>
+    <strong>Cargo Setu</strong>
+    <small>Theme updates apply across the app instantly.</small>
+  </div>
+
+  <button type="button" class="reset-btn" (click)="resetTheme()">
+    <span class="material-icons">restart_alt</span>
+    Reset theme
+  </button>
+</aside>

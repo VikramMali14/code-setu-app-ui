@@ -100,6 +100,10 @@
                 <mat-icon>edit</mat-icon>
                 <span>Edit Profile</span>
               </button>
+              <button type="button" (click)="openThemeSettings()">
+                <mat-icon>palette</mat-icon>
+                <span>Theme</span>
+              </button>
               <button type="button" (click)="logout()">
                 <mat-icon>logout</mat-icon>
                 <span>Logout</span>
@@ -115,3 +119,5 @@
     </main>
   </div>
 </ng-template>
+
+<app-theme-customizer></app-theme-customizer>

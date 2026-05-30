@@ -1,8 +1,8 @@
 /* Sticky Navbar */
 .mat-toolbar {
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #E94E77 100%) !important;
+    background: var(--app-header-gradient) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 20px var(--app-primary-shadow);
     transition: all 0.3s ease;
     position: sticky;
     top: 0;
@@ -99,8 +99,8 @@
 
 /* Scrolled navbar effect */
 .mat-toolbar.scrolled {
-    background: linear-gradient(90deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 50%, rgba(233, 78, 119, 0.98) 100%) !important;
-    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+    background: var(--app-header-gradient) !important;
+    box-shadow: 0 6px 25px var(--app-primary-shadow);
 }
 
 /* Material Icons in buttons */
@@ -118,7 +118,7 @@
     top: 64px;
     left: 0;
     right: 0;
-    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    background: var(--app-sidebar-gradient);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     padding: 20px 0;
     max-height: calc(100vh - 64px);
@@ -230,19 +230,19 @@
 
 /* Menu Dropdown Styling */
 .mat-menu-panel {
-    background: white !important;
+    background: var(--app-surface) !important;
     border-radius: 8px !important;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
 .mat-menu-item {
-    color: #2d3748 !important;
+    color: var(--app-text) !important;
     transition: all 0.3s ease;
 }
 
 .mat-menu-item:hover {
-    background-color: rgba(102, 126, 234, 0.1) !important;
-    color: #667eea !important;
+    background-color: var(--app-primary-soft) !important;
+    color: var(--app-primary) !important;
 }
 
 /* Profile Button */
@@ -281,14 +281,14 @@
   display: flex;
   align-items: center;
   padding: 16px !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--app-action-gradient);
   color: white;
   cursor: default !important;
   gap: 12px;
 }
 
 .profile-header:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background: var(--app-action-gradient) !important;
 }
 
 .avatar-circle {
@@ -364,7 +364,7 @@
 }
 
 ::ng-deep .profile-menu .mat-mdc-menu-item:hover mat-icon {
-  color: #667eea;
+  color: var(--app-primary);
 }
 
 /* Logout Button */

@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Component, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -67,6 +67,8 @@ import { DriverLocationComponent } from './component/driver-location/driver-loca
 import { PaginationComponent } from './component/pagination/pagination.component';
 import { SyetemconfigurationComponent } from './component/syetemconfiguration/syetemconfiguration.component';
 import { QuotaionComponent } from './component/quotaion/quotaion.component';
+import { ThemeCustomizerComponent } from './component/theme-customizer/theme-customizer.component';
+import { ThemeService } from './services/theme.service';
 
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
@@ -90,6 +92,7 @@ import { QuotaionComponent } from './component/quotaion/quotaion.component';
     PermissionComponent,
     SyetemconfigurationComponent,
     QuotaionComponent,
+    ThemeCustomizerComponent,
   ],
   imports: [
     BrowserModule,
@@ -131,6 +134,12 @@ import { QuotaionComponent } from './component/quotaion/quotaion.component';
 
   ],
   providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (themeService: ThemeService) => () => themeService.initialize(),
+      deps: [ThemeService],
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

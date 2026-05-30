@@ -3,15 +3,35 @@
 @import "@fontsource/roboto/300.css";
 @import "@fontsource/roboto/400.css";
 @import "@fontsource/roboto/500.css";
+
+:root {
+  --app-primary: #667eea;
+  --app-secondary: #764ba2;
+  --app-accent: #e94e77;
+  --app-font-family: Roboto, "Helvetica Neue", sans-serif;
+  --app-header-gradient: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #e94e77 100%);
+  --app-sidebar-gradient: linear-gradient(180deg, #667eea, #764ba2, #e94e77);
+  --app-action-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --app-primary-soft: rgba(102, 126, 234, 0.1);
+  --app-primary-shadow: rgba(102, 126, 234, 0.35);
+  --app-bg: #f4f6f9;
+  --app-surface: #ffffff;
+  --app-surface-muted: #f8fafc;
+  --app-text: #2d3748;
+  --app-muted-text: #718096;
+  --app-border: #e2e8f0;
+}
+
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: var(--app-font-family);
+  color: var(--app-text);
+  background: var(--app-bg);
 }
 
 
 html, body { height: 100%; }
 body { margin: 0;
-     font-family: Roboto, "Helvetica Neue", 
-     sans-serif; }
+     font-family: var(--app-font-family); }
 .text-center{
     text-align: center;
 }
@@ -32,7 +52,32 @@ html {
 
 .home-contact-wrapper {
   padding: 60px 0; /* Adds breathing room between home content and the form */
-  background-color: #fafafa; /* Matches the contact page background */
+  background-color: var(--app-bg); /* Matches the contact page background */
+}
+
+.mat-mdc-card,
+.mat-card,
+.mat-mdc-menu-panel,
+.mat-menu-panel {
+  background: var(--app-surface) !important;
+  color: var(--app-text) !important;
+}
+
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-fab.mat-primary,
+.mat-mdc-mini-fab.mat-primary,
+.mat-raised-button.mat-primary,
+.mat-fab.mat-primary,
+.mat-mini-fab.mat-primary {
+  background: var(--app-action-gradient) !important;
+  color: #fff !important;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: var(--app-font-family);
 }
 /* Success - Green */
 .pop-success {

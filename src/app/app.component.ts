@@ -5,6 +5,7 @@ import { LoginService } from './services/login.service';
 import { StaffuserServiceService } from './services/staffuser-service';
 import { GenericDataDTO } from './models/generic-data-dto';
 import { AccessMenuItem, AccessMenuSection, AccessMenuService } from './services/access-menu.service';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,7 @@ export class AppComponent implements OnInit {
     private loginService: LoginService,
     private staffuserservice: StaffuserServiceService,
     private accessMenuService: AccessMenuService,
+    private themeService: ThemeService,
   ) {}
 
   ngOnInit(): void {
@@ -207,6 +209,11 @@ export class AppComponent implements OnInit {
     this.closeProfileMenu();
     this.router.navigate(['/staffuser']);
     this.closeSidebarOnMobile();
+  }
+
+  openThemeSettings(): void {
+    this.closeProfileMenu();
+    this.themeService.openPanel();
   }
 
   private setLayout(url: string): void {
