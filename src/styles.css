@@ -286,6 +286,265 @@ body.app-dark-theme .mat-select-arrow,
 body.app-dark-theme .mat-mdc-select-arrow {
   color: var(--app-primary) !important;
 }
+
+/* Broad app dark-mode compatibility layer for component-scoped pages. */
+body.app-dark-theme .postpaid-page,
+body.app-dark-theme .permission-page,
+body.app-dark-theme .company-page,
+body.app-dark-theme .vehicle-page,
+body.app-dark-theme .department-page,
+body.app-dark-theme .staff-page,
+body.app-dark-theme .staffuser-page,
+body.app-dark-theme .role-page,
+body.app-dark-theme .roles-page,
+body.app-dark-theme .management-page,
+body.app-dark-theme .page-container,
+body.app-dark-theme .main-wrapper,
+body.app-dark-theme .content-wrapper,
+body.app-dark-theme .doc-grid,
+body.app-dark-theme .vehicle-management-page,
+body.app-dark-theme .assignment-page {
+  background: var(--app-bg) !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .panel,
+body.app-dark-theme .create-panel,
+body.app-dark-theme .search-panel,
+body.app-dark-theme .list-panel,
+body.app-dark-theme .action-panel,
+body.app-dark-theme .details-panel,
+body.app-dark-theme .management-panel,
+body.app-dark-theme .table-panel,
+body.app-dark-theme .card-panel,
+body.app-dark-theme .filter-panel,
+body.app-dark-theme .form-panel,
+body.app-dark-theme .profile-card,
+body.app-dark-theme .details-card,
+body.app-dark-theme .info-card,
+body.app-dark-theme .summary-card,
+body.app-dark-theme .review-card,
+body.app-dark-theme .shift-review-card,
+body.app-dark-theme .permission-card,
+body.app-dark-theme .role-card,
+body.app-dark-theme .vehicle-card,
+body.app-dark-theme .driver-card,
+body.app-dark-theme .staff-card,
+body.app-dark-theme .company-card,
+body.app-dark-theme .customer-card,
+body.app-dark-theme .pagination-row,
+body.app-dark-theme mat-card,
+body.app-dark-theme .mat-card,
+body.app-dark-theme .mat-mdc-card,
+body.app-dark-theme .mat-drawer-content,
+body.app-dark-theme .mat-sidenav-content {
+  background: var(--app-surface) !important;
+  color: #ffffff !important;
+  border-color: var(--app-border) !important;
+}
+
+body.app-dark-theme .quick-action,
+body.app-dark-theme .shift-tab,
+body.app-dark-theme .stepper-circle,
+body.app-dark-theme .review-row,
+body.app-dark-theme .shift-review-meta span,
+body.app-dark-theme .status-pill,
+body.app-dark-theme .date-field,
+body.app-dark-theme .extra-charge-row,
+body.app-dark-theme .extra-charges-header,
+body.app-dark-theme .permission-item,
+body.app-dark-theme .role-item,
+body.app-dark-theme .vehicle-item,
+body.app-dark-theme .driver-item,
+body.app-dark-theme .staff-item,
+body.app-dark-theme .company-item,
+body.app-dark-theme .customer-item,
+body.app-dark-theme .file-upload-box,
+body.app-dark-theme .search-tools,
+body.app-dark-theme .filter-tools,
+body.app-dark-theme .filter-row,
+body.app-dark-theme .asset-type-select .mat-form-field-flex,
+body.app-dark-theme .asset-type-select .mat-mdc-text-field-wrapper,
+body.app-dark-theme .asset-type-select .mdc-text-field,
+body.app-dark-theme .template-select .mat-form-field-flex,
+body.app-dark-theme .template-select .mat-mdc-text-field-wrapper,
+body.app-dark-theme .template-select .mdc-text-field {
+  background: var(--app-surface-muted) !important;
+  color: #ffffff !important;
+  border-color: var(--app-border) !important;
+}
+
+body.app-dark-theme .form-grid input,
+body.app-dark-theme .form-grid select,
+body.app-dark-theme .search-grid input,
+body.app-dark-theme .search-grid select,
+body.app-dark-theme .form-field input,
+body.app-dark-theme .form-field select,
+body.app-dark-theme .extra-charge-row input,
+body.app-dark-theme .browser-default,
+body.app-dark-theme .page-size,
+body.app-dark-theme .asset-type-select .mat-select-trigger,
+body.app-dark-theme .asset-type-select .mat-mdc-select-trigger,
+body.app-dark-theme .template-select .mat-select-trigger,
+body.app-dark-theme .template-select .mat-mdc-select-trigger,
+body.app-dark-theme input[type="text"],
+body.app-dark-theme input[type="email"],
+body.app-dark-theme input[type="number"],
+body.app-dark-theme input[type="date"],
+body.app-dark-theme input[type="search"],
+body.app-dark-theme input[type="password"],
+body.app-dark-theme select,
+body.app-dark-theme textarea {
+  background: var(--app-surface-muted) !important;
+  color: #ffffff !important;
+  border-color: var(--app-border) !important;
+  box-shadow: none !important;
+}
+
+body.app-dark-theme option,
+body.app-dark-theme optgroup {
+  background: var(--app-surface) !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .form-grid input:focus,
+body.app-dark-theme .form-grid select:focus,
+body.app-dark-theme .search-grid input:focus,
+body.app-dark-theme .search-grid select:focus,
+body.app-dark-theme .form-field input:focus,
+body.app-dark-theme .form-field select:focus,
+body.app-dark-theme input:focus,
+body.app-dark-theme select:focus,
+body.app-dark-theme textarea:focus {
+  background: var(--app-surface-muted) !important;
+  color: #ffffff !important;
+  border-color: var(--app-primary) !important;
+  box-shadow: 0 0 0 3px var(--app-primary-soft) !important;
+}
+
+body.app-dark-theme .panel-header h1,
+body.app-dark-theme .panel-header h2,
+body.app-dark-theme .create-form h3,
+body.app-dark-theme .step-section-title,
+body.app-dark-theme .review-val,
+body.app-dark-theme .name-cell,
+body.app-dark-theme .sno-cell,
+body.app-dark-theme .pagination-summary,
+body.app-dark-theme .checkbox-label,
+body.app-dark-theme .stepper-label.active,
+body.app-dark-theme .quick-action span,
+body.app-dark-theme .quick-action i,
+body.app-dark-theme .form-field label,
+body.app-dark-theme .review-label,
+body.app-dark-theme .charges-subtitle,
+body.app-dark-theme .extra-charges-header span {
+  color: #ffffff !important;
+}
+
+body.app-dark-theme mat-card-title,
+body.app-dark-theme .mat-card-title,
+body.app-dark-theme .mat-mdc-card-title,
+body.app-dark-theme .asset-type-select .mat-select-value,
+body.app-dark-theme .asset-type-select .mat-select-min-line,
+body.app-dark-theme .asset-type-select .mat-select-placeholder,
+body.app-dark-theme .asset-type-select .mat-mdc-select-value,
+body.app-dark-theme .asset-type-select .mat-mdc-select-min-line,
+body.app-dark-theme .asset-type-select .mat-mdc-select-placeholder,
+body.app-dark-theme .template-select .mat-select-value,
+body.app-dark-theme .template-select .mat-select-min-line,
+body.app-dark-theme .template-select .mat-select-placeholder,
+body.app-dark-theme .template-select .mat-mdc-select-value,
+body.app-dark-theme .template-select .mat-mdc-select-min-line,
+body.app-dark-theme .template-select .mat-mdc-select-placeholder,
+body.app-dark-theme .file-upload-box span:not(.material-icons) {
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .field-error,
+body.app-dark-theme .api-message.error,
+body.app-dark-theme .req {
+  color: #fca5a5 !important;
+}
+
+body.app-dark-theme .api-message,
+body.app-dark-theme .stepper-label,
+body.app-dark-theme .date-field span,
+body.app-dark-theme .shift-review-meta span {
+  color: #cbd5e1 !important;
+}
+
+body.app-dark-theme .pagination-row button,
+body.app-dark-theme .clear-button,
+body.app-dark-theme .cancel-btn,
+body.app-dark-theme .cancel-button,
+body.app-dark-theme .back-btn,
+body.app-dark-theme .back-nav-btn,
+body.app-dark-theme .ghost-btn,
+body.app-dark-theme .card-actions button,
+body.app-dark-theme button[class*="back"],
+body.app-dark-theme a[class*="back"] {
+  background: var(--app-surface-muted) !important;
+  color: #ffffff !important;
+  border-color: var(--app-border) !important;
+}
+
+body.app-dark-theme .pagination-row button.active,
+body.app-dark-theme .export-button,
+body.app-dark-theme .save-btn,
+body.app-dark-theme .search-button,
+body.app-dark-theme .collapse-button {
+  background: var(--app-action-gradient) !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .back-btn mat-icon,
+body.app-dark-theme .back-btn .material-icons,
+body.app-dark-theme .back-nav-btn mat-icon,
+body.app-dark-theme .back-nav-btn .material-icons,
+body.app-dark-theme .ghost-btn mat-icon,
+body.app-dark-theme .card-actions button mat-icon,
+body.app-dark-theme .card-actions button .material-icons {
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .stepper-line {
+  background: var(--app-border) !important;
+}
+
+body.app-dark-theme .stepper-line.done,
+body.app-dark-theme .stepper-circle.done {
+  background: rgba(22, 163, 74, 0.25) !important;
+  border-color: #16a34a !important;
+  color: #bbf7d0 !important;
+}
+
+body.app-dark-theme .stepper-circle.active,
+body.app-dark-theme .shift-tab.active {
+  background: var(--app-action-gradient) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .action-cell button,
+body.app-dark-theme .table-btn,
+body.app-dark-theme .action-icon-button,
+body.app-dark-theme .circle-btn {
+  background: var(--app-action-gradient) !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-theme .date-field input {
+  color: #ffffff !important;
+  background: var(--app-surface-muted) !important;
+}
+
+body.app-dark-theme input:-webkit-autofill,
+body.app-dark-theme input:-webkit-autofill:hover,
+body.app-dark-theme input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 0 0 1000px var(--app-surface-muted) inset !important;
+  transition: background-color 9999s ease-out;
+}
 /* Success - Green */
 .pop-success {
   --mdc-snackbar-container-color: #2e7d32 !important;
