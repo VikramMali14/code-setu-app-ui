@@ -170,7 +170,12 @@
       <p><strong>Department:</strong> {{ getSelectedDepartmentName() }}</p>
 
       <p><strong>Staff Type:</strong> {{ staffForm.value.staffType }}</p>
-      <p><strong>Status:</strong> {{ staffForm.value.isActive ? 'Active' : 'Inactive' }}</p>
+      <p>
+        <strong>Status:</strong>
+        <span class="status-badge" [class.active]="staffForm.value.isActive" [class.inactive]="!staffForm.value.isActive">
+          {{ staffForm.value.isActive ? 'Active' : 'Inactive' }}
+        </span>
+      </p>
 
       <p><strong>License Number:</strong> {{ staffForm.value.licenseNumber || '-' }}</p>
       <p><strong>License Expiry:</strong> {{ staffForm.value.licenseExpiryDate || '-' }}</p>

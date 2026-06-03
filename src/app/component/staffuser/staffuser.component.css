@@ -64,3 +64,16 @@ margin-bottom:25px;
   border-radius:10px;
   border:1px solid #e5e7eb;
 }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  margin-left: 6px;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}

@@ -545,6 +545,53 @@ body.app-dark-theme input:-webkit-autofill:focus {
   box-shadow: 0 0 0 1000px var(--app-surface-muted) inset !important;
   transition: background-color 9999s ease-out;
 }
+
+/* Consistent status colors across light and dark themes. */
+.status-badge.active,
+.status-badge.available,
+.status-badge.online,
+.status-pill.active,
+.status-pill.available,
+.status-pill.online,
+.active-status {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border-color: #86efac !important;
+}
+
+.status-badge.inactive,
+.status-badge.offline,
+.status-pill.inactive,
+.status-pill.offline,
+.inactive-status,
+.expired-status {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border-color: #fca5a5 !important;
+}
+
+body.app-dark-theme .status-badge.active,
+body.app-dark-theme .status-badge.available,
+body.app-dark-theme .status-badge.online,
+body.app-dark-theme .status-pill.active,
+body.app-dark-theme .status-pill.available,
+body.app-dark-theme .status-pill.online,
+body.app-dark-theme .active-status {
+  background: rgba(34, 197, 94, 0.22) !important;
+  color: #bbf7d0 !important;
+  border-color: rgba(74, 222, 128, 0.55) !important;
+}
+
+body.app-dark-theme .status-badge.inactive,
+body.app-dark-theme .status-badge.offline,
+body.app-dark-theme .status-pill.inactive,
+body.app-dark-theme .status-pill.offline,
+body.app-dark-theme .inactive-status,
+body.app-dark-theme .expired-status {
+  background: rgba(239, 68, 68, 0.22) !important;
+  color: #fecaca !important;
+  border-color: rgba(248, 113, 113, 0.55) !important;
+}
 /* Success - Green */
 .pop-success {
   --mdc-snackbar-container-color: #2e7d32 !important;
