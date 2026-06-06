@@ -1,18 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+export interface DialogBoxData {
+  title?: string;
+  message?: string;
+  confirmText?: string;
+  cancelText?: string;
+}
 
 @Component({
   selector: 'app-dialogbox',
-    standalone: true,
-  imports:[MatDialogModule],
+  standalone: true,
+  imports: [MatDialogModule],
   templateUrl: './dialogbox.component.html',
   styleUrls: ['./dialogbox.component.css']
 })
-export class DialogboxComponent implements OnInit {
+export class DialogboxComponent {
 
-  constructor() { }
+  constructor(
+    public dialogRef: MatDialogRef<DialogboxComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogBoxData
+  ) { }
 
-  ngOnInit(): void {
+  onConfirm(): void {
+    this.dialogRef.close(true);
+  }
+
+  onCancel(): void {
+    this.dialogRef.close(false);
   }
 
 }
