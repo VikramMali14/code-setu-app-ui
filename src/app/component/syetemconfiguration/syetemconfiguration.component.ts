@@ -33,15 +33,10 @@ export class SyetemconfigurationComponent implements OnInit {
 
   buildForm(): void {
     this.configurationForm = this.fb.group({
-      clientId: ['', [Validators.required, Validators.min(1)]],
       value: ['', Validators.required],
       module: ['', Validators.required],
       name: ['', Validators.required],
-      staffId: ['', [Validators.required, Validators.min(1)]],
-      isActive: [true],
-      isDeleted: [false],
-      createdByName: ['', Validators.required],
-      createdBy: ['', [Validators.required, Validators.min(1)]]
+      isActive: [true, Validators.required]
     });
   }
 
@@ -67,8 +62,7 @@ export class SyetemconfigurationComponent implements OnInit {
     this.isEditMode = false;
     this.editingId = null;
     this.configurationForm.reset({
-      isActive: true,
-      isDeleted: false
+      isActive: true
     });
   }
 
@@ -77,15 +71,10 @@ export class SyetemconfigurationComponent implements OnInit {
     this.isEditMode = true;
     this.editingId = this.getConfigurationId(configuration);
     this.configurationForm.patchValue({
-      clientId: configuration.clientId,
       value: configuration.value,
       module: configuration.module,
       name: configuration.name,
-      staffId: configuration.staffId,
-      isActive: configuration.isActive ?? true,
-      isDeleted: configuration.isDeleted ?? false,
-      createdByName: configuration.createdByName,
-      createdBy: configuration.createdBy
+      isActive: configuration.isActive ?? true
     });
   }
 
@@ -94,8 +83,7 @@ export class SyetemconfigurationComponent implements OnInit {
     this.isEditMode = false;
     this.editingId = null;
     this.configurationForm.reset({
-      isActive: true,
-      isDeleted: false
+      isActive: true
     });
   }
 
@@ -166,9 +154,7 @@ export class SyetemconfigurationComponent implements OnInit {
         item.name,
         item.module,
         item.value,
-        item.createdByName,
-        item.clientId,
-        item.staffId
+        item.isActive ? 'active' : 'inactive'
       ].join(' ').toLowerCase().includes(search)
     );
   }
