@@ -310,6 +310,11 @@ tbody tr:hover {
   color: #822727;
 }
 
+.status-badge.suspend {
+  background: #feebc8;
+  color: #7b341e;
+}
+
 .action-td {
   display: flex;
   gap: 8px;

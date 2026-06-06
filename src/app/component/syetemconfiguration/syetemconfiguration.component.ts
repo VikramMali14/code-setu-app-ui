@@ -36,7 +36,8 @@ export class SyetemconfigurationComponent implements OnInit {
       value: ['', Validators.required],
       module: ['', Validators.required],
       name: ['', Validators.required],
-      isActive: [true, Validators.required]
+      isActive: ['ACTIVE', Validators.required],
+      isDeleted: [false, Validators.required]
     });
   }
 
@@ -62,7 +63,8 @@ export class SyetemconfigurationComponent implements OnInit {
     this.isEditMode = false;
     this.editingId = null;
     this.configurationForm.reset({
-      isActive: true
+      isActive: 'ACTIVE',
+      isDeleted: false
     });
   }
 
@@ -74,7 +76,8 @@ export class SyetemconfigurationComponent implements OnInit {
       value: configuration.value,
       module: configuration.module,
       name: configuration.name,
-      isActive: configuration.isActive ?? true
+      isActive: this.normalizeStatus(configuration.isActive),
+      isDeleted: configuration.isDeleted ?? false
     });
   }
 
@@ -83,7 +86,8 @@ export class SyetemconfigurationComponent implements OnInit {
     this.isEditMode = false;
     this.editingId = null;
     this.configurationForm.reset({
-      isActive: true
+      isActive: 'ACTIVE',
+      isDeleted: false
     });
   }
 
@@ -154,9 +158,18 @@ export class SyetemconfigurationComponent implements OnInit {
         item.name,
         item.module,
         item.value,
-        item.isActive ? 'active' : 'inactive'
+        this.getStatusLabel(item.isActive)
       ].join(' ').toLowerCase().includes(search)
     );
+  }
+
+  getStatusLabel(status: any): string {
+    return this.normalizeStatus(status);
+  }
+
+  getStatusClass(status: any): string {
+    const normalizedStatus = this.normalizeStatus(status).toLowerCase();
+    return normalizedStatus === 'suspend' ? 'suspend' : normalizedStatus;
   }
 
   get totalRecords(): number {
@@ -207,6 +220,19 @@ export class SyetemconfigurationComponent implements OnInit {
     }
 
     return response?.dataList || response?.data || response?.content || [];
+  }
+
+  private normalizeStatus(status: any): string {
+    if (status === true) {
+      return 'ACTIVE';
+    }
+
+    if (status === false || status === null || status === undefined || status === '') {
+      return 'INACTIVE';
+    }
+
+    const normalizedStatus = String(status).trim().toUpperCase();
+    return normalizedStatus === 'SUSPEND' ? 'SUSPEND' : normalizedStatus === 'ACTIVE' ? 'ACTIVE' : 'INACTIVE';
   }
 
   private showResponse(response: any, fallbackMessage: string): void {
