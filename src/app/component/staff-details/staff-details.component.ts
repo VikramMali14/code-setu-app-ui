@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { GenericDataDTO } from 'src/app/models/generic-data-dto';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 
@@ -8,7 +9,8 @@ import { StaffuserServiceService } from 'src/app/services/staffuser-service';
   templateUrl: './staff-details.component.html',
   styleUrls: ['./staff-details.component.css']
 })
-export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
+export class StaffDetailsComponent implements OnInit {
+  staffList: any[] = [];
   page = 0;
   size = 10;
   totalElements = 0;
@@ -17,13 +19,16 @@ export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
   searchTerm = '';
   filterStatus = '';
   filterType = '';
-
+  selectedStaffIdForDelete: number | null = null;
   Math = Math; // Make Math available in template
   userdata: any;
 
+  @ViewChild('deleteStaffConfirm') deleteStaffConfirmTemplate!: TemplateRef<any>;
+
   constructor(
     private staffuserservice: StaffuserServiceService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -109,8 +114,6 @@ export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
     });
   }
 
-
-
   editStaff(staffId: number) {
     this.staffuserservice.getStaffById(staffId).subscribe({
       next: (response) => {
@@ -125,11 +128,25 @@ export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
   }
 
   deleteStaff(staffId: number) {
-    if (confirm('Are you sure you want to remove this staff member?')) {
-      // Implement delete API call
-      console.log('Delete staff:', staffId);
-      // this.staffuserservice.deleteStaff(staffId).subscribe({...});
-    }
+    this.selectedStaffIdForDelete = staffId;
+
+    const dialogRef = this.dialog.open(this.deleteStaffConfirmTemplate, {
+      width: '360px',
+      disableClose: true,
+      panelClass: 'custom-confirm-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed && this.selectedStaffIdForDelete !== null) {
+        const id = this.selectedStaffIdForDelete;
+        this.selectedStaffIdForDelete = null;
+        console.log('Delete staff:', id);
+        // TODO: call delete API when available:
+        // this.staffuserservice.deleteStaff(id).subscribe({...});
+      } else {
+        this.selectedStaffIdForDelete = null;
+      }
+    });
   }
 
   createNewStaff() {
@@ -137,21 +154,17 @@ export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
     this.router.navigate(['/staffuser']);
   }
 
-
-    goToStaffDetails(): void {
-  console.log(this.userdata)
+  goToStaffDetails(): void {
+    console.log(this.userdata);
     this.staffuserservice.getStaffById(this.userdata.staffId).subscribe({
       next: (response: GenericDataDTO) => {
         if (response && response.data) {
-          // 2. Set the data in the shared service
           this.staffuserservice.setStaffDetails(response);
-
-          // 3. Navigate only AFTER data is successfully received and stored
           this.router.navigate(['/staffdetails']);
         }
       },
       error: (err) => {
-        console.error("Error fetching staff profile:", err);
+        console.error('Error fetching staff profile:', err);
       }
     });
   }
