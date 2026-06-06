@@ -1,10 +1,18 @@
 <div class="page-wrapper">
 
   <mat-card class="header-card">
-    <h2>{{ isEditMode ? 'Edit Staff' : 'Create Staff' }}</h2>
-    <p>Manage staff profile and permissions</p>
-  </mat-card>
+    <div class="header-actions">
+      <div>
+        <h2>{{ isEditMode ? 'Edit Staff' : 'Create Staff' }}</h2>
+        <p>Manage staff profile and permissions</p>
+      </div>
 
+      <button mat-button color="primary" type="button" class="back-button" (click)="goBackToStaffDetails()">
+        <i class="material-icons">arrow_back</i>
+        <span>Back</span>
+      </button>
+    </div>
+     </mat-card>  
   <mat-card class="main-card">
 
     <form [formGroup]="staffForm">

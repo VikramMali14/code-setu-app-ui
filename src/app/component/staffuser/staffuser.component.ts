@@ -34,6 +34,8 @@ export class StaffuserComponent implements OnInit {
   isEditMode = false;
   staffId!: number;
   isLoading = false;
+  showCreateForm = false;
+  showUpdateForm = false;
 
   roles: any[] = [];
   departments: any[] = [];
@@ -103,7 +105,12 @@ export class StaffuserComponent implements OnInit {
       dob: [null]
     });
   }
-
+  closeCreateForm(): void {
+    this.showCreateForm = false;
+  }
+    closeUpdateForm(): void {
+    this.showUpdateForm = false;
+  }
   loadStaffData() {
     // Load existing staff data from service or route params
     // Example: Get from localStorage or API
@@ -205,6 +212,10 @@ export class StaffuserComponent implements OnInit {
         isActive: true
       });
     }
+  }
+
+  goBackToStaffDetails(): void {
+    this.router.navigate(['/staffdetails']);
   }
 
   // onFileSelected(event: any) {
