@@ -3,14 +3,16 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Assignments } from 'src/app/models/assignments';
 import { VehicleService } from 'src/app/services/vehicle.service';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { ManageAssignmentDialogComponent } from '../assignment/manage-assignment-dialog.component';
 
 @Component({
   selector: 'app-vehicle-management',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, FormsModule, PaginationComponent],
+  imports: [CommonModule, RouterModule, MatIconModule, FormsModule, PaginationComponent, MatDialogModule, ManageAssignmentDialogComponent],
   templateUrl: './vehicle-management.component.html',
   styleUrls: ['./vehicle-management.component.css']
 })
@@ -38,7 +40,8 @@ export class VehicleManagementComponent implements OnInit {
 
   constructor(
     private vehicleService: VehicleService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -132,5 +135,20 @@ changePageSize(newSize: number): void {
   onFilterChange(): void {
     this.currentPageNumber = 0;
     this.updatePagedView();
+  }
+
+  openManageDialog(item: any): void {
+    const dialogRef = this.dialog.open(ManageAssignmentDialogComponent, {
+      width: '480px',
+      data: { assignment: item },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.completed || result?.updated) {
+        // Reload data
+        this.handlePageChange(this.currentPageNumber);
+      }
+    });
   }
 }

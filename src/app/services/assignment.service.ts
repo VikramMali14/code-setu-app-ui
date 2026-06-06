@@ -18,4 +18,8 @@ export class AssignmentService {
 
     return this.http.post<any>(this.BASE_URL, null, { params });
   }
+
+  unassign(id: number): Observable<any> {
+    return this.http.put(`${this.BASE_URL}/unassign/${id}`, null, { responseType: 'text' });
+  }
 }
