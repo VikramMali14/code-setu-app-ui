@@ -574,3 +574,116 @@ tbody tr:hover {
     font-size: 22px;
   }
 }
+
+/* ===== ADD ASSET LIST ===== */
+.invisible-label-spacing {
+  visibility: hidden;
+  margin-bottom: 8px;
+  font-size: 0.88rem;
+}
+
+.add-asset-grid-cell {
+  justify-content: flex-end;
+}
+
+.add-asset-btn {
+  height: 44px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.add-asset-btn:hover:not(:disabled) {
+  background: #5a6fd6;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.add-asset-btn:disabled {
+  background: #cbd5e0;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.added-assets-wrapper {
+  margin-top: 24px;
+  margin-bottom: 24px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 20px;
+}
+
+.added-assets-wrapper h3 {
+  margin: 0 0 14px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.added-assets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.added-asset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.asset-details {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.asset-badge {
+  background-color: #667eea;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.asset-filename {
+  font-size: 0.9rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.remove-asset-btn {
+  background: none;
+  border: none;
+  color: #e53e3e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.remove-asset-btn:hover {
+  background-color: #fee2e2;
+}
+
+.remove-asset-btn .material-icons {
+  font-size: 20px;
+}

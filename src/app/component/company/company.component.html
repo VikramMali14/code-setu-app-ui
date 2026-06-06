@@ -158,6 +158,30 @@
             <input type="file" accept="image/*,.pdf" (change)="onAssetFileChange($event)">
           </label>
         </div>
+
+        <div class="form-group add-asset-grid-cell">
+          <label class="invisible-label-spacing">Add Asset</label>
+          <button type="button" class="add-asset-btn" (click)="addAssetToList()" [disabled]="!companyForm.get('assetType')?.value || !selectedAssetFile">
+            <span class="material-icons">add</span>
+            Add Asset
+          </button>
+        </div>
+      </div>
+
+      <!-- Added Assets List -->
+      <div class="added-assets-wrapper" *ngIf="addedAssets.length > 0">
+        <h3>Added Assets List</h3>
+        <div class="added-assets-list">
+          <div class="added-asset-item" *ngFor="let asset of addedAssets; let i = index">
+            <div class="asset-details">
+              <span class="asset-badge">{{ asset.assetType }}</span>
+              <span class="asset-filename">{{ asset.fileName }}</span>
+            </div>
+            <button type="button" class="remove-asset-btn" (click)="removeAssetFromList(i)" title="Remove Asset">
+              <span class="material-icons">delete</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="form-action">

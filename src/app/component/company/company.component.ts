@@ -27,6 +27,7 @@ export class CompanyComponent implements OnInit {
   selectedAssetFileName = '';
   currentPageNumber = 0;
   pageSize = 5;
+  addedAssets: { assetType: string; file: File; fileName: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -90,12 +91,14 @@ export class CompanyComponent implements OnInit {
       isActive: true
     });
     this.clearAssetFile();
+    this.addedAssets = [];
   }
 
   cancelForm() {
     this.showForm = false;
     this.companyForm.reset();
     this.clearAssetFile();
+    this.addedAssets = [];
   }
 
   submitForm() {
@@ -138,6 +141,7 @@ export class CompanyComponent implements OnInit {
     this.isEditMode = true;
     this.companyForm.patchValue(company);
     this.clearAssetFile();
+    this.addedAssets = [];
   }
 
   onAssetFileChange(event: Event): void {
@@ -162,6 +166,27 @@ export class CompanyComponent implements OnInit {
     return payload;
   }
 
+  addAssetToList(): void {
+    const type = this.companyForm.get('assetType')?.value;
+    if (type && this.selectedAssetFile) {
+      if (this.addedAssets.some(x => x.assetType === type)) {
+        this.shoepopup.showResponsePopup(`An asset of type ${type} has already been added.`, 400);
+        return;
+      }
+      this.addedAssets.push({
+        assetType: type,
+        file: this.selectedAssetFile,
+        fileName: this.selectedAssetFileName
+      });
+      this.companyForm.patchValue({ assetType: '' });
+      this.clearAssetFile();
+    }
+  }
+
+  removeAssetFromList(index: number): void {
+    this.addedAssets.splice(index, 1);
+  }
+
   private buildCreateCompanyFormData(): FormData {
     const formData = new FormData();
     const payload = this.getCompanyPayload();
@@ -177,13 +202,10 @@ export class CompanyComponent implements OnInit {
       }
     });
 
-    if (payload.assetType) {
-      formData.append('assets[0].assetType', payload.assetType);
-    }
-
-    if (this.selectedAssetFile) {
-      formData.append('assets[0].file', this.selectedAssetFile, this.selectedAssetFile.name);
-    }
+    this.addedAssets.forEach((asset, index) => {
+      formData.append(`assets[${index}].assetType`, asset.assetType);
+      formData.append(`assets[${index}].file`, asset.file, asset.fileName);
+    });
 
     return formData;
   }
