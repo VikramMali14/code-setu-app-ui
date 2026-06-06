@@ -22,6 +22,7 @@ import { Router, Routes } from '@angular/router';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 import { LoginComponent } from './component/login/login.component';
@@ -118,7 +119,7 @@ import { ThemeService } from './services/theme.service';
     MatStepperModule,
     MatDatepickerModule, MatMenuModule,
     MatNativeDateModule, MatPaginatorModule,
-    MatAutocompleteModule, MatSnackBarModule, MatDividerModule,
+    MatAutocompleteModule, MatSnackBarModule, MatDividerModule, MatTooltipModule,
     FormsModule,
     FormsModule,ImageCropperModule,
     // standaload Component

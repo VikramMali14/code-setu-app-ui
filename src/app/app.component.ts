@@ -50,10 +50,6 @@ export class AppComponent implements OnInit {
     // Check viewport size
     this.checkViewport();
 
-    // Set initial layout
-    this.setLayout(this.router.url);
-    this.redirectLoggedInHome(this.router.url);
-
     this.loginService.loggedIn$.subscribe(() => {
       this.setLayout(this.router.url);
       this.redirectLoggedInHome(this.router.url);

@@ -54,7 +54,8 @@ export class AccessMenuService {
         { id: 'roles', label: 'Roles', subtitle: 'Create and update role access', icon: 'admin_panel_settings', route: '/roles', accent: 'blue', permissions: ['ROLE', 'ROLE_VIEW', 'ROLE_CREATE', 'MANAGE_ROLE'] },
         { id: 'permission', label: 'Permission', subtitle: 'Review permission mapping', icon: 'vpn_key', route: '/permission-list', accent: 'pink', permissions: ['PERMISSION', 'PERMISSION_VIEW', 'MANAGE_PERMISSION'] },
         { id: 'department', label: 'Department', subtitle: 'Maintain department master', icon: 'domain', route: '/department', accent: 'green', permissions: ['DEPARTMENT', 'DEPARTMENT_VIEW', 'DEPARTMENT_CREATE', 'MANAGE_DEPARTMENT'] },
-        { id: 'systemconfig', label: 'System Configuration', subtitle: 'Manage system settings', icon: 'settings', route: '/system-configuration', accent: 'blue', permissions: ['SYSTEMCONFIG', 'SYSTEMCONFIG_VIEW', 'SYSTEMCONFIG_CREATE', 'SYSTEMCONFIG_DEPARTMENT'] }
+        { id: 'systemconfig', label: 'System Configuration', subtitle: 'Manage system settings', icon: 'settings', route: '/system-configuration', accent: 'blue', permissions: ['SYSTEMCONFIG', 'SYSTEMCONFIG_VIEW', 'SYSTEMCONFIG_CREATE', 'SYSTEMCONFIG_DEPARTMENT'] },
+        { id: 'createplan', label: 'Plan Management', subtitle: 'Manage subscription plans', icon: 'payments', route: '/createplan', accent: 'pink', permissions: ['PLAN', 'PLAN_VIEW', 'MANAGE_PLAN'] }
 
       ]
     }

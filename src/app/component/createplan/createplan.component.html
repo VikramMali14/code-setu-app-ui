@@ -49,6 +49,25 @@
       </span>
     </div>
 
+    <!-- Delete Confirmation Banner -->
+    <div class="delete-confirmation" *ngIf="planToDelete">
+      <div class="delete-icon-wrap">
+        <mat-icon>warning_amber</mat-icon>
+      </div>
+      <div class="delete-confirmation-content">
+        <h3>Delete "{{ planToDelete.name }}"?</h3>
+        <p>This action cannot be undone. The plan will be permanently removed.</p>
+      </div>
+      <div class="delete-confirmation-actions">
+        <button mat-stroked-button class="cancel-delete-btn" (click)="cancelDelete()">
+          Cancel
+        </button>
+        <button mat-raised-button class="confirm-delete-btn" (click)="deletePlan()">
+          <mat-icon>delete</mat-icon> Delete
+        </button>
+      </div>
+    </div>
+
     <div class="plan-table-wrapper">
 
       <!-- Empty State -->
@@ -140,29 +159,10 @@
   <div class="plan-form-panel" *ngIf="viewMode === 'form'">
     <div class="form-card">
 
-      <!-- Delete Confirmation Banner -->
-      <div class="delete-confirmation" *ngIf="planToDelete">
-        <div class="delete-icon-wrap">
-          <mat-icon>warning_amber</mat-icon>
-        </div>
-        <div class="delete-confirmation-content">
-          <h3>Delete "{{ planToDelete.name }}"?</h3>
-          <p>This action cannot be undone. The plan will be permanently removed.</p>
-        </div>
-        <div class="delete-confirmation-actions">
-          <button mat-stroked-button class="cancel-delete-btn" (click)="cancelDelete()">
-            Cancel
-          </button>
-          <button mat-raised-button class="confirm-delete-btn" (click)="deletePlan()">
-            <mat-icon>delete</mat-icon> Delete
-          </button>
-        </div>
-      </div>
-
       <!-- Form Header -->
       <div class="form-header">
         <div class="form-header-left">
-          <button mat-icon-button class="back-btn" onclick="history.back()" matTooltip="Back to list">
+          <button mat-icon-button class="back-btn" (click)="onCancel()" matTooltip="Back to list">
             <mat-icon>arrow_back</mat-icon>
           </button>
           <div>

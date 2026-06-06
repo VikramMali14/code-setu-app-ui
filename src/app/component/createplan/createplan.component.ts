@@ -63,10 +63,18 @@ editPlan(plan: Plandto): void {
   this.isEditMode = true;
   this.viewMode = 'form';  
   this.selectedPlan = plan;
-  this.planForm.patchValue(plan);
+  let validityDate = '';
+  if (plan.planValidity) {
+    const dateStr = plan.planValidity.toString();
+    validityDate = dateStr.split('T')[0];
+  }
+  this.planForm.patchValue({
+    ...plan,
+    planValidity: validityDate
+  });
   this.planToDelete = null;
   this.successMessage = '';
-console.log('Edit plan object:', plan);
+  console.log('Edit plan object:', plan);
   if (window.innerWidth < 1024) {
     setTimeout(() => {
       document
@@ -98,10 +106,10 @@ deletePlan(): void {
   const planId = this.planToDelete.planId;
 
   this.planservice.deletePlane(planId).subscribe({
-    next: (response) => {
+    next: (response: any) => {
 
       this.showPopup.showResponsePopup(
-        response.responseMessege,
+        response.responseMessege || response.responseMessage,
         response.responseCode
       );
 
@@ -144,14 +152,15 @@ deletePlan(): void {
   if (this.isEditMode) {
 
     this.planservice.updatePlane(planData.planId, planData).subscribe({
-      next: (response: GenericDataDTO) => {
+      next: (response: any) => {
 
         this.showPopup.showResponsePopup(
-          response.responseMessege,
+          response.responseMessege || response.responseMessage,
           response.responseCode
         );
 
         this.loadPlans();     // refresh table
+        this.viewMode = 'list'; // return to list view
         this.createNewPlan(); // reset form AFTER success
       },
       error: (err) => {
@@ -164,14 +173,15 @@ deletePlan(): void {
   } else {
 
     this.planservice.createPlane(planData).subscribe({
-      next: (response: GenericDataDTO) => {
+      next: (response: any) => {
 
         this.showPopup.showResponsePopup(
-          response.responseMessege,
+          response.responseMessege || response.responseMessage,
           response.responseCode
         );
 
         this.loadPlans();     // refresh table
+        this.viewMode = 'list'; // return to list view
         this.createNewPlan(); // reset form AFTER success
       },
       error: (err) => {
@@ -192,6 +202,7 @@ deletePlan(): void {
     this.selectedPlan = null;
     this.planToDelete = null;
     this.successMessage = '';
+    this.viewMode = 'list';
   }
 
   private showSuccessMessage(message: string): void {
@@ -225,8 +236,9 @@ isRefreshing = false;
 loadPlans(): void {
   this.isRefreshing = true;
   this.planservice.getPlanList().subscribe({
-    next: (response: Plandto[]) => {
-      this.plans = response;
+    next: (response: any) => {
+      const plansList = response?.responseBody || (Array.isArray(response) ? response : []);
+      this.plans = plansList;
       this.filterPlans(); // keep filter in sync
       this.isRefreshing = false;
     },
