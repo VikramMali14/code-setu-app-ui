@@ -15,9 +15,9 @@ export class TemplateService {
     return this.http.post<any>(this.BASE_URL, payload);
   }
 
-  getQuotationPdf(shiftingId: number | string): Observable<Blob> {
+  getQuotationPdf(shiftingId: number | string): Observable<string> {
     return this.http.get(`${this.BASE_URL}/quotation/${shiftingId}/pdf`, {
-      responseType: 'blob'
+      responseType: 'text'
     });
   }
 }

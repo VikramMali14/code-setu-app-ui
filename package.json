@@ -23,6 +23,7 @@
     "@angular/router": "^14.2.0",
     "@fontsource/roboto": "^5.2.9",
     "@stomp/stompjs": "^7.3.0",
+    "html2pdf.js": "^0.14.0",
     "jwt-decode": "^4.0.0",
     "material-icons": "^1.13.14",
     "ngx-image-cropper": "^6.3.0",

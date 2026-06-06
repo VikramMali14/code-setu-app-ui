@@ -4,6 +4,7 @@ import { CompanyService } from 'src/app/services/company.service';
 import { CustomersService } from 'src/app/services/customers.service';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { TemplateService } from 'src/app/services/template.service';
+import html2pdf from 'html2pdf.js';
 
 type ConnectionStatus = 'Online' | 'Offline';
 type CustomerRow = CustomerModels & {
@@ -629,10 +630,16 @@ export class CustomerComponent implements OnInit {
 
     this.downloadingQuotationId = shiftingId;
     this.templateService.getQuotationPdf(shiftingId).subscribe({
-      next: (blob) => {
-        this.downloadBlob(blob, `quotation-${shiftingId}.pdf`);
-        this.deleteMessage = 'Quotation PDF downloaded successfully.';
-        this.downloadingQuotationId = null;
+      next: async (html) => {
+        try {
+          await this.downloadHtmlAsPdf(html, `quotation-${shiftingId}.pdf`);
+          this.deleteMessage = 'Quotation PDF downloaded successfully.';
+        } catch (error) {
+          console.error('Quotation PDF conversion failed:', error);
+          this.deleteError = 'Unable to generate quotation PDF.';
+        } finally {
+          this.downloadingQuotationId = null;
+        }
       },
       error: (error) => {
         console.error('Quotation PDF download failed:', error);
@@ -655,13 +662,70 @@ export class CustomerComponent implements OnInit {
       || null;
   }
 
-  private downloadBlob(blob: Blob, fileName: string): void {
-    const url = window.URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = fileName;
-    anchor.click();
-    window.URL.revokeObjectURL(url);
+  private async downloadHtmlAsPdf(html: string, fileName: string): Promise<void> {
+    const container = this.createPdfRenderContainer(html);
+    document.body.appendChild(container);
+    const pdfElement = container.querySelector<HTMLElement>('.page') || container;
+
+    try {
+      await this.waitForPdfAssets(pdfElement);
+
+      await html2pdf()
+        .set({
+          filename: fileName,
+          margin: 0,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
+          },
+          jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
+          }
+        })
+        .from(pdfElement)
+        .save(fileName);
+    } finally {
+      document.body.removeChild(container);
+    }
+  }
+
+  private createPdfRenderContainer(html: string): HTMLElement {
+    const parsedDocument = new DOMParser().parseFromString(html, 'text/html');
+    const container = document.createElement('div');
+    const styles = Array.from(parsedDocument.head.querySelectorAll('style, link[rel="stylesheet"]'))
+      .map(node => node.cloneNode(true));
+
+    styles.forEach(styleNode => container.appendChild(styleNode));
+    container.appendChild(parsedDocument.body.cloneNode(true));
+
+    container.style.position = 'absolute';
+    container.style.left = '0';
+    container.style.top = '0';
+    container.style.width = '210mm';
+    container.style.backgroundColor = '#ffffff';
+    container.style.pointerEvents = 'none';
+    container.style.zIndex = '-1';
+
+    return container;
+  }
+
+  private async waitForPdfAssets(element: HTMLElement): Promise<void> {
+    const fontReady = 'fonts' in document
+      ? (document as Document & { fonts: FontFaceSet }).fonts.ready
+      : Promise.resolve();
+
+    const imageReady = Array.from(element.querySelectorAll('img'))
+      .filter(image => !image.complete)
+      .map(image => new Promise<void>(resolve => {
+        image.onload = () => resolve();
+        image.onerror = () => resolve();
+      }));
+
+    await Promise.all([fontReady, ...imageReady]);
   }
 
   private getEmptyShiftingForm(): any {

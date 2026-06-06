@@ -40,6 +40,10 @@
 
     <form [formGroup]="configurationForm" (ngSubmit)="submitForm()">
       <div class="form-grid">
+        <div class="form-group">
+          <label>Client ID *</label>
+          <input type="number" formControlName="clientId" placeholder="Enter client ID">
+        </div>
 
         <div class="form-group">
           <label>Module *</label>
@@ -57,12 +61,29 @@
         </div>
 
         <div class="form-group">
-          <label>Status *</label>
-          <select formControlName="isActive">
-            <option [ngValue]="true">Active</option>
-            <option [ngValue]="false">Inactive</option>
-          </select>
+          <label>Staff ID *</label>
+          <input type="number" formControlName="staffId" placeholder="Enter staff ID">
         </div>
+
+        <div class="form-group">
+          <label>Created By *</label>
+          <input type="number" formControlName="createdBy" placeholder="Enter creator ID">
+        </div>
+
+        <div class="form-group">
+          <label>Created By Name *</label>
+          <input type="text" formControlName="createdByName" placeholder="Enter creator name">
+        </div>
+
+        <label class="checkbox-field">
+          <input type="checkbox" formControlName="isActive">
+          <span>Active</span>
+        </label>
+
+        <label class="checkbox-field">
+          <input type="checkbox" formControlName="isDeleted">
+          <span>Deleted</span>
+        </label>
       </div>
 
       <div class="form-action">
@@ -90,6 +111,7 @@
             <th>Module</th>
             <th>Name</th>
             <th>Value</th>
+            <th>Staff</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -101,6 +123,7 @@
             <td>{{ configuration.module }}</td>
             <td><strong>{{ configuration.name }}</strong></td>
             <td>{{ configuration.value }}</td>
+            <td>{{ configuration.staffId }}</td>
             <td>
               <span class="status-badge" [class.active]="configuration.isActive" [class.inactive]="!configuration.isActive">
                 {{ configuration.isActive ? 'Active' : 'Inactive' }}
@@ -110,11 +133,14 @@
               <button class="table-btn edit-btn" type="button" (click)="editConfiguration(configuration)">
                 <span class="material-icons">edit</span>
               </button>
+              <button class="table-btn delete-btn" type="button" (click)="deleteConfiguration(configuration)">
+                <span class="material-icons">delete</span>
+              </button>
             </td>
           </tr>
 
           <tr *ngIf="!isLoading && filteredConfigurations.length === 0">
-            <td colspan="5" class="empty-row">
+            <td colspan="8" class="empty-row">
               {{ searchText ? 'No configurations match your search' : 'No system configurations found' }}
             </td>
           </tr>
