@@ -17,6 +17,10 @@ export class PlanserviceService {
   getPlanList() {
     return this.http.get<any>(`${this.BASE_URL}/api/v2/cargosetu/plan`)
   }
+  
+  getPublicPlanList() {
+    return this.http.get<any>(`${this.BASE_URL}/public/plan`)
+  }
 
   createPlane(dto: Plandto) {
     return this.http.post<GenericDataDTO>(`${this.BASE_URL}/api/v2/cargosetu/plan`, dto)

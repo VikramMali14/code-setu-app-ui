@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { PlanserviceService } from 'src/app/services/planservice.service';
 
 // Define an interface for type safety (optional but recommended)
 interface Plan {
@@ -46,37 +47,65 @@ export class PlanscreenComponent implements OnInit {
   currentPageNumber = 0;
   pageSize = 5;
 
-  
-  plans: Plan[] = [
-    // ... your existing plans data ...
-    {
-      name: 'Silver Plan',
-      price: 800,
-      duration: '3 Month',
-      features: ['Subscription Duration - 90-day', 'Create and Share - Unlimited Document', '24/7 Support'],
-      buttonText: 'Subscribe Now',
-      colorClass: 'grey lighten-4' // Custom color for design variation
-    },
-    {
-      name: 'Gold Plan',
-      price: 1551,
-      duration: '6 Months',
-      features: ['Subscription Duration - 180-day', 'Create and Share - Unlimited Document', '24/7 Support'],
-      buttonText: 'Subscribe Now',
-      colorClass: 'light-blue lighten-5' // Custom color for design variation
-    },
-    {
-      name: 'Platinum Plan',
-      price: 2999,
-      duration: '12 month',
-      features: ['Subscription Duration - 365-day', 'Create and Share - Unlimited Document', '24/7 Support'],
-      buttonText: 'Subscribe Now',
-      colorClass: 'grey lighten-4' // Custom color for design variation
-    }
-  ];
-  constructor() { }
+  plans: Plan[] = [];
+
+  constructor(private planservice: PlanserviceService) { }
 
   ngOnInit(): void {
+    this.loadPlans();
+  }
+
+  loadPlans(): void {
+    this.planservice.getPlanList().subscribe({
+      next: (response: any) => {
+        const rawPlans = response?.responseBody || (Array.isArray(response) ? response : []);
+        this.plans = rawPlans.map((p: any) => ({
+          name: p.name || 'Standard Plan',
+          price: p.price || 0,
+          duration: this.getDurationText(p.planValidity),
+          features: [
+            `Category: ${p.plannCategory || 'General'}`,
+            `Valid Until: ${this.formatDate(p.planValidity)}`,
+            'Create and Share - Unlimited Document',
+            '24/7 Support'
+          ],
+          buttonText: 'Subscribe Now',
+          colorClass: this.getColorClass(p.name)
+        }));
+        this.currentPageNumber = 0;
+      },
+      error: (err) => {
+        console.error("Error loading plans:", err);
+      }
+    });
+  }
+
+  private getDurationText(validity: any): string {
+    if (!validity) return 'Subscription';
+    const today = new Date();
+    const valDate = new Date(validity);
+    const diffTime = valDate.getTime() - today.getTime();
+    if (diffTime <= 0) return 'Expired';
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return `${diffDays} Days`;
+  }
+
+  private formatDate(dateStr: any): string {
+    if (!dateStr) return 'N/A';
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    } catch {
+      return dateStr;
+    }
+  }
+
+  private getColorClass(name: string): string {
+    const n = name?.toLowerCase() || '';
+    if (n.includes('gold')) return 'light-blue lighten-5';
+    if (n.includes('silver')) return 'grey lighten-4';
+    if (n.includes('platinum')) return 'blue-grey lighten-5';
+    return 'grey lighten-4';
   }
 
   get totalRecords(): number {
