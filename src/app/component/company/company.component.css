@@ -207,6 +207,14 @@
   border-color: #48bb78;
 }
 
+.validation-error {
+  color: #e53e3e;
+  font-size: 0.78rem;
+  margin-top: 4px;
+  display: block;
+  line-height: 1.3;
+}
+
 .file-upload-box {
   height: 44px;
   border: 2px dashed #cbd5e0;
