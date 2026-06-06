@@ -4,6 +4,8 @@ import { Department } from 'src/app/models/department';
 import { DepartmentService } from 'src/app/services/department.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogboxComponent } from '../../dialogbox/dialogbox.component';
 import { MatFormFieldModule } from "@angular/material/form-field"; // ✅ Import this
 
 @Component({
@@ -25,7 +27,8 @@ export class DepartmentComponent implements OnInit {
 
   constructor(
     private deptService: DepartmentService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {}
 
  ngOnInit(): void {
@@ -49,8 +52,22 @@ export class DepartmentComponent implements OnInit {
     });
   }
   deleteDepartment(id:number){
-    this.deptService.delete(id).subscribe(() => {
-      this.loadDepartments();
+    const dialogRef = this.dialog.open(DialogboxComponent, {
+      width: '420px',
+      disableClose: true,
+      data: {
+        title: 'Delete Department',
+        message: 'Are you sure you want to delete this department?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+      this.deptService.delete(id).subscribe(() => {
+        this.loadDepartments();
+      });
     });
   }
   openEdit(dept: Department): void {

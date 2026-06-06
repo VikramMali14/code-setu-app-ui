@@ -4,6 +4,8 @@ import { GenericDataDTO } from 'src/app/models/generic-data-dto';
 import { Plandto } from 'src/app/models/plandto';
 import { PlanserviceService } from 'src/app/services/planservice.service';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 
 @Component({
   selector: 'app-createplan',
@@ -20,7 +22,8 @@ export class CreateplanComponent implements OnInit {
   successMessage = '';
   constructor(private fb: FormBuilder,
     private planservice: PlanserviceService,
-    private showPopup:ShowpopupService
+    private showPopup:ShowpopupService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -86,14 +89,26 @@ editPlan(plan: Plandto): void {
 
   confirmDelete(plan: Plandto): void {
     this.planToDelete = plan;
-    this.successMessage = ''; // Clear success message
+    this.successMessage = '';
 
-    // Scroll to confirmation on mobile
-    if (window.innerWidth < 1024) {
-      setTimeout(() => {
-        document.querySelector('.delete-confirmation')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    }
+    const dialogRef = this.dialog.open(DialogboxComponent, {
+      width: '420px',
+      disableClose: true,
+      data: {
+        title: 'Delete Plan',
+        message: 'Are you sure you want to delete this plan?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.deletePlan();
+      } else {
+        this.planToDelete = null;
+      }
+    });
   }
 
   cancelDelete(): void {

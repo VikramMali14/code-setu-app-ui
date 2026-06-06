@@ -3,8 +3,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { RoleserviceService } from '../services/role/roleservice.service';
 import { ShowpopupService } from '../services/showpopup.service';
+import { DialogboxComponent } from '../component/dialogbox/dialogbox.component';
 
 @Component({
   selector: 'app-roles-details',
@@ -34,7 +36,8 @@ export class RolesDetailsComponent implements OnInit {
     private fb: FormBuilder,
     private roleService: RoleserviceService,
     private router: Router,
-    private showpopup: ShowpopupService
+    private showpopup: ShowpopupService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -230,20 +233,32 @@ export class RolesDetailsComponent implements OnInit {
       Delete
   =============================== */
   deleteRole(id: number) {
+    const dialogRef = this.dialog.open(DialogboxComponent, {
+      width: '420px',
+      disableClose: true,
+      data: {
+        title: 'Delete Role',
+        message: 'Are you sure you want to delete this role?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
 
-    if (!confirm('Delete this role?')) return;
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
 
-    this.roleService.deleteRole(id)
-      .subscribe({
-        next: () => this.loadRoles(),
-        error: err => {
-          console.error(err);
-          this.showpopup.showResponsePopup(
-            err.error?.message || 'Failed to delete role. Please try again.',
-            500
-          );
-        }
-      });
+      this.roleService.deleteRole(id)
+        .subscribe({
+          next: () => this.loadRoles(),
+          error: err => {
+            console.error(err);
+            this.showpopup.showResponsePopup(
+              err.error?.message || 'Failed to delete role. Please try again.',
+              500
+            );
+          }
+        });
+    });
   }
 
   /* ===============================

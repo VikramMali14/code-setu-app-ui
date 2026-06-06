@@ -4,11 +4,13 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { RouterModule } from '@angular/router';
 import { LoaderComponent } from '../loader/loader.component';
 import { DriverPayload, DriverService } from 'src/app/services/driver.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 
 @Component({
   selector: 'app-driver',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, LoaderComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, LoaderComponent, MatDialogModule],
   templateUrl: './driver.component.html',
   styleUrls: ['./driver.component.css']
 })
@@ -27,7 +29,8 @@ export class DriverComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private driverService: DriverService
+    private driverService: DriverService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -132,23 +135,38 @@ export class DriverComponent implements OnInit {
   }
 
   delete(id: number): void {
-    if (!id || !confirm('Delete this driver?')) return;
+    if (!id) return;
 
-    this.isDeleting = true;
-    this.message = '';
-    this.error = '';
-
-    this.driverService.deleteDriver(id).subscribe({
-      next: () => {
-        this.isDeleting = false;
-        this.message = 'Driver deleted successfully.';
-        this.loadDrivers();
-      },
-      error: error => {
-        console.error('Delete driver failed:', error);
-        this.error = this.getApiError(error, 'Unable to delete driver.');
-        this.isDeleting = false;
+    const dialogRef = this.dialog.open(DialogboxComponent, {
+      width: '420px',
+      disableClose: true,
+      data: {
+        title: 'Delete Driver',
+        message: 'Are you sure you want to delete this driver?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
       }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+
+      this.isDeleting = true;
+      this.message = '';
+      this.error = '';
+
+      this.driverService.deleteDriver(id).subscribe({
+        next: () => {
+          this.isDeleting = false;
+          this.message = 'Driver deleted successfully.';
+          this.loadDrivers();
+        },
+        error: error => {
+          console.error('Delete driver failed:', error);
+          this.error = this.getApiError(error, 'Unable to delete driver.');
+          this.isDeleting = false;
+        }
+      });
     });
   }
 

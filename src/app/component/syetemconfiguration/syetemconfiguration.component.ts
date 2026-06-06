@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
 import { SystemConfigurationService } from 'src/app/services/system-configuration.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 
 @Component({
   selector: 'app-syetemconfiguration',
@@ -23,7 +25,8 @@ export class SyetemconfigurationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private systemConfigurationService: SystemConfigurationService,
-    private showpopup: ShowpopupService
+    private showpopup: ShowpopupService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -129,20 +132,36 @@ export class SyetemconfigurationComponent implements OnInit {
 
   deleteConfiguration(configuration: any): void {
     const id = this.getConfigurationId(configuration);
-
-    if (!id || !confirm('Delete this system configuration?')) {
+    if (!id) {
       return;
     }
 
-    this.systemConfigurationService.deleteConfiguration(id).subscribe({
-      next: (response: any) => {
-        this.showResponse(response, 'System configuration deleted successfully');
-        this.loadConfigurations();
-      },
-      error: (error) => {
-        console.error(error);
-        this.showpopup.showError('Unable to delete system configuration');
+    const dialogRef = this.dialog.open(DialogboxComponent, {
+      width: '420px',
+      disableClose: true,
+      data: {
+        title: 'Delete Configuration',
+        message: 'Are you sure you want to delete this configuration?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
       }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) {
+        return;
+      }
+
+      this.systemConfigurationService.deleteConfiguration(id).subscribe({
+        next: (response: any) => {
+          this.showResponse(response, 'System configuration deleted successfully');
+          this.loadConfigurations();
+        },
+        error: (error) => {
+          console.error(error);
+          this.showpopup.showError('Unable to delete system configuration');
+        }
+      });
     });
   }
 

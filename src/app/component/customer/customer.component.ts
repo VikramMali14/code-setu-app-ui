@@ -4,6 +4,8 @@ import { CompanyService } from 'src/app/services/company.service';
 import { CustomersService } from 'src/app/services/customers.service';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { TemplateService } from 'src/app/services/template.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import html2pdf from 'html2pdf.js';
 
 type ConnectionStatus = 'Online' | 'Offline';
@@ -69,7 +71,8 @@ export class CustomerComponent implements OnInit {
     private companyService: CompanyService,
     private customersService: CustomersService,
     private staffService: StaffuserServiceService,
-    private templateService: TemplateService
+    private templateService: TemplateService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -590,30 +593,48 @@ export class CustomerComponent implements OnInit {
   }
 
   deleteCustomer(customer: CustomerRow): void {
-    const payload = {
-      customerId: customer.customerId || 0,
-      firstName: customer.firstName || '',
-      lastName: customer.lastName || '',
-      mobileNo: customer.mobileNo || '',
-      alternateMobileNo: customer.alternateMobileNo || '',
-      email: customer.email || '',
-      workEmail: customer.workEmail || '',
-      uuid: customer.uuid || ''
-    };
-    this.isDeleting = true;
-    this.deleteMessage = '';
-    this.deleteError = '';
-    this.customersService.deleteCustomer(payload).subscribe({
-      next: () => {
-        this.isDeleting = false;
-        this.deleteMessage = 'Customer deleted successfully.';
-        this.loadCustomers();
-      },
-      error: error => {
-        console.error('Delete customer failed:', error);
-        this.isDeleting = false;
-        this.deleteError = error.error?.responseMessege || error.error?.message || 'Unable to delete customer.';
+    const dialogRef = this.dialog.open(DialogboxComponent, {
+      width: '420px',
+      disableClose: true,
+      data: {
+        title: 'Delete Customer',
+        message: 'Are you sure you want to delete this customer?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
       }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) {
+        return;
+      }
+
+      const payload = {
+        customerId: customer.customerId || 0,
+        firstName: customer.firstName || '',
+        lastName: customer.lastName || '',
+        mobileNo: customer.mobileNo || '',
+        alternateMobileNo: customer.alternateMobileNo || '',
+        email: customer.email || '',
+        workEmail: customer.workEmail || '',
+        uuid: customer.uuid || ''
+      };
+
+      this.isDeleting = true;
+      this.deleteMessage = '';
+      this.deleteError = '';
+      this.customersService.deleteCustomer(payload).subscribe({
+        next: () => {
+          this.isDeleting = false;
+          this.deleteMessage = 'Customer deleted successfully.';
+          this.loadCustomers();
+        },
+        error: error => {
+          console.error('Delete customer failed:', error);
+          this.isDeleting = false;
+          this.deleteError = error.error?.responseMessege || error.error?.message || 'Unable to delete customer.';
+        }
+      });
     });
   }
 

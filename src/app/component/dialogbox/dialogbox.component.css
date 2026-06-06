@@ -1,15 +1,15 @@
-/* Minimal rectangular dialog design */
+/* Minimal rectangular dialog design with Staff Details reference */
 
 ::ng-deep .mat-mdc-dialog-container {
-  border-radius: 8px !important;
+  border-radius: 12px !important;
   overflow: visible !important;
   padding: 0 !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1) !important;
   max-height: none !important;
 }
 
 ::ng-deep .mdc-dialog__surface {
-  border-radius: 8px !important;
+  border-radius: 12px !important;
   overflow: visible !important;
 }
 
@@ -19,112 +19,74 @@
   padding: 0 !important;
 }
 
-/* Dialog Header */
-.dialog-header {
-  padding: 24px 24px 16px 24px;
-  border-bottom: 1px solid #f0f0f0;
+.confirm-dialog {
+  padding: 24px;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
-.dialog-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+.confirm-dialog h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
   color: #222;
-  line-height: 1.2;
 }
 
-/* Dialog Content */
-.dialog-message-content {
-  padding: 16px 24px !important;
-  background: #fff;
-}
-
-.dialog-message {
-  margin: 0;
-  font-size: 14px;
-  color: #666;
+.confirm-dialog p {
+  margin: 0 0 24px;
+  color: #555;
   line-height: 1.5;
 }
 
-/* Dialog Actions */
-.dialog-actions {
-  padding: 20px 24px 24px 24px !important;
+.confirm-actions {
   display: flex;
-  gap: 12px;
   justify-content: flex-end;
-  background: #fff;
+  gap: 10px;
+}
+
+.confirm-actions button {
+  min-width: 90px;
 }
 
 .btn-cancel {
-  min-width: 90px !important;
-  height: 40px !important;
-  border-radius: 4px !important;
-  background: #f5f5f5 !important;
-  color: #333 !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
+  background: #f3f4f6 !important;
+  color: #111827 !important;
   border: none !important;
+  padding: 0 18px !important;
+  height: 42px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
 }
 
 .btn-cancel:hover {
-  background: #e8e8e8 !important;
+  background: #e5e7eb !important;
 }
 
 .btn-delete {
-  min-width: 90px !important;
-  height: 40px !important;
-  border-radius: 4px !important;
   background: #ef4444 !important;
-  color: #fff !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
+  color: #ffffff !important;
   border: none !important;
-  cursor: pointer !important;
+  padding: 0 18px !important;
+  height: 42px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
 }
 
 .btn-delete:hover {
   background: #dc2626 !important;
 }
-  padding:0 18px !important;
-  background:linear-gradient(135deg,#ef4444,#dc2626) !important;
-  box-shadow:0 10px 22px rgba(220,38,38,.18);
-}
 
-.delete-btn .material-icons{
-  font-size:18px;
-}
-
-.cancel-btn:hover,
-.delete-btn:hover{
-  transform:translateY(-2px);
-  transition:.2s ease;
-}
-
-/* Mobile */
-@media(max-width:600px){
-
-  .confirm-title{
-    padding:18px;
-    gap:12px;
+@media (max-width: 600px) {
+  .confirm-dialog {
+    padding: 18px;
   }
 
-  .title-text span{
-    font-size:20px;
+  .confirm-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .confirm-icon{
-    width:48px;
-    height:48px;
-    border-radius:14px;
-  }
-
-  .confirm-actions{
-    flex-direction:column-reverse;
-    align-items:stretch !important;
-  }
-
-  .cancel-btn,
-  .delete-btn{
-    width:100%;
+  .confirm-actions button {
+    width: 100%;
   }
 }
+

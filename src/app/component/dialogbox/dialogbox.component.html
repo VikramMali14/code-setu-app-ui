@@ -1,16 +1,12 @@
-<div class="dialog-header">
-  <h2 class="dialog-title">{{ data.title || 'Confirm Action' }}</h2>
+<div class="confirm-dialog">
+  <h2>{{ data.title || 'Confirm Action' }}</h2>
+  <p>{{ data.message || 'Are you sure you want to continue?' }}</p>
+  <div class="confirm-actions">
+    <button mat-button class="btn-cancel" (click)="onCancel()">
+      {{ data.cancelText || 'Cancel' }}
+    </button>
+    <button mat-raised-button class="btn-delete" (click)="onConfirm()">
+      {{ data.confirmText || 'Delete' }}
+    </button>
+  </div>
 </div>
-
-<mat-dialog-content class="dialog-message-content">
-  <p class="dialog-message">{{ data.message || 'Are you sure you want to continue?' }}</p>
-</mat-dialog-content>
-
-<mat-dialog-actions class="dialog-actions">
-  <button mat-button class="btn-cancel" (click)="onCancel()">
-    {{ data.cancelText || 'Cancel' }}
-  </button>
-  <button mat-raised-button class="btn-delete" (click)="onConfirm()">
-    {{ data.confirmText || 'Delete' }}
-  </button>
-</mat-dialog-actions>

@@ -4,11 +4,13 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { RouterModule } from '@angular/router';
 import { LoaderComponent } from '../loader/loader.component';
 import { VehiclePayload, VehicleService } from 'src/app/services/vehicle.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 
 @Component({
   selector: 'app-vehicle',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, LoaderComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, LoaderComponent, MatDialogModule],
   templateUrl: './vehicle.component.html',
   styleUrls: ['./vehicle.component.css']
 })
@@ -27,7 +29,8 @@ export class VehicleComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private vehicleService: VehicleService
+    private vehicleService: VehicleService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -143,23 +146,38 @@ export class VehicleComponent implements OnInit {
   }
 
   delete(id: number): void {
-    if (!id || !confirm('Delete this vehicle?')) return;
+    if (!id) return;
 
-    this.isDeleting = true;
-    this.message = '';
-    this.error = '';
-
-    this.vehicleService.deleteVehicle(id).subscribe({
-      next: () => {
-        this.isDeleting = false;
-        this.message = 'Vehicle deleted successfully.';
-        this.loadVehicles();
-      },
-      error: error => {
-        console.error('Delete vehicle failed:', error);
-        this.error = this.getApiError(error, 'Unable to delete vehicle.');
-        this.isDeleting = false;
+    const dialogRef = this.dialog.open(DialogboxComponent, {
+      width: '420px',
+      disableClose: true,
+      data: {
+        title: 'Delete Vehicle',
+        message: 'Are you sure you want to delete this vehicle',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
       }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+
+      this.isDeleting = true;
+      this.message = '';
+      this.error = '';
+
+      this.vehicleService.deleteVehicle(id).subscribe({
+        next: () => {
+          this.isDeleting = false;
+          this.message = 'Vehicle deleted successfully.';
+          this.loadVehicles();
+        },
+        error: error => {
+          console.error('Delete vehicle failed:', error);
+          this.error = this.getApiError(error, 'Unable to delete vehicle.');
+          this.isDeleting = false;
+        }
+      });
     });
   }
 

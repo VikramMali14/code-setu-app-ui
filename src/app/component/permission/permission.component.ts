@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { RoleserviceService } from 'src/app/services/role/roleservice.service';
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 
 @Component({
   selector: 'app-permission',
@@ -27,7 +29,8 @@ export class PermissionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private roleService: RoleserviceService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -140,21 +143,37 @@ export class PermissionComponent implements OnInit {
 
   deletePermission(permission: any): void {
     const id = this.getPermissionId(permission);
-
-    if (!id || !confirm('Delete this permission?')) {
+    if (!id) {
       return;
     }
 
-    this.roleService.deletePermission(id).subscribe({
-      next: (res: any) => {
-        this.showMessage(res?.responseMessege || 'Permission deleted');
-        if (this.selectedId === id) {
-          this.resetForm();
-        }
-        const nextPageIndex = this.permissions.length === 1 && this.pageIndex > 0 ? this.pageIndex - 1 : this.pageIndex;
-        this.loadPermissions(nextPageIndex, this.pageSize);
-      },
-      error: () => this.showMessage('Permission delete failed')
+    const dialogRef = this.dialog.open(DialogboxComponent, {
+      width: '420px',
+      disableClose: true,
+      data: {
+        title: 'Delete Permission',
+        message: 'Are you sure you want to delete this permission?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) {
+        return;
+      }
+
+      this.roleService.deletePermission(id).subscribe({
+        next: (res: any) => {
+          this.showMessage(res?.responseMessege || 'Permission deleted');
+          if (this.selectedId === id) {
+            this.resetForm();
+          }
+          const nextPageIndex = this.permissions.length === 1 && this.pageIndex > 0 ? this.pageIndex - 1 : this.pageIndex;
+          this.loadPermissions(nextPageIndex, this.pageSize);
+        },
+        error: () => this.showMessage('Permission delete failed')
+      });
     });
   }
 
