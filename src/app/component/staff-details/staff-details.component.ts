@@ -17,7 +17,7 @@ export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
   searchTerm = '';
   filterStatus = '';
   filterType = '';
-  
+
   Math = Math; // Make Math available in template
   userdata: any;
 
@@ -109,7 +109,7 @@ export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
     });
   }
 
-  
+
 
   editStaff(staffId: number) {
     this.staffuserservice.getStaffById(staffId).subscribe({
@@ -125,7 +125,7 @@ export class StaffDetailsComponent implements OnInit { staffList: any[] = [];
   }
 
   deleteStaff(staffId: number) {
-    if (confirm('Are you sure you want to delete this staff member?')) {
+    if (confirm('Are you sure you want to remove this staff member?')) {
       // Implement delete API call
       console.log('Delete staff:', staffId);
       // this.staffuserservice.deleteStaff(staffId).subscribe({...});
