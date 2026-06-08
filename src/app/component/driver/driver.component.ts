@@ -27,6 +27,7 @@ export class DriverComponent implements OnInit {
   isDeleting = false;
   message = '';
   error = '';
+  showForm = true;
 
   countryCodes: any[] = [
     { name: 'India', code: '+91', cca2: 'IN' },
@@ -202,6 +203,13 @@ export class DriverComponent implements OnInit {
     this.isEditMode = false;
     this.editId = null;
     this.loadDrivers();
+  }
+
+  toggleForm(): void {
+    this.showForm = !this.showForm;
+    if (this.showForm) {
+      this.reset();
+    }
   }
 
   private extractList(response: any): any[] {
