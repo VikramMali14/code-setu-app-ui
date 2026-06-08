@@ -127,16 +127,10 @@
           </div>
           <div class="form-field">
             <label>Shifting Type</label>
-            <input [name]="'upShiftingType_'+i" placeholder="e.g. Home, Office" [(ngModel)]="s.shiftingType">
-          </div>
-          <div class="form-field">
-            <label>Company Name</label>
-            <select class="browser-default" [name]="'upCompanyName_'+i" [(ngModel)]="s.companyId"
-              (ngModelChange)="setShiftingCompany(s, $event)">
-              <option [ngValue]="null">Select Company</option>
-              <option *ngFor="let company of companyList" [ngValue]="company.companyId">{{ getCompanyName(company) }}</option>
+            <select class="browser-default" [name]="'upShiftingType_'+i" [(ngModel)]="s.shiftingType">
+              <option [ngValue]="null">Select Type</option>
+              <option *ngFor="let st of shiftingTypes" [value]="st">{{ st }}</option>
             </select>
-            <small class="field-error" *ngIf="companyLoadError">{{ companyLoadError }}</small>
           </div>
           <div class="form-field">
             <label>Start Date</label>
@@ -375,16 +369,10 @@
           </div>
           <div class="form-field">
             <label>Shifting Type</label>
-            <input [name]="'shiftingType_'+i" placeholder="e.g. Home, Office" [(ngModel)]="s.shiftingType">
-          </div>
-          <div class="form-field">
-            <label>Company Name</label>
-            <select class="browser-default" [name]="'companyName_'+i" [(ngModel)]="s.companyId"
-              (ngModelChange)="setShiftingCompany(s, $event)">
-              <option [ngValue]="null">Select Company</option>
-              <option *ngFor="let company of companyList" [ngValue]="company.companyId">{{ getCompanyName(company) }}</option>
+            <select class="browser-default" [name]="'shiftingType_'+i" [(ngModel)]="s.shiftingType">
+              <option [ngValue]="null">Select Type</option>
+              <option *ngFor="let st of shiftingTypes" [value]="st">{{ st }}</option>
             </select>
-            <small class="field-error" *ngIf="companyLoadError">{{ companyLoadError }}</small>
           </div>
           <div class="form-field">
             <label>Start Date</label>

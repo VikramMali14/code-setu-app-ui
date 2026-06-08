@@ -40,6 +40,8 @@ export class CustomerComponent implements OnInit {
   staffList: any[] = [];
   staffLoadError = '';
   companyList: any[] = [];
+  shiftingTypes: any[] = [];
+
   companyLoadError = '';
 
   // ── Create Form ─────────────────────────────────────────────────────
@@ -89,6 +91,20 @@ export class CustomerComponent implements OnInit {
     this.loadCustomers();
     this.loadStaffList();
     this.loadCompanyList();
+    this.loadShiftingTypes();
+  }
+  loadShiftingTypes() {
+    this.customersService.getShiftType().subscribe({
+      next: response => {
+        const types = response?.data ?? response?.dataList ?? response;
+        this.shiftingTypes = Array.isArray(types) ? types : [];
+        console.log('Shifting types loaded:', this.shiftingTypes);
+      },
+      error: error => {
+        console.error('Failed to load shifting types:', error);
+        this.shiftingTypes = [];
+      }
+    });
   }
 
   get visiblePageNumbers(): number[] {
