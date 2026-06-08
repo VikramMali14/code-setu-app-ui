@@ -723,6 +723,12 @@ export class CustomerComponent implements OnInit {
     document.body.appendChild(container);
     const pdfElement = container.querySelector<HTMLElement>('.page') || container;
 
+    if (pdfElement !== container) {
+      pdfElement.style.margin = '0';
+      pdfElement.style.boxShadow = 'none';
+      pdfElement.style.background = '#ffffff';
+    }
+
     try {
       await this.waitForPdfAssets(pdfElement);
 
