@@ -54,22 +54,13 @@ export class LoginComponent {
     this.isLoading = true;
 
     this.loginService.generateToken(this.credential).pipe(
-      // 1. Success: Store the token first
-      tap((response: AuthResponse) => {
-        this.loginService.loginUser(response.accessToken);
-        this.router.navigate(['/dashboard']);
-
-      }),
-      // 2. Switch to the next API call (getById)
       switchMap((response: AuthResponse) => {
-        const decode = this.jwtDecode.getDecodedToken();
-
-        // Pass the userId (adjust property name based on your API)
-        return this.staffuserservice.getStaffById(decode?.sub);
+        return this.loginService.loginAndFetchUser(response.accessToken);
       })
     ).subscribe({
       next: (userDetails) => {
         console.log('User Details fetched:', userDetails);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         console.error('API Error:', err);
