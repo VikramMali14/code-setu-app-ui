@@ -61,7 +61,14 @@
         </div>
         <div class="form-group">
           <label>Phone Number *</label>
-          <input formControlName="phoneNumber" placeholder="+91 XXXXX XXXXX">
+          <div class="mobile-split-group">
+            <select class="code-select" formControlName="phoneCode">
+              <option *ngFor="let c of countryCodes" [value]="c.code">
+                {{c.cca2 ? c.cca2 + ' (' + c.code + ')' : c.code + ' (' + c.name + ')'}}
+              </option>
+            </select>
+            <input formControlName="phoneNumber" placeholder="Phone Number">
+          </div>
         </div>
         <div class="form-group">
           <label>Email *</label>
