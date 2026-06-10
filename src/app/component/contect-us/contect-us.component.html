@@ -19,11 +19,22 @@
                         <input matInput name="fullName" placeholder="John Doe" [(ngModel)]="contact.fullName" required>
                         <mat-icon matSuffix>person</mat-icon>
                     </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Mobile Number</mat-label>
-                        <input matInput name="mobilenumber" placeholder="1234567890" [(ngModel)]="contact.mobilenumber" required>
-                        <mat-icon matSuffix>mobile</mat-icon>
-                    </mat-form-field>
+                    <div class="mobile-field-container">
+                        <mat-form-field appearance="outline" class="mobile-code-field">
+                            <mat-label>Code</mat-label>
+                            <mat-select [(ngModel)]="contact.mobileCode" name="mobileCode" required>
+                                <mat-option *ngFor="let c of countryCodes" [value]="c.code">
+                                    {{c.cca2 ? c.cca2 + ' (' + c.code + ')' : c.code + ' (' + c.name + ')'}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="mobile-number-field">
+                            <mat-label>Mobile Number</mat-label>
+                            <input matInput type="tel" name="mobilenumber" placeholder="1234567890" [(ngModel)]="contact.mobilenumber" required>
+                            <mat-icon matSuffix>phone</mat-icon>
+                        </mat-form-field>
+                    </div>
 
                     <mat-form-field appearance="outline">
                         <mat-label>Email Address</mat-label>
