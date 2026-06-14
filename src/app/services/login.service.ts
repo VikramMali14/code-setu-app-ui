@@ -36,6 +36,14 @@ export class LoginService {
     return !!localStorage.getItem('token');
   }
 
+  sendOtp(mobileNumber: string): Observable<any> {
+    return this.http.post<any>(`${this.BASE_URL}/auth/otp/send`, { mobileNumber });
+  }
+
+  verifyOtp(mobileNumber: string, otpCode: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/otp/verify`, { mobileNumber, otpCode });
+  }
+
   generateToken(creadential: any) {
     return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/login`, creadential);
   }
