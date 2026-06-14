@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { CompanyService } from 'src/app/services/company.service';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
+import { ViewcomponentComponent } from '../viewcomponent/viewcomponent.component';
 
 @Component({
   selector: 'app-company',
@@ -13,8 +14,10 @@ import { ShowpopupService } from 'src/app/services/showpopup.service';
 
 export class CompanyComponent implements OnInit {
   @ViewChild('confirmDialog') confirmDialogTemplate!: TemplateRef<any>;
+  @ViewChild('viewDialog') viewDialogTemplate!: TemplateRef<any>;
 
   companyList: any[] = [];
+  selectedCompany: any = null;
   assetTypes: string[] = ['LOGO', 'SEAL/Signature', 'STAMP'];
   companyForm!: FormGroup;
 
@@ -336,6 +339,35 @@ export class CompanyComponent implements OnInit {
           },
           error: err => console.error(err)
         });
+      }
+    });
+  }
+
+  viewCompany(company: any) {
+    if (!company) {
+      return;
+    }
+    this.selectedCompany = company;
+    this.dialog.open(ViewcomponentComponent, {
+      width: '600px',
+      data: {
+        title: 'Company Details',
+        details: [
+          { label: 'Name', value: company.companyName },
+          { label: 'Email', value: company.companyEmail, type: 'email' },
+          { label: 'WhatsApp', value: company.whatsappNumber },
+          { label: 'Contact 1', value: company.contactNo1 },
+          { label: 'Contact 2', value: company.contactNo2 },
+          { label: 'City', value: company.city },
+          { label: 'State', value: company.state },
+          { label: 'Country', value: company.country },
+          { label: 'Branch', value: company.branch },
+          { label: 'Main Branch', value: company.mainBranch },
+          { label: 'PAN', value: company.panNumber },
+          { label: 'GST', value: company.gstNumber },
+          { label: 'Website', value: company.website, type: 'link' },
+          { label: 'Status', value: company.isActive ? 'Active' : 'Inactive', type: 'status' }
+        ]
       }
     });
   }

@@ -248,7 +248,6 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
             <th>City</th>
@@ -260,7 +259,6 @@
 
         <tbody>
           <tr *ngFor="let company of paginatedCompanies">
-            <td>{{ company.companyId }}</td>
             <td><strong>{{ company.companyName }}</strong></td>
             <td>{{ company.companyEmail }}</td>
             <td>{{ company.city }}</td>
@@ -271,6 +269,9 @@
               </span>
             </td>
             <td class="action-td">
+              <button class="table-btn view-btn" (click)="viewCompany(company)" title="View Details">
+                <span class="material-icons">visibility</span>
+              </button>
               <button class="table-btn edit-btn" (click)="editCompany(company)">
                 <span class="material-icons">edit</span>
               </button>
@@ -308,3 +309,5 @@
     <button mat-raised-button color="warn" [mat-dialog-close]="true">Delete</button>
   </mat-dialog-actions>
 </ng-template>
+
+
