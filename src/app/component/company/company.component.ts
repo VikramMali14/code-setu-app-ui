@@ -106,6 +106,9 @@ export class CompanyComponent implements OnInit {
     this.companyForm.reset();
     this.companyForm.patchValue({
       country: 'India',
+      whatsappCode: '+91',
+      contactNo1Code: '+91',
+      contactNo2Code: '+91',
       isActive: true
     });
     this.clearAssetFile();
