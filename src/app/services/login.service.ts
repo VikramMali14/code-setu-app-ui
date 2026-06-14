@@ -40,6 +40,9 @@ export class LoginService {
     return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/login`, creadential);
   }
 
+  refereseToken() {
+    return this.http.get<AuthResponse>(`${this.BASE_URL}/cargosetu/refreshtoken`);
+  }
   // loginUser(token: string) {
   //   if (!token) return false;
 

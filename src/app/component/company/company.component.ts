@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { CompanyService } from 'src/app/services/company.service';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
+import { LoginService } from 'src/app/services/login.service';
 import { ViewcomponentComponent } from '../viewcomponent/viewcomponent.component';
 
 @Component({
@@ -43,7 +44,8 @@ export class CompanyComponent implements OnInit {
     private companyService: CompanyService,
     private shoepopup: ShowpopupService,
     private dialog: MatDialog,
-    private http: HttpClient
+    private http: HttpClient,
+    private loginService: LoginService
   ) { }
 
   ngOnInit(): void {
@@ -143,6 +145,18 @@ export class CompanyComponent implements OnInit {
       this.companyService.createCompany(payload).subscribe({
         next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
+          
+          // Refresh JWT token after company creation
+          this.loginService.refereseToken().subscribe({
+            next: (tokenResponse: any) => {
+              console.log('Token refreshed successfully', tokenResponse);
+              if (tokenResponse?.token) {
+                localStorage.setItem('token', tokenResponse.token);
+              }
+            },
+            error: (err) => console.error('Token refresh failed:', err)
+          });
+          
           this.loadCompanies();
           this.cancelForm();
         },
