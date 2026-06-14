@@ -15,7 +15,7 @@ export class CompanyComponent implements OnInit {
   @ViewChild('confirmDialog') confirmDialogTemplate!: TemplateRef<any>;
 
   companyList: any[] = [];
-  assetTypes: string[] = ['LOGO', 'SEAL', 'Signature', 'STAMP'];
+  assetTypes: string[] = ['LOGO', 'SEAL/Signature', 'STAMP'];
   companyForm!: FormGroup;
 
   showForm = false;
@@ -57,6 +57,7 @@ export class CompanyComponent implements OnInit {
     const gstPattern = '^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$';
 
     this.companyForm = this.fb.group({
+      companyId: [null],
       companyName: ['', Validators.required],
       companyEmail: ['', [Validators.required, Validators.email]],
       whatsappCode: ['+91', [Validators.pattern(codePattern)]],
@@ -149,24 +150,33 @@ export class CompanyComponent implements OnInit {
   }
 
   editCompany(company: any) {
-    this.showForm = true;
-    this.isEditMode = true;
+    console.log("Editing company:", company);
+    if (!company || !this.companyForm) {
+      console.warn("Company object or companyForm is not defined.");
+      return;
+    }
+    try {
+      this.showForm = true;
+      this.isEditMode = true;
 
-    const parsedWhatsapp = this.parsePhoneNumber(company.whatsappNumber || '');
-    const parsedContact1 = this.parsePhoneNumber(company.contactNo1 || '');
-    const parsedContact2 = this.parsePhoneNumber(company.contactNo2 || '');
+      const parsedWhatsapp = this.parsePhoneNumber(company.whatsappNumber);
+      const parsedContact1 = this.parsePhoneNumber(company.contactNo1);
+      const parsedContact2 = this.parsePhoneNumber(company.contactNo2);
 
-    this.companyForm.patchValue({
-      ...company,
-      whatsappCode: parsedWhatsapp.code,
-      whatsappNumber: parsedWhatsapp.number,
-      contactNo1Code: parsedContact1.code,
-      contactNo1Number: parsedContact1.number,
-      contactNo2Code: parsedContact2.code,
-      contactNo2Number: parsedContact2.number
-    });
-    this.clearAssetFile();
-    this.addedAssets = [];
+      this.companyForm.patchValue({
+        ...company,
+        whatsappCode: parsedWhatsapp.code,
+        whatsappNumber: parsedWhatsapp.number,
+        contactNo1Code: parsedContact1.code,
+        contactNo1Number: parsedContact1.number,
+        contactNo2Code: parsedContact2.code,
+        contactNo2Number: parsedContact2.number
+      });
+      this.clearAssetFile();
+      this.addedAssets = [];
+    } catch (e) {
+      console.error("Error patching company form:", e);
+    }
   }
 
   onAssetFileChange(event: Event): void {
@@ -354,17 +364,19 @@ export class CompanyComponent implements OnInit {
     });
   }
 
-  parsePhoneNumber(fullNo: string): { code: string, number: string } {
-    if (!fullNo) return { code: '+91', number: '' };
-    if (fullNo.startsWith('+')) {
-      const match = this.countryCodes.find(c => fullNo.startsWith(c.code));
+  parsePhoneNumber(fullNo: any): { code: string, number: string } {
+    if (fullNo === null || fullNo === undefined) return { code: '+91', number: '' };
+    const str = fullNo.toString().trim();
+    if (!str) return { code: '+91', number: '' };
+    if (str.startsWith('+')) {
+      const match = this.countryCodes.find(c => c.code && typeof c.code === 'string' && str.startsWith(c.code));
       if (match) {
         return {
           code: match.code,
-          number: fullNo.substring(match.code.length)
+          number: str.substring(match.code.length)
         };
       }
-      const matchRegex = fullNo.match(/^(\+\d{1,4})(\d+)$/);
+      const matchRegex = str.match(/^(\+\d{1,4})(\d+)$/);
       if (matchRegex) {
         return {
           code: matchRegex[1],
@@ -372,6 +384,6 @@ export class CompanyComponent implements OnInit {
         };
       }
     }
-    return { code: '+91', number: fullNo };
+    return { code: '+91', number: str };
   }
 }
