@@ -72,6 +72,7 @@ import { QuotaionComponent } from './component/quotaion/quotaion.component';
 import { ThemeCustomizerComponent } from './component/theme-customizer/theme-customizer.component';
 import { ThemeService } from './services/theme.service';
 import { ViewcomponentComponent } from './component/viewcomponent/viewcomponent.component';
+import { TripComponent } from './component/trip/trip.component';
 
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
@@ -97,6 +98,7 @@ import { ViewcomponentComponent } from './component/viewcomponent/viewcomponent.
     QuotaionComponent,
     ThemeCustomizerComponent,
     ViewcomponentComponent,
+    TripComponent,
   ],
   imports: [
     BrowserModule,
