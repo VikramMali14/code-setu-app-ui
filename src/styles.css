@@ -31,6 +31,58 @@ body {
 
 
 html, body { height: 100%; }
+
+/* Document actions popover */
+.doc-actions-panel.mat-menu-panel,
+.doc-actions-panel.mat-mdc-menu-panel {
+  min-width: 230px !important;
+  max-width: 250px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 24px rgba(45, 55, 72, 0.13), 0 1px 4px rgba(45, 55, 72, 0.07) !important;
+  overflow: hidden;
+  border: 1px solid #e8edf4 !important;
+}
+
+.doc-actions-panel .mat-menu-content,
+.doc-actions-panel .mat-mdc-menu-content {
+  padding: 4px 0 !important;
+}
+
+.doc-actions-panel .mat-menu-item,
+.doc-actions-panel button[mat-menu-item] {
+  display: flex !important;
+  align-items: center !important;
+  height: 46px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: #2d3748 !important;
+  padding: 0 16px !important;
+  transition: background 0.14s, color 0.14s !important;
+  width: 100% !important;
+}
+
+.doc-actions-panel .mat-menu-item .mat-icon,
+.doc-actions-panel button[mat-menu-item] .mat-icon,
+.doc-actions-panel button[mat-menu-item] mat-icon {
+  color: #667eea !important;
+  font-size: 19px !important;
+  width: 19px !important;
+  height: 19px !important;
+  margin-right: 12px !important;
+  flex-shrink: 0;
+}
+
+.doc-actions-panel .mat-menu-item:hover,
+.doc-actions-panel button[mat-menu-item]:hover {
+  background: rgba(102, 126, 234, 0.08) !important;
+  color: #667eea !important;
+}
+
+.doc-actions-panel .mat-menu-item:hover .mat-icon,
+.doc-actions-panel button[mat-menu-item]:hover .mat-icon,
+.doc-actions-panel button[mat-menu-item]:hover mat-icon {
+  color: #667eea !important;
+}
 body { margin: 0;
      font-family: var(--app-font-family) !important; }
 

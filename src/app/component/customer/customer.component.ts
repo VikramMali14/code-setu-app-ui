@@ -672,6 +672,64 @@ export class CustomerComponent implements OnInit {
     });
   }
 
+  generateQuotation(customer: CustomerRow): void {
+    this.downloadCustomerQuotation(customer);
+  }
+
+  generateInvoice(customer: CustomerRow): void {
+    const shiftingId = this.getCustomerShiftingId(customer);
+    if (!shiftingId) { this.deleteError = 'No shifting id found for this customer.'; return; }
+    this.downloadingQuotationId = shiftingId;
+    this.templateService.getInvoicePdf(shiftingId).subscribe({
+      next: (blob) => {
+        this.downloadBlob(blob, `invoice-${shiftingId}.pdf`);
+        this.deleteMessage = 'Invoice PDF downloaded successfully.';
+        this.downloadingQuotationId = null;
+      },
+      error: (error) => {
+        console.error('Invoice PDF download failed:', error);
+        this.deleteError = 'Unable to generate invoice PDF.';
+        this.downloadingQuotationId = null;
+      }
+    });
+  }
+
+  generateLRCopy(customer: CustomerRow): void {
+    const shiftingId = this.getCustomerShiftingId(customer);
+    if (!shiftingId) { this.deleteError = 'No shifting id found for this customer.'; return; }
+    this.downloadingQuotationId = shiftingId;
+    this.templateService.getLRCopyPdf(shiftingId).subscribe({
+      next: (blob) => {
+        this.downloadBlob(blob, `lr-copy-${shiftingId}.pdf`);
+        this.deleteMessage = 'LR Copy downloaded successfully.';
+        this.downloadingQuotationId = null;
+      },
+      error: (error) => {
+        console.error('LR Copy download failed:', error);
+        this.deleteError = 'Unable to generate LR Copy.';
+        this.downloadingQuotationId = null;
+      }
+    });
+  }
+
+  generateItemList(customer: CustomerRow): void {
+    const shiftingId = this.getCustomerShiftingId(customer);
+    if (!shiftingId) { this.deleteError = 'No shifting id found for this customer.'; return; }
+    this.downloadingQuotationId = shiftingId;
+    this.templateService.getItemListPdf(shiftingId).subscribe({
+      next: (blob) => {
+        this.downloadBlob(blob, `item-list-${shiftingId}.pdf`);
+        this.deleteMessage = 'Item List downloaded successfully.';
+        this.downloadingQuotationId = null;
+      },
+      error: (error) => {
+        console.error('Item List download failed:', error);
+        this.deleteError = 'Unable to generate Item List.';
+        this.downloadingQuotationId = null;
+      }
+    });
+  }
+
   downloadCustomerQuotation(customer: CustomerRow): void {
     const shiftingId = this.getCustomerShiftingId(customer);
 
