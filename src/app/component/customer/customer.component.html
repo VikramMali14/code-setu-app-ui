@@ -597,9 +597,14 @@
                 <button type="button" title="Edit" (click)="openUpdateForm(customer)"><i
                     class="material-icons">edit</i></button>
                 <button type="button" title="Documents" [matMenuTriggerFor]="docMenu">
-                  <i class="material-icons">description</i>
+                  <i class="material-icons">apps</i>
                 </button>
                 <mat-menu #docMenu="matMenu" panelClass="doc-actions-panel" [overlapTrigger]="false">
+                  <div class="doc-panel-header" (click)="$event.stopPropagation()">
+                    <mat-icon>folder_open</mat-icon>
+                    <span>Documents</span>
+                  </div>
+                  <mat-divider></mat-divider>
                   <button mat-menu-item (click)="generateQuotation(customer)">
                     <mat-icon>receipt_long</mat-icon>
                     <span>Generate Quotation</span>
