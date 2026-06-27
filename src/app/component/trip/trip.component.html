@@ -347,9 +347,8 @@
               </span>
               <span class="timeline-time">{{ formatDateTime(entry.changedAt) }}</span>
             </div>
-            <div class="timeline-meta" *ngIf="entry.changedBy || entry.remarks">
+            <div class="timeline-meta" *ngIf="entry.changedBy">
               <span *ngIf="entry.changedBy">By: {{ entry.changedBy }}</span>
-              <span *ngIf="entry.remarks" class="timeline-remarks">"{{ entry.remarks }}"</span>
             </div>
           </div>
         </div>

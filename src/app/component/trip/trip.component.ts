@@ -472,7 +472,7 @@ export class TripComponent implements OnInit {
   // ── Status history ────────────────────────────────────────────────────
   loadStatusHistory(tripId: number): void {
     this.isLoadingHistory = true;
-    this.tripService.getStatusHistory(tripId).subscribe({
+    this.tripService.getStatusHistoryByTrip(tripId).subscribe({
       next: res => {
         this.statusHistory = (this.extract(res) as any[]).sort((a, b) =>
           new Date(a.changedAt).getTime() - new Date(b.changedAt).getTime()

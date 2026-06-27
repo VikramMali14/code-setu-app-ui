@@ -26,7 +26,6 @@ export interface TripStatusHistory {
   newStatus?: string;
   changedBy?: string;
   changedAt?: string;
-  remarks?: string;
 }
 
 export interface TripExpense {

@@ -7,9 +7,11 @@ import { ENV } from 'src/assets/env';
 export class TripService {
   private readonly BASE_URL    = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip`;
   private readonly EXPENSE_URL = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip-expense`;
+  private readonly HISTORY_URL = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip-status-history`;
 
   constructor(private http: HttpClient) {}
 
+  // ── Trip CRUD ─────────────────────────────────────────────────────────
   getTrips(pageNumber = 0, pageSize = 10): Observable<any> {
     const params = new HttpParams()
       .set('pageNumber', pageNumber)
@@ -33,12 +35,7 @@ export class TripService {
     return this.http.delete<any>(`${this.BASE_URL}/${id}`);
   }
 
-  // Status history (sub-route)
-  getStatusHistory(tripId: number): Observable<any> {
-    return this.http.get<any>(`${this.BASE_URL}/${tripId}/status-history`);
-  }
-
-  // Expense endpoints (/trip-expense)
+  // ── Expense endpoints (/trip-expense) ─────────────────────────────────
   getExpensesByTrip(tripId: number): Observable<any> {
     return this.http.get<any>(`${this.EXPENSE_URL}/by-trip/${tripId}`);
   }
@@ -57,5 +54,30 @@ export class TripService {
 
   deleteExpense(expenseId: number): Observable<any> {
     return this.http.delete<any>(`${this.EXPENSE_URL}/${expenseId}`);
+  }
+
+  // ── Status history endpoints (/trip-status-history) ───────────────────
+  getStatusHistoryByTrip(tripId: number): Observable<any> {
+    return this.http.get<any>(`${this.HISTORY_URL}/by-trip/${tripId}`);
+  }
+
+  getStatusHistoryEntry(id: number): Observable<any> {
+    return this.http.get<any>(`${this.HISTORY_URL}/${id}`);
+  }
+
+  getAllStatusHistory(): Observable<any> {
+    return this.http.get<any>(this.HISTORY_URL);
+  }
+
+  createStatusHistory(payload: any): Observable<any> {
+    return this.http.post<any>(this.HISTORY_URL, payload);
+  }
+
+  updateStatusHistory(id: number, payload: any): Observable<any> {
+    return this.http.put<any>(`${this.HISTORY_URL}/${id}`, payload);
+  }
+
+  deleteStatusHistory(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.HISTORY_URL}/${id}`);
   }
 }
