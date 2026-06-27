@@ -37,6 +37,8 @@ export interface TripExpense {
   billNumber?: string;
   receiptUrl?: string;
   expenseDate?: string;
+  approved?: boolean | null;
+  approvedBy?: string | null;
 }
 
 export interface Trip {

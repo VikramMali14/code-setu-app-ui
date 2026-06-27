@@ -263,6 +263,7 @@
               <th>Bill #</th>
               <th>Date</th>
               <th>Description</th>
+              <th>Approved</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -274,7 +275,18 @@
               <td>{{ exp.expenseDate || '—' }}</td>
               <td>{{ exp.description || '—' }}</td>
               <td>
+                <span *ngIf="exp.approved === true" class="expense-approved-chip">
+                  <i class="material-icons" style="font-size:14px;vertical-align:middle;">check_circle</i>
+                  Approved
+                  <span *ngIf="exp.approvedBy" class="expense-approved-by">by {{ exp.approvedBy }}</span>
+                </span>
+                <span *ngIf="exp.approved !== true" class="expense-pending-chip">Pending</span>
+              </td>
+              <td>
                 <div class="action-cell">
+                  <button type="button" title="Approve" *ngIf="exp.approved !== true" (click)="approveExpense(exp)">
+                    <i class="material-icons">check_circle_outline</i>
+                  </button>
                   <button type="button" title="Delete" (click)="deleteExpense(exp)">
                     <i class="material-icons">delete</i>
                   </button>
@@ -284,7 +296,7 @@
             <tr class="expense-total-row">
               <td><strong>Total</strong></td>
               <td><strong>₹{{ totalExpenseAmount | number:'1.0-2' }}</strong></td>
-              <td colspan="4"></td>
+              <td colspan="5"></td>
             </tr>
           </tbody>
         </table>

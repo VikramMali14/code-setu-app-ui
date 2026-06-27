@@ -676,3 +676,35 @@ table tbody tr:hover td { background: #f8f9fc; }
   .detail-meta-grid { grid-template-columns: 1fr; }
   .stepper-bar { padding: 0.75rem 1rem 0.25rem; }
 }
+
+/* ─── Expense approval chips ──────────────────────────────────────────── */
+.expense-approved-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #15803d;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  border-radius: 20px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.expense-approved-by {
+  font-weight: 400;
+  color: #166534;
+  margin-left: 2px;
+}
+
+.expense-pending-chip {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 20px;
+  padding: 2px 8px;
+}

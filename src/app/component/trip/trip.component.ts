@@ -469,6 +469,20 @@ export class TripComponent implements OnInit {
     });
   }
 
+  approveExpense(expense: TripExpense): void {
+    if (!expense.expenseId) return;
+    this.expenseError = '';
+    const payload = { ...expense, approved: true };
+    this.tripService.updateExpense(expense.expenseId, payload).subscribe({
+      next: () => {
+        this.expenseMessage = 'Expense approved.';
+        this.loadExpenses(this.selectedTrip!.tripId!);
+        setTimeout(() => this.expenseMessage = '', 3000);
+      },
+      error: err => { this.expenseError = err.error?.message || 'Failed to approve expense.'; }
+    });
+  }
+
   // ── Status history ────────────────────────────────────────────────────
   loadStatusHistory(tripId: number): void {
     this.isLoadingHistory = true;
