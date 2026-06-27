@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
-  Trip, TripStatus, TripExpense, AddExpensePayload
+  Trip, TripStatus, TripExpense, TripDocument, AddExpensePayload
 } from 'src/app/models/trip';
 import { TripService } from 'src/app/services/trip.service';
 import { DriverService } from 'src/app/services/driver.service';
@@ -100,7 +100,17 @@ export class TripComponent implements OnInit {
   statusHistory: any[] = [];
   isLoadingHistory = false;
 
+  // Documents
+  documents: TripDocument[] = [];
+  isLoadingDocuments = false;
+  documentError = '';
+  documentMessage = '';
+  isUploadingDocument = false;
+  newDocument: any = { documentType: '', fileName: '' };
+  private selectedDocFile: File | null = null;
+
   readonly expenseTypes: string[] = ['FUEL', 'TOLL', 'PARKING', 'FOOD', 'LABOUR', 'REPAIR', 'POLICE_FINE', 'OTHER'];
+  readonly documentTypes: string[] = ['POD', 'BOL', 'INVOICE', 'PERMIT', 'INSURANCE', 'CHALLAN', 'E_WAY_BILL', 'OTHER'];
   readonly mainSequence = TRIP_MAIN_SEQUENCE;
 
   constructor(
@@ -280,10 +290,16 @@ export class TripComponent implements OnInit {
     this.expenseMessage = '';
     this.expenses = [];
     this.statusHistory = [];
+    this.documents = [];
+    this.documentError = '';
+    this.documentMessage = '';
+    this.newDocument = { documentType: '', fileName: '' };
+    this.selectedDocFile = null;
     this.newExpense = this.emptyExpenseForm();
     if (trip.tripId) {
       this.loadExpenses(trip.tripId);
       this.loadStatusHistory(trip.tripId);
+      this.loadDocuments(trip.tripId);
     }
   }
 
@@ -480,6 +496,85 @@ export class TripComponent implements OnInit {
         setTimeout(() => this.expenseMessage = '', 3000);
       },
       error: err => { this.expenseError = err.error?.message || 'Failed to approve expense.'; }
+    });
+  }
+
+  // ── Documents ─────────────────────────────────────────────────────────
+  loadDocuments(tripId: number): void {
+    this.isLoadingDocuments = true;
+    this.tripService.getDocumentsByTrip(tripId).subscribe({
+      next: res => {
+        this.documents = this.extract(res) as TripDocument[];
+        this.isLoadingDocuments = false;
+      },
+      error: () => { this.isLoadingDocuments = false; }
+    });
+  }
+
+  onDocFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.selectedDocFile = input.files[0];
+      this.newDocument.fileName = input.files[0].name;
+    }
+  }
+
+  uploadDocument(): void {
+    if (!this.selectedTrip?.tripId) return;
+    if (!this.newDocument.documentType) { this.documentError = 'Select a document type.'; return; }
+    if (!this.selectedDocFile) { this.documentError = 'Choose a file to upload.'; return; }
+
+    this.isUploadingDocument = true;
+    this.documentError = '';
+    this.tripService.uploadDocument(
+      this.selectedTrip.tripId,
+      this.newDocument.documentType,
+      this.selectedDocFile
+    ).subscribe({
+      next: () => {
+        this.isUploadingDocument = false;
+        this.documentMessage = 'Document uploaded.';
+        this.newDocument = { documentType: '', fileName: '' };
+        this.selectedDocFile = null;
+        this.loadDocuments(this.selectedTrip!.tripId!);
+        setTimeout(() => this.documentMessage = '', 3000);
+      },
+      error: err => {
+        this.isUploadingDocument = false;
+        this.documentError = err.error?.message || 'Upload failed.';
+      }
+    });
+  }
+
+  downloadDocument(doc: TripDocument): void {
+    if (!doc.id) return;
+    this.tripService.downloadDocument(doc.id).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = doc.fileName || `document-${doc.id}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => { this.documentError = 'Download failed.'; }
+    });
+  }
+
+  deleteDocument(doc: TripDocument): void {
+    const ref = this.dialog.open(DialogboxComponent, {
+      width: '400px',
+      disableClose: true,
+      data: { title: 'Delete Document', message: 'Remove this document?', confirmText: 'Delete', cancelText: 'Cancel' }
+    });
+    ref.afterClosed().subscribe(confirmed => {
+      if (!confirmed || !doc.id) return;
+      this.tripService.deleteDocument(doc.id).subscribe({
+        next: () => this.loadDocuments(this.selectedTrip!.tripId!),
+        error: err => { this.documentError = err.error?.message || 'Failed to delete document.'; }
+      });
     });
   }
 

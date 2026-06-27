@@ -5,9 +5,10 @@ import { ENV } from 'src/assets/env';
 
 @Injectable({ providedIn: 'root' })
 export class TripService {
-  private readonly BASE_URL    = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip`;
-  private readonly EXPENSE_URL = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip-expense`;
-  private readonly HISTORY_URL = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip-status-history`;
+  private readonly BASE_URL     = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip`;
+  private readonly EXPENSE_URL  = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip-expense`;
+  private readonly HISTORY_URL  = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip-status-history`;
+  private readonly DOCUMENT_URL = `${ENV.CARGO_SETU}/api/v2/cargosetu/trip-document`;
 
   constructor(private http: HttpClient) {}
 
@@ -54,6 +55,41 @@ export class TripService {
 
   deleteExpense(expenseId: number): Observable<any> {
     return this.http.delete<any>(`${this.EXPENSE_URL}/${expenseId}`);
+  }
+
+  // ── Document endpoints (/trip-document) ──────────────────────────────
+  getAllDocuments(): Observable<any> {
+    return this.http.get<any>(this.DOCUMENT_URL);
+  }
+
+  getDocumentsByTrip(tripId: number): Observable<any> {
+    return this.http.get<any>(`${this.DOCUMENT_URL}/by-trip/${tripId}`);
+  }
+
+  downloadDocument(id: number): Observable<Blob> {
+    return this.http.get(`${this.DOCUMENT_URL}/${id}`, { responseType: 'blob' });
+  }
+
+  uploadDocument(tripId: number, documentType: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const params = new HttpParams()
+      .set('tripId', tripId.toString())
+      .set('documentType', documentType);
+    return this.http.post<any>(this.DOCUMENT_URL, formData, { params });
+  }
+
+  updateDocument(id: number, tripId: number, documentType: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const params = new HttpParams()
+      .set('tripId', tripId.toString())
+      .set('documentType', documentType);
+    return this.http.put<any>(`${this.DOCUMENT_URL}/${id}`, formData, { params });
+  }
+
+  deleteDocument(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.DOCUMENT_URL}/${id}`);
   }
 
   // ── Status history endpoints (/trip-status-history) ───────────────────

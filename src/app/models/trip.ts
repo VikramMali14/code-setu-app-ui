@@ -89,6 +89,16 @@ export interface TripPayload {
 export type CreateTripPayload = TripPayload;
 export type TransitionTripPayload = { newStatus: TripStatus; remarks?: string };
 
+export interface TripDocument {
+  id?: number;
+  tripId?: number;
+  documentType?: string;
+  fileName?: string;
+  fileUrl?: string;
+  uploadedAt?: string;
+  uploadedBy?: string;
+}
+
 export interface AddExpensePayload {
   tripId: number;
   expenseType: string;

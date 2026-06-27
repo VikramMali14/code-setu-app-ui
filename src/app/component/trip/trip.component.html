@@ -344,6 +344,75 @@
       </div>
     </div>
 
+    <!-- Documents section -->
+    <div class="documents-section">
+      <p class="charges-subtitle">Documents</p>
+
+      <p class="api-message error" *ngIf="documentError">{{ documentError }}</p>
+      <p class="api-message" *ngIf="documentMessage">{{ documentMessage }}</p>
+      <p class="api-message" *ngIf="isLoadingDocuments">Loading documents...</p>
+
+      <div class="table-wrap" *ngIf="!isLoadingDocuments && documents.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>File Name</th>
+              <th>Uploaded At</th>
+              <th>Uploaded By</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of documents">
+              <td>{{ doc.documentType || '—' }}</td>
+              <td>{{ doc.fileName || '—' }}</td>
+              <td>{{ formatDateTime(doc.uploadedAt) }}</td>
+              <td>{{ doc.uploadedBy || '—' }}</td>
+              <td>
+                <div class="action-cell">
+                  <button type="button" title="Download" (click)="downloadDocument(doc)">
+                    <i class="material-icons">download</i>
+                  </button>
+                  <button type="button" title="Delete" (click)="deleteDocument(doc)">
+                    <i class="material-icons">delete</i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="empty-state" *ngIf="!isLoadingDocuments && documents.length === 0">No documents uploaded.</p>
+
+      <!-- Upload form -->
+      <div class="upload-doc-form">
+        <p class="charges-subtitle" style="margin-top:1rem">Upload Document</p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Document Type <span class="req">*</span></label>
+            <select class="browser-default" [(ngModel)]="newDocument.documentType">
+              <option value="">Select Type</option>
+              <option *ngFor="let t of documentTypes" [value]="t">{{ t }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>File <span class="req">*</span></label>
+            <div class="file-upload-row">
+              <input type="file" #docFileInput style="display:none" (change)="onDocFileSelected($event)">
+              <span class="file-name-display">{{ newDocument.fileName || 'No file chosen' }}</span>
+              <button class="clear-button" type="button" (click)="docFileInput.click()">Choose File</button>
+            </div>
+          </div>
+        </div>
+        <div class="stepper-nav" style="margin-top:0.5rem;">
+          <button class="export-button" type="button" [disabled]="isUploadingDocument" (click)="uploadDocument()">
+            {{ isUploadingDocument ? 'Uploading...' : 'Upload' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Status history timeline -->
     <div class="history-section">
       <p class="charges-subtitle">Status History</p>

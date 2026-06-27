@@ -677,6 +677,37 @@ table tbody tr:hover td { background: #f8f9fc; }
   .stepper-bar { padding: 0.75rem 1rem 0.25rem; }
 }
 
+/* ─── Documents section ──────────────────────────────────────────────── */
+.documents-section {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--app-border, #e2e8f0);
+}
+
+.upload-doc-form {
+  margin-top: 0.5rem;
+}
+
+.file-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.file-name-display {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.85rem;
+  color: var(--app-text-muted, #64748b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.4rem 0.6rem;
+  background: var(--app-bg, #f8fafc);
+  border: 1px solid var(--app-border, #e2e8f0);
+  border-radius: 6px;
+}
+
 /* ─── Expense approval chips ──────────────────────────────────────────── */
 .expense-approved-chip {
   display: inline-flex;
