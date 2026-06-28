@@ -71,11 +71,11 @@ export class WsDetailsComponent implements OnInit {
     this.formData = {
       shiftFromCity: s.shiftFromCity || '',
       shiftToCity: s.shiftToCity || '',
-      shiftFromAddress: s.shiftFromAddress || '',
-      shiftToAddress: s.shiftToAddress || '',
+      fromAddress: s.fromAddress || '',
+      toAddress: s.toAddress || '',
       shiftingStartDate: this.toDateStr(s.shiftingStartDate),
-      shiftingEndDate: this.toDateStr(s.shiftingEndDate),
-      shiftType: s.shiftType || '',
+      shiftingEndDate: this.toDateStr(s.shiftingEndDate || s.shiftReachedDate),
+      shiftingType: s.shiftingType || '',
       status: s.status || '',
     };
     this.isEditMode = true;

@@ -40,7 +40,7 @@
     </div>
     <div class="detail-item">
       <span class="detail-label">Shift Type</span>
-      <span class="detail-value">{{ shift.shiftType || '—' }}</span>
+      <span class="detail-value">{{ shift.shiftingType || '—' }}</span>
     </div>
     <div class="detail-item">
       <span class="detail-label">Status</span>
@@ -52,15 +52,15 @@
     </div>
     <div class="detail-item">
       <span class="detail-label">Reach Date</span>
-      <span class="detail-value">{{ formatDate(shift.shiftingEndDate) }}</span>
+      <span class="detail-value">{{ formatDate(shift.shiftingEndDate || shift.shiftReachedDate) }}</span>
     </div>
     <div class="detail-item full-width">
       <span class="detail-label">From Address</span>
-      <span class="detail-value">{{ shift.shiftFromAddress || '—' }}</span>
+      <span class="detail-value">{{ shift.fromAddress || '—' }}</span>
     </div>
     <div class="detail-item full-width">
       <span class="detail-label">To Address</span>
-      <span class="detail-value">{{ shift.shiftToAddress || '—' }}</span>
+      <span class="detail-value">{{ shift.toAddress || '—' }}</span>
     </div>
   </div>
 
@@ -73,7 +73,7 @@
     </div>
     <div class="detail-item readonly">
       <span class="detail-label">Shift ID</span>
-      <span class="detail-value mono">{{ shift?.shiftNumber || shift?.shiftId || shiftId }}</span>
+      <span class="detail-value mono">{{ shift?.shiftingId || shift?.shiftNumber || shiftId }}</span>
     </div>
     <div class="detail-item readonly">
       <span class="detail-label">Created Date</span>
@@ -91,7 +91,7 @@
     </div>
     <div class="form-field">
       <label class="field-label">Shift Type</label>
-      <select class="field-input" [(ngModel)]="formData.shiftType" name="shiftType">
+      <select class="field-input" [(ngModel)]="formData.shiftingType" name="shiftingType">
         <option value="">Select type</option>
         <option *ngFor="let t of shiftTypes" [value]="t">{{ t }}</option>
       </select>
@@ -113,12 +113,12 @@
     </div>
     <div class="form-field full-width">
       <label class="field-label">From Address</label>
-      <textarea class="field-input" [(ngModel)]="formData.shiftFromAddress" name="shiftFromAddress"
+      <textarea class="field-input" [(ngModel)]="formData.fromAddress" name="fromAddress"
         rows="2" placeholder="From Address"></textarea>
     </div>
     <div class="form-field full-width">
       <label class="field-label">To Address</label>
-      <textarea class="field-input" [(ngModel)]="formData.shiftToAddress" name="shiftToAddress"
+      <textarea class="field-input" [(ngModel)]="formData.toAddress" name="toAddress"
         rows="2" placeholder="To Address"></textarea>
     </div>
 

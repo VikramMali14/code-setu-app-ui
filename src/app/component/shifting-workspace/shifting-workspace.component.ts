@@ -100,14 +100,16 @@ export class ShiftingWorkspaceComponent implements OnInit {
   }
 
   get customerName(): string {
+    // shift response only returns customerId; fall back to customerId from URL
     const s = this.shift;
     if (!s) return '—';
-    return [s.customerFirstName, s.customerLastName].filter(Boolean).join(' ')
-      || s.customerName || '—';
+    return s.customerName
+      || [s.customerFirstName, s.customerLastName].filter(Boolean).join(' ')
+      || (s.customerId ? `Customer #${s.customerId}` : '—');
   }
 
   get shiftNumber(): string {
-    return this.shift?.shiftNumber || this.shift?.shiftId || this.shiftId;
+    return this.shift?.shiftingId || this.shift?.shiftNumber || this.shiftId;
   }
 
   get route_display(): string {
@@ -117,7 +119,7 @@ export class ShiftingWorkspaceComponent implements OnInit {
   }
 
   get shiftStatus(): string {
-    return this.shift?.status || this.shift?.shiftStatus || '—';
+    return this.shift?.status || this.shift?.shiftStatus || this.shift?.shiftingType || '—';
   }
 
   get moveDate(): string {
