@@ -1,0 +1,77 @@
+<app-loader [isLoading]="isLoading || isTransitioning"></app-loader>
+<p class="tab-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+<p class="tab-success" *ngIf="successMessage">{{ successMessage }}</p>
+
+<!-- No trip yet -->
+<div class="no-trip-panel" *ngIf="!isLoading && !trip && !showCreateForm">
+  <i class="material-icons no-trip-icon">local_shipping</i>
+  <p>No trip has been created for this shifting yet.</p>
+  <button class="create-trip-btn" (click)="showCreateForm = true">
+    <i class="material-icons">add</i> Create Trip
+  </button>
+</div>
+
+<!-- Create trip form -->
+<div class="create-form-panel" *ngIf="showCreateForm">
+  <div class="form-title">Create Trip</div>
+  <div class="trip-form-grid">
+    <div class="field-group">
+      <label>Source City</label>
+      <input [(ngModel)]="newTrip.sourceCity" placeholder="e.g. Ahmedabad" />
+    </div>
+    <div class="field-group">
+      <label>Destination City</label>
+      <input [(ngModel)]="newTrip.destinationCity" placeholder="e.g. Pune" />
+    </div>
+    <div class="field-group">
+      <label>Planned Start</label>
+      <input type="datetime-local" [(ngModel)]="newTrip.plannedStartTime" />
+    </div>
+    <div class="field-group">
+      <label>Planned End</label>
+      <input type="datetime-local" [(ngModel)]="newTrip.plannedEndTime" />
+    </div>
+    <div class="field-group">
+      <label>Planned Distance (km)</label>
+      <input type="number" [(ngModel)]="newTrip.plannedDistanceKm" placeholder="0" />
+    </div>
+  </div>
+  <div class="form-actions">
+    <button class="cancel-btn" (click)="showCreateForm = false">Cancel</button>
+    <button class="save-btn" (click)="createTrip()" [disabled]="isCreating">
+      {{ isCreating ? 'Creating…' : 'Create Trip' }}
+    </button>
+  </div>
+</div>
+
+<!-- Trip detail -->
+<div *ngIf="!isLoading && trip">
+  <div class="trip-header">
+    <div class="trip-meta-grid">
+      <div class="meta-item"><span class="meta-label">Trip #</span><span class="meta-val">{{ trip.tripNumber || trip.tripId }}</span></div>
+      <div class="meta-item"><span class="meta-label">Driver</span><span class="meta-val">{{ trip.driverName || '—' }}</span></div>
+      <div class="meta-item"><span class="meta-label">Vehicle</span><span class="meta-val">{{ trip.vehicleRegistrationNumber || '—' }}</span></div>
+      <div class="meta-item"><span class="meta-label">Status</span><span class="meta-val status-pill">{{ trip.status }}</span></div>
+      <div class="meta-item"><span class="meta-label">From</span><span class="meta-val">{{ trip.sourceCity || '—' }}</span></div>
+      <div class="meta-item"><span class="meta-label">To</span><span class="meta-val">{{ trip.destinationCity || '—' }}</span></div>
+      <div class="meta-item"><span class="meta-label">Distance</span><span class="meta-val">{{ trip.plannedDistanceKm || 0 }} km</span></div>
+      <div class="meta-item"><span class="meta-label">Planned Start</span><span class="meta-val">{{ trip.plannedStartTime | date:'dd MMM yyyy' }}</span></div>
+    </div>
+    <div class="trip-actions">
+      <button class="open-trip-btn" (click)="openTrip()">
+        <i class="material-icons">open_in_new</i> Open Full Trip
+      </button>
+    </div>
+  </div>
+
+  <!-- Status transitions -->
+  <div class="transitions-section" *ngIf="allowedTransitions.length > 0">
+    <div class="section-title">Update Status</div>
+    <div class="transitions-row">
+      <input class="remarks-input" [(ngModel)]="transitionRemarks" placeholder="Optional remarks…" />
+      <button class="transition-btn" *ngFor="let s of allowedTransitions" (click)="transitionTo(s)">
+        → {{ s }}
+      </button>
+    </div>
+  </div>
+</div>

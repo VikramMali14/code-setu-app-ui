@@ -1,0 +1,59 @@
+<app-loader [isLoading]="isLoading"></app-loader>
+
+<p class="tab-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+<div class="overview-grid" *ngIf="shift && !isLoading">
+
+  <!-- Customer Details -->
+  <div class="info-card">
+    <div class="card-title"><i class="material-icons">person</i> Customer Details</div>
+    <div class="info-row"><span class="info-label">Name</span><span class="info-val">{{ shift.customerFirstName }} {{ shift.customerLastName }}</span></div>
+    <div class="info-row"><span class="info-label">Mobile</span><span class="info-val">{{ shift.customerMobile || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">Email</span><span class="info-val">{{ shift.customerEmail || '—' }}</span></div>
+  </div>
+
+  <!-- Moving Route -->
+  <div class="info-card">
+    <div class="card-title"><i class="material-icons">route</i> Moving Route</div>
+    <div class="info-row"><span class="info-label">From</span><span class="info-val">{{ shift.shiftFromCity || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">To</span><span class="info-val">{{ shift.shiftToCity || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">Move Date</span><span class="info-val">{{ shift.shiftingStartDate | date:'dd MMM yyyy' }}</span></div>
+    <div class="info-row"><span class="info-label">Type</span><span class="info-val">{{ shift.shiftingType || '—' }}</span></div>
+  </div>
+
+  <!-- Charges Summary -->
+  <div class="info-card">
+    <div class="card-title"><i class="material-icons">receipt_long</i> Charges Summary</div>
+    <div class="info-row"><span class="info-label">Transport</span><span class="info-val">₹ {{ shift.transportCharge || 0 }}</span></div>
+    <div class="info-row"><span class="info-label">Packing</span><span class="info-val">₹ {{ shift.packingCharge || 0 }}</span></div>
+    <div class="info-row"><span class="info-label">Insurance</span><span class="info-val">₹ {{ shift.riskInsure || 0 }}</span></div>
+    <div class="info-row"><span class="info-label">GST</span><span class="info-val">₹ {{ shift.gstCharge || 0 }}</span></div>
+    <div class="info-row total-row"><span class="info-label">Grand Total</span><span class="info-val total">₹ {{ grandTotal }}</span></div>
+  </div>
+
+  <!-- Inventory Summary -->
+  <div class="info-card">
+    <div class="card-title"><i class="material-icons">inventory_2</i> Inventory Summary</div>
+    <div class="info-row"><span class="info-label">Total Rooms</span><span class="info-val">{{ shift.totalRooms || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">Total Items</span><span class="info-val">{{ shift.totalItems || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">Packed</span><span class="info-val">{{ shift.packedItems || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">Loaded</span><span class="info-val">{{ shift.loadedItems || '—' }}</span></div>
+  </div>
+
+  <!-- Trip Summary -->
+  <div class="info-card">
+    <div class="card-title"><i class="material-icons">local_shipping</i> Trip Summary</div>
+    <div class="info-row"><span class="info-label">Driver</span><span class="info-val">{{ shift.driverName || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">Vehicle</span><span class="info-val">{{ shift.vehicleNumber || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">Status</span><span class="info-val">{{ shift.tripStatus || '—' }}</span></div>
+  </div>
+
+  <!-- Company -->
+  <div class="info-card">
+    <div class="card-title"><i class="material-icons">business</i> Company</div>
+    <div class="info-row"><span class="info-label">Company</span><span class="info-val">{{ shift.companyName || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">Completed By</span><span class="info-val">{{ shift.shiftCompletedBy || '—' }}</span></div>
+    <div class="info-row"><span class="info-label">Completed</span><span class="info-val">{{ shift.isShiftCompleted ? 'Yes' : 'No' }}</span></div>
+  </div>
+
+</div>

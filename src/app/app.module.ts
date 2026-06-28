@@ -73,6 +73,16 @@ import { ThemeCustomizerComponent } from './component/theme-customizer/theme-cus
 import { ThemeService } from './services/theme.service';
 import { ViewcomponentComponent } from './component/viewcomponent/viewcomponent.component';
 import { TripComponent } from './component/trip/trip.component';
+import { ShiftingWorkspaceComponent } from './component/shifting-workspace/shifting-workspace.component';
+import { WsOverviewComponent } from './component/shifting-workspace/overview/overview.component';
+import { WsInventoryComponent } from './component/shifting-workspace/inventory/inventory.component';
+import { WsInventoryDrawerComponent } from './component/shifting-workspace/inventory/inventory-drawer/inventory-drawer.component';
+import { WsPackingComponent } from './component/shifting-workspace/packing/packing.component';
+import { WsLoadingComponent } from './component/shifting-workspace/loading/loading.component';
+import { WsWorkspaceTripComponent } from './component/shifting-workspace/trip/workspace-trip.component';
+import { WsChargesComponent } from './component/shifting-workspace/charges/charges.component';
+import { WsDocumentsComponent } from './component/shifting-workspace/documents/workspace-documents.component';
+import { WsTimelineComponent } from './component/shifting-workspace/timeline/timeline.component';
 
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
@@ -99,6 +109,16 @@ import { TripComponent } from './component/trip/trip.component';
     ThemeCustomizerComponent,
     ViewcomponentComponent,
     TripComponent,
+    ShiftingWorkspaceComponent,
+    WsOverviewComponent,
+    WsInventoryComponent,
+    WsInventoryDrawerComponent,
+    WsPackingComponent,
+    WsLoadingComponent,
+    WsWorkspaceTripComponent,
+    WsChargesComponent,
+    WsDocumentsComponent,
+    WsTimelineComponent,
   ],
   imports: [
     BrowserModule,

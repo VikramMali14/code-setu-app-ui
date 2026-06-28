@@ -1,0 +1,37 @@
+<app-loader [isLoading]="isLoading"></app-loader>
+<p class="tab-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+<div *ngIf="!isLoading">
+  <!-- Warehouse Summary -->
+  <div class="section-title">Warehouse Summary</div>
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Material</th>
+        <th>Quantity Used</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of warehouseSummary()">
+        <td>{{ row.material }}</td>
+        <td>{{ row.total }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Per-item packaging -->
+  <div class="section-title" style="margin-top: 28px;">Per-Item Packaging</div>
+  <div class="packing-list">
+    <div class="packing-card" *ngFor="let item of items">
+      <div class="packing-item-name">{{ item.itemName || item.item || '—' }}</div>
+      <div class="packing-room">{{ item.room || '—' }}</div>
+      <div class="materials-row">
+        <div class="material-chip" *ngFor="let m of MATERIALS">
+          <span class="mat-name">{{ m }}</span>
+          <span class="mat-qty">{{ getMaterialQty(item, m) }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="empty-state" *ngIf="items.length === 0">No inventory items found.</div>
+  </div>
+</div>

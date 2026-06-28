@@ -1,0 +1,30 @@
+<app-loader [isLoading]="isLoading || isSaving"></app-loader>
+<p class="tab-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+<p class="tab-success" *ngIf="successMessage">{{ successMessage }}</p>
+
+<div *ngIf="!isLoading">
+  <div class="charges-header">
+    <div class="charges-title">Charges Breakdown</div>
+    <button class="edit-btn" *ngIf="!editMode" (click)="editMode = true">
+      <i class="material-icons">edit</i> Edit
+    </button>
+    <div class="edit-actions" *ngIf="editMode">
+      <button class="cancel-btn" (click)="cancel()">Cancel</button>
+      <button class="save-btn" (click)="save()" [disabled]="isSaving">Save</button>
+    </div>
+  </div>
+
+  <div class="charges-grid">
+    <div class="charge-row" *ngFor="let field of CHARGE_FIELDS">
+      <span class="charge-label">{{ field.label }}</span>
+      <span class="charge-val" *ngIf="!editMode">₹ {{ charges[field.key] || 0 }}</span>
+      <input class="charge-input" *ngIf="editMode" type="number"
+             [(ngModel)]="charges[field.key]" placeholder="0" />
+    </div>
+
+    <div class="charge-row total-row">
+      <span class="charge-label">Grand Total</span>
+      <span class="charge-val total">₹ {{ grandTotal }}</span>
+    </div>
+  </div>
+</div>

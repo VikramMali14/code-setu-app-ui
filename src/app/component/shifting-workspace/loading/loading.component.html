@@ -1,0 +1,63 @@
+<app-loader [isLoading]="isLoading || isBulkUpdating"></app-loader>
+<p class="tab-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+<p class="tab-success" *ngIf="successMessage">{{ successMessage }}</p>
+
+<div *ngIf="!isLoading">
+  <!-- Progress bar -->
+  <div class="progress-bar-wrap">
+    <div class="progress-stats">
+      <span class="stat-label">Loaded</span>
+      <span class="stat-val">{{ loadedCount }} / {{ totalCount }}</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" [style.width.%]="totalCount ? (loadedCount / totalCount) * 100 : 0"></div>
+    </div>
+    <span class="remaining-label">{{ remainingCount }} remaining</span>
+  </div>
+
+  <!-- Bulk actions -->
+  <div class="bulk-bar">
+    <button class="select-all-btn" (click)="selectAll()">Select All</button>
+    <button class="clear-sel-btn" (click)="clearSelection()" [disabled]="selected.size === 0">Clear</button>
+    <span class="sel-count" *ngIf="selected.size > 0">{{ selected.size }} selected</span>
+    <div class="bulk-actions" *ngIf="selected.size > 0">
+      <button class="bulk-btn loaded-btn" (click)="markBulk('LOADED')">Mark Loaded</button>
+      <button class="bulk-btn unloaded-btn" (click)="markBulk('UNLOADED')">Mark Unloaded</button>
+    </div>
+  </div>
+
+  <!-- Items table -->
+  <table class="loading-table">
+    <thead>
+      <tr>
+        <th class="check-col"></th>
+        <th>Item</th>
+        <th>Room</th>
+        <th>Package #</th>
+        <th>Condition</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items"
+          [class.selected-row]="isSelected(item)"
+          (click)="toggleSelect(item)">
+        <td class="check-col">
+          <input type="checkbox" [checked]="isSelected(item)" (click)="$event.stopPropagation(); toggleSelect(item)" />
+        </td>
+        <td class="item-name-cell">{{ item.itemName || item.item || '—' }}</td>
+        <td>{{ item.room || '—' }}</td>
+        <td>{{ item.packageNumber || '—' }}</td>
+        <td>{{ item.condition || '—' }}</td>
+        <td>
+          <span class="status-badge" [class]="'status-' + (item.status || 'pending').toLowerCase()">
+            {{ item.status || 'Pending' }}
+          </span>
+        </td>
+      </tr>
+      <tr *ngIf="items.length === 0">
+        <td colspan="6" class="empty-state">No items found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

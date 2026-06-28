@@ -622,6 +622,11 @@
                     <mat-icon>list_alt</mat-icon>
                     <span>Item List</span>
                   </button>
+                  <mat-divider></mat-divider>
+                  <button mat-menu-item (click)="openWorkspace(customer)">
+                    <mat-icon>open_in_new</mat-icon>
+                    <span>Open Workspace</span>
+                  </button>
                 </mat-menu>
                 <button type="button" title="Location"><i class="material-icons">hub</i></button>
                 <button type="button" title="Delete" (click)="deleteCustomer(customer)" [disabled]="isDeleting">

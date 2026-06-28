@@ -1,0 +1,57 @@
+<div class="drawer-overlay" (click)="onClose()"></div>
+<div class="drawer-panel">
+  <div class="drawer-header">
+    <span class="drawer-title">Item Details</span>
+    <button class="drawer-close" (click)="onClose()"><i class="material-icons">close</i></button>
+  </div>
+
+  <div class="drawer-body" *ngIf="item">
+
+    <div class="drawer-section">
+      <div class="section-label">General Information</div>
+      <div class="drawer-field">
+        <label>Item Name</label>
+        <input [(ngModel)]="item.itemName" />
+      </div>
+      <div class="drawer-field">
+        <label>Room</label>
+        <input [(ngModel)]="item.room" />
+      </div>
+      <div class="drawer-field">
+        <label>Category</label>
+        <input [(ngModel)]="item.category" />
+      </div>
+      <div class="drawer-field">
+        <label>Package Number</label>
+        <input [(ngModel)]="item.packageNumber" />
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="section-label">Condition & Remarks</div>
+      <div class="drawer-field">
+        <label>Condition</label>
+        <select [(ngModel)]="item.condition">
+          <option *ngFor="let c of CONDITIONS" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+      <div class="drawer-field">
+        <label>Remarks</label>
+        <textarea [(ngModel)]="item.remarks" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="section-label">Status</div>
+      <div class="status-badge" [class]="'status-' + (item.status || 'pending').toLowerCase()">
+        {{ item.status || 'Pending' }}
+      </div>
+    </div>
+
+  </div>
+
+  <div class="drawer-footer">
+    <button class="cancel-btn" (click)="onClose()">Close</button>
+    <button class="save-btn" (click)="onSave()">Save</button>
+  </div>
+</div>

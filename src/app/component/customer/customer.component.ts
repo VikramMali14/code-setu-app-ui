@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { CustomerModels } from 'src/app/models/customer-models';
 import { CompanyService } from 'src/app/services/company.service';
 import { CustomersService } from 'src/app/services/customers.service';
@@ -84,7 +85,8 @@ export class CustomerComponent implements OnInit {
     private staffService: StaffuserServiceService,
     private templateService: TemplateService,
     private dialog: MatDialog,
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -672,6 +674,13 @@ export class CustomerComponent implements OnInit {
         }
       });
     });
+  }
+
+  openWorkspace(customer: CustomerRow): void {
+    const shiftId = this.getCustomerShiftingId(customer);
+    if (!shiftId) { this.deleteError = 'No shifting id found for this customer.'; return; }
+    const customerId = customer.customerId || (customer as any).uuid || '';
+    this.router.navigate(['/customer', customerId, 'shifting', shiftId]);
   }
 
   generateQuotation(customer: CustomerRow): void {

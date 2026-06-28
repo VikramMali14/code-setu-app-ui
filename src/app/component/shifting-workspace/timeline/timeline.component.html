@@ -1,0 +1,21 @@
+<app-loader [isLoading]="isLoading"></app-loader>
+<p class="tab-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+<div *ngIf="!isLoading">
+  <div class="timeline-empty" *ngIf="events.length === 0">
+    <i class="material-icons">timeline</i>
+    <p>No timeline events yet. Events will appear here as the shifting progresses.</p>
+  </div>
+
+  <div class="timeline-list" *ngIf="events.length > 0">
+    <div class="timeline-item" *ngFor="let event of events">
+      <div class="timeline-icon" [class]="'icon-' + event.type">
+        <i class="material-icons">{{ event.icon }}</i>
+      </div>
+      <div class="timeline-content">
+        <div class="timeline-label">{{ event.label }}</div>
+        <div class="timeline-time">{{ formatTime(event.time) }}</div>
+      </div>
+    </div>
+  </div>
+</div>

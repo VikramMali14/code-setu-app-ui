@@ -1,0 +1,100 @@
+<app-loader [isLoading]="isLoading"></app-loader>
+
+<p class="tab-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+<p class="tab-success" *ngIf="successMessage">{{ successMessage }}</p>
+
+<!-- Filters -->
+<div class="filter-bar">
+  <input class="filter-input" placeholder="Search item or package…" [(ngModel)]="filterSearch" />
+  <select class="filter-select" [(ngModel)]="filterRoom">
+    <option value="">All Rooms</option>
+    <option *ngFor="let r of uniqueRooms" [value]="r">{{ r }}</option>
+  </select>
+  <select class="filter-select" [(ngModel)]="filterCategory">
+    <option value="">All Categories</option>
+    <option *ngFor="let c of uniqueCategories" [value]="c">{{ c }}</option>
+  </select>
+  <select class="filter-select" [(ngModel)]="filterStatus">
+    <option value="">All Statuses</option>
+    <option value="PACKED">Packed</option>
+    <option value="LOADED">Loaded</option>
+    <option value="UNLOADED">Unloaded</option>
+    <option value="DELIVERED">Delivered</option>
+  </select>
+  <button class="add-btn" (click)="openAddForm()">
+    <i class="material-icons">add</i> Add Item
+  </button>
+</div>
+
+<!-- Add form -->
+<div class="add-form-panel" *ngIf="showAddForm">
+  <div class="add-form-title">Add Inventory Item</div>
+  <div class="add-form-grid">
+    <div class="field-group">
+      <label>Room</label>
+      <input [(ngModel)]="newItem.room" placeholder="e.g. Living Room" />
+    </div>
+    <div class="field-group">
+      <label>Item Name</label>
+      <input [(ngModel)]="newItem.itemName" placeholder="e.g. Television" />
+    </div>
+    <div class="field-group">
+      <label>Category</label>
+      <input [(ngModel)]="newItem.category" placeholder="e.g. Electronics" />
+    </div>
+    <div class="field-group">
+      <label>Package Number</label>
+      <input [(ngModel)]="newItem.packageNumber" placeholder="Unique package no." />
+      <span class="field-error" *ngIf="isPackageNumberDuplicate()">Package number already exists.</span>
+    </div>
+    <div class="field-group">
+      <label>Condition</label>
+      <select [(ngModel)]="newItem.condition">
+        <option *ngFor="let c of CONDITIONS" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+    <div class="field-group full-width">
+      <label>Remarks</label>
+      <textarea [(ngModel)]="newItem.remarks" rows="2" placeholder="Optional remarks…"></textarea>
+    </div>
+  </div>
+  <div class="add-form-actions">
+    <button class="cancel-btn" (click)="cancelAdd()">Cancel</button>
+    <button class="save-btn" (click)="saveNewItem()" [disabled]="isSaving || isPackageNumberDuplicate()">
+      {{ isSaving ? 'Saving…' : 'Save Item' }}
+    </button>
+  </div>
+</div>
+
+<!-- Inventory cards -->
+<div class="inventory-grid" *ngIf="!isLoading">
+  <div class="inv-card" *ngFor="let item of filteredItems" (click)="openDrawer(item)">
+    <div class="inv-card-top">
+      <span class="inv-room">{{ item.room || '—' }}</span>
+      <span class="inv-status" [class]="'status-' + (item.status || 'pending').toLowerCase()">
+        {{ statusLabel(item.status) }}
+      </span>
+    </div>
+    <div class="inv-item-name">{{ item.itemName || item.item || '—' }}</div>
+    <div class="inv-meta">
+      <span><i class="material-icons">category</i> {{ item.category || '—' }}</span>
+      <span><i class="material-icons">qr_code</i> #{{ item.packageNumber || '—' }}</span>
+    </div>
+    <div class="inv-condition">Condition: <strong>{{ item.condition || '—' }}</strong></div>
+    <button class="delete-inv-btn" (click)="$event.stopPropagation(); deleteItem(item)" title="Delete">
+      <i class="material-icons">delete</i>
+    </button>
+  </div>
+
+  <div class="empty-state" *ngIf="filteredItems.length === 0">
+    No inventory items found.
+  </div>
+</div>
+
+<!-- Drawer -->
+<app-ws-inventory-drawer
+  *ngIf="drawerItem"
+  [item]="drawerItem"
+  (save)="saveDrawer()"
+  (close)="closeDrawer()">
+</app-ws-inventory-drawer>
