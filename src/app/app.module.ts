@@ -83,6 +83,7 @@ import { WsWorkspaceTripComponent } from './component/shifting-workspace/trip/wo
 import { WsChargesComponent } from './component/shifting-workspace/charges/charges.component';
 import { WsDocumentsComponent } from './component/shifting-workspace/documents/workspace-documents.component';
 import { WsTimelineComponent } from './component/shifting-workspace/timeline/timeline.component';
+import { WsDetailsComponent } from './component/shifting-workspace/details/ws-details.component';
 
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
@@ -119,6 +120,7 @@ import { WsTimelineComponent } from './component/shifting-workspace/timeline/tim
     WsChargesComponent,
     WsDocumentsComponent,
     WsTimelineComponent,
+    WsDetailsComponent,
   ],
   imports: [
     BrowserModule,

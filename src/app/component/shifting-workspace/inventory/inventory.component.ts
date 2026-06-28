@@ -43,7 +43,13 @@ export class WsInventoryComponent implements OnInit {
     this.inventoryService.getInventory(this.shiftId).subscribe({
       next: (res) => {
         const raw = res?.data?.content ?? res?.dataList ?? res?.data ?? res;
-        this.items = Array.isArray(raw) ? raw : [];
+        if (Array.isArray(raw)) {
+          this.items = raw;
+        } else if (raw && typeof raw === 'object' && raw.id) {
+          this.items = [raw];
+        } else {
+          this.items = [];
+        }
         this.isLoading = false;
       },
       error: () => {
@@ -53,11 +59,18 @@ export class WsInventoryComponent implements OnInit {
     });
   }
 
+  itemStatus(item: any): string {
+    if (item.unloaded) return 'UNLOADED';
+    if (item.loaded)   return 'LOADED';
+    if (item.packed)   return 'PACKED';
+    return item.status || 'PENDING';
+  }
+
   get filteredItems(): any[] {
     return this.items.filter(item => {
-      const matchRoom = !this.filterRoom || (item.room || '').toLowerCase().includes(this.filterRoom.toLowerCase());
+      const matchRoom = !this.filterRoom || (item.roomName || item.room || '').toLowerCase().includes(this.filterRoom.toLowerCase());
       const matchCat = !this.filterCategory || (item.category || '').toLowerCase().includes(this.filterCategory.toLowerCase());
-      const matchStatus = !this.filterStatus || item.status === this.filterStatus;
+      const matchStatus = !this.filterStatus || this.itemStatus(item) === this.filterStatus;
       const matchSearch = !this.filterSearch
         || (item.itemName || item.item || '').toLowerCase().includes(this.filterSearch.toLowerCase())
         || (item.packageNumber || '').toString().includes(this.filterSearch);
@@ -66,7 +79,7 @@ export class WsInventoryComponent implements OnInit {
   }
 
   get uniqueRooms(): string[] {
-    return [...new Set(this.items.map(i => i.room).filter(Boolean))];
+    return [...new Set(this.items.map(i => i.roomName || i.room).filter(Boolean))];
   }
 
   get uniqueCategories(): string[] {
@@ -103,7 +116,7 @@ export class WsInventoryComponent implements OnInit {
   }
 
   emptyItem(): any {
-    return { room: '', itemName: '', category: '', packageNumber: '', condition: 'Good', remarks: '' };
+    return { roomName: '', itemName: '', category: '', packageNumber: '', conditionStatus: 'Good', remarks: '' };
   }
 
   openAddForm(): void {
@@ -127,7 +140,7 @@ export class WsInventoryComponent implements OnInit {
       return;
     }
     this.isSaving = true;
-    const payload = { ...this.newItem, shiftingId: this.shiftId };
+    const payload = { ...this.newItem, shiftId: this.shiftId };
     this.inventoryService.createInventory(payload).subscribe({
       next: () => {
         this.isSaving = false;

@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MatTabGroup } from '@angular/material/tabs';
 import { ShiftingWorkspaceService } from 'src/app/services/shifting-workspace.service';
+import { TemplateService } from 'src/app/services/template.service';
 
 @Component({
   selector: 'app-shifting-workspace',
@@ -8,15 +10,19 @@ import { ShiftingWorkspaceService } from 'src/app/services/shifting-workspace.se
   styleUrls: ['./shifting-workspace.component.css']
 })
 export class ShiftingWorkspaceComponent implements OnInit {
+  @ViewChild('tabGroup') tabGroup!: MatTabGroup;
+
   customerId: string = '';
   shiftId: string = '';
   shift: any = null;
   isLoading = false;
   loadError = '';
+  isQuickActionLoading = false;
 
   constructor(
     private route: ActivatedRoute,
-    private workspaceService: ShiftingWorkspaceService
+    private workspaceService: ShiftingWorkspaceService,
+    private templateService: TemplateService
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +46,57 @@ export class ShiftingWorkspaceComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  goToTab(index: number): void {
+    if (this.tabGroup) this.tabGroup.selectedIndex = index;
+  }
+
+  quickGenerateInvoice(): void {
+    this.isQuickActionLoading = true;
+    this.templateService.getInvoicePdf(this.shiftId).subscribe({
+      next: (blob) => {
+        this.downloadBlob(blob, `invoice-${this.shiftId}.pdf`);
+        this.isQuickActionLoading = false;
+      },
+      error: () => { this.isQuickActionLoading = false; }
+    });
+  }
+
+  quickPrintInventory(): void {
+    this.isQuickActionLoading = true;
+    this.templateService.getItemListPdf(this.shiftId).subscribe({
+      next: (blob) => {
+        this.downloadBlob(blob, `inventory-${this.shiftId}.pdf`);
+        this.isQuickActionLoading = false;
+      },
+      error: () => { this.isQuickActionLoading = false; }
+    });
+  }
+
+  private downloadBlob(blob: Blob, filename: string): void {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  get progressStages(): { label: string; done: boolean }[] {
+    const s = this.shift;
+    const inv       = s?.inventoryCount > 0;
+    const packed    = s?.packedCount > 0 && s?.packedCount >= s?.inventoryCount;
+    const loaded    = s?.loadedCount  > 0 && s?.loadedCount  >= s?.inventoryCount;
+    const tripOn    = ['IN_TRANSIT', 'DELIVERED'].includes(s?.tripStatus || s?.status || '');
+    const delivered = (s?.tripStatus || s?.status) === 'DELIVERED';
+    return [
+      { label: 'Inventory', done: inv },
+      { label: 'Packing',   done: packed },
+      { label: 'Loading',   done: loaded },
+      { label: 'Trip',      done: tripOn },
+      { label: 'Delivery',  done: delivered },
+    ];
   }
 
   get customerName(): string {

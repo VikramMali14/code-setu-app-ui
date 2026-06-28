@@ -4,16 +4,45 @@
 
   <!-- Header -->
   <div class="workspace-header">
-    <div class="header-main">
-      <div class="header-row">
-        <span class="header-label">Customer</span>
-        <span class="header-value">{{ customerName }}</span>
+    <div class="header-top">
+      <div class="header-main">
+        <div class="header-row">
+          <span class="header-label">Customer</span>
+          <span class="header-value">{{ customerName }}</span>
+        </div>
+        <div class="header-row">
+          <span class="header-label">Shift No</span>
+          <span class="header-value mono">{{ shiftNumber }}</span>
+        </div>
       </div>
-      <div class="header-row">
-        <span class="header-label">Shift No</span>
-        <span class="header-value mono">{{ shiftNumber }}</span>
+
+      <!-- Quick Actions -->
+      <div class="ws-quick-actions">
+        <app-loader [isLoading]="isQuickActionLoading"></app-loader>
+        <button class="qa-btn" title="Edit Shifting" (click)="goToTab(1)">
+          <i class="material-icons">edit</i>
+        </button>
+        <button class="qa-btn" title="Create Trip" (click)="goToTab(6)">
+          <i class="material-icons">add_road</i>
+        </button>
+        <button class="qa-btn" title="Assign Driver" (click)="goToTab(6)">
+          <i class="material-icons">person_pin</i>
+        </button>
+        <button class="qa-btn" title="Assign Vehicle" (click)="goToTab(6)">
+          <i class="material-icons">local_shipping</i>
+        </button>
+        <button class="qa-btn" title="Generate Invoice" (click)="quickGenerateInvoice()">
+          <i class="material-icons">receipt_long</i>
+        </button>
+        <button class="qa-btn" title="Print Inventory" (click)="quickPrintInventory()">
+          <i class="material-icons">list_alt</i>
+        </button>
+        <button class="qa-btn" title="Upload Document" (click)="goToTab(7)">
+          <i class="material-icons">upload_file</i>
+        </button>
       </div>
     </div>
+
     <div class="header-meta">
       <div class="header-route">
         <i class="material-icons">route</i>
@@ -27,14 +56,34 @@
         </span>
       </div>
     </div>
+
+    <!-- Progress Bar -->
+    <div class="ws-progress-bar">
+      <ng-container *ngFor="let stage of progressStages; let i = index; let last = last">
+        <div class="ws-step" [class.done]="stage.done">
+          <div class="ws-step-circle">{{ i + 1 }}</div>
+          <span class="ws-step-label">{{ stage.label }}</span>
+        </div>
+        <div class="ws-step-connector" *ngIf="!last" [class.done]="stage.done"></div>
+      </ng-container>
+    </div>
+
     <p class="load-error" *ngIf="loadError">{{ loadError }}</p>
   </div>
 
   <!-- Tab group -->
-  <mat-tab-group animationDuration="150ms" class="workspace-tabs">
+  <mat-tab-group #tabGroup animationDuration="150ms" class="workspace-tabs">
 
     <mat-tab label="Overview">
       <app-ws-overview [shiftId]="shiftId"></app-ws-overview>
+    </mat-tab>
+
+    <mat-tab label="Details">
+      <app-ws-details [shiftId]="shiftId"></app-ws-details>
+    </mat-tab>
+
+    <mat-tab label="Charges">
+      <app-ws-charges [shiftId]="shiftId"></app-ws-charges>
     </mat-tab>
 
     <mat-tab label="Inventory">
@@ -51,10 +100,6 @@
 
     <mat-tab label="Trip">
       <app-ws-trip [shiftId]="shiftId"></app-ws-trip>
-    </mat-tab>
-
-    <mat-tab label="Charges">
-      <app-ws-charges [shiftId]="shiftId"></app-ws-charges>
     </mat-tab>
 
     <mat-tab label="Documents">

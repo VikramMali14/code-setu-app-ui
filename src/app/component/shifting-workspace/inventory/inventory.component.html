@@ -32,7 +32,7 @@
   <div class="add-form-grid">
     <div class="field-group">
       <label>Room</label>
-      <input [(ngModel)]="newItem.room" placeholder="e.g. Living Room" />
+      <input [(ngModel)]="newItem.roomName" placeholder="e.g. Living Room" />
     </div>
     <div class="field-group">
       <label>Item Name</label>
@@ -49,7 +49,7 @@
     </div>
     <div class="field-group">
       <label>Condition</label>
-      <select [(ngModel)]="newItem.condition">
+      <select [(ngModel)]="newItem.conditionStatus">
         <option *ngFor="let c of CONDITIONS" [value]="c">{{ c }}</option>
       </select>
     </div>
@@ -70,9 +70,9 @@
 <div class="inventory-grid" *ngIf="!isLoading">
   <div class="inv-card" *ngFor="let item of filteredItems" (click)="openDrawer(item)">
     <div class="inv-card-top">
-      <span class="inv-room">{{ item.room || '—' }}</span>
-      <span class="inv-status" [class]="'status-' + (item.status || 'pending').toLowerCase()">
-        {{ statusLabel(item.status) }}
+      <span class="inv-room">{{ item.roomName || item.room || '—' }}</span>
+      <span class="inv-status" [class]="'status-' + itemStatus(item).toLowerCase()">
+        {{ statusLabel(itemStatus(item)) }}
       </span>
     </div>
     <div class="inv-item-name">{{ item.itemName || item.item || '—' }}</div>
@@ -80,7 +80,7 @@
       <span><i class="material-icons">category</i> {{ item.category || '—' }}</span>
       <span><i class="material-icons">qr_code</i> #{{ item.packageNumber || '—' }}</span>
     </div>
-    <div class="inv-condition">Condition: <strong>{{ item.condition || '—' }}</strong></div>
+    <div class="inv-condition">Condition: <strong>{{ item.conditionStatus || item.condition || '—' }}</strong></div>
     <button class="delete-inv-btn" (click)="$event.stopPropagation(); deleteItem(item)" title="Delete">
       <i class="material-icons">delete</i>
     </button>
