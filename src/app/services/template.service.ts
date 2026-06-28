@@ -20,7 +20,7 @@ export class TemplateService {
   }
 
   getInvoicePdf(shiftingId: number | string): Observable<Blob> {
-    return this.http.get(`${this.BASE_URL}/invoice/${shiftingId}/pdf`, { responseType: 'blob' });
+    return this.http.get(`${this.BASE_URL}/${shiftingId}/invoice`, { responseType: 'blob' });
   }
 
   getLRCopyPdf(shiftingId: number | string): Observable<Blob> {
