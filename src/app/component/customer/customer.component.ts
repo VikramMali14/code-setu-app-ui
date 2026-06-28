@@ -35,6 +35,7 @@ export class CustomerComponent implements OnInit {
   isDeleting = false;
   deleteMessage = '';
   deleteError = '';
+  private messageTimer: any;
   downloadingQuotationId: number | string | null = null;
   staffList: any[] = [];
   staffLoadError = '';
@@ -660,13 +661,13 @@ export class CustomerComponent implements OnInit {
       this.customersService.deleteCustomer(payload).subscribe({
         next: () => {
           this.isDeleting = false;
-          this.deleteMessage = 'Customer deleted successfully.';
+          this.showMessage('Customer deleted successfully.');
           this.loadCustomers();
         },
         error: error => {
           console.error('Delete customer failed:', error);
           this.isDeleting = false;
-          this.deleteError = error.error?.responseMessege || error.error?.message || 'Unable to delete customer.';
+          this.showError(error.error?.responseMessege || error.error?.message || 'Unable to delete customer.');
         }
       });
     });
@@ -678,17 +679,17 @@ export class CustomerComponent implements OnInit {
 
   generateInvoice(customer: CustomerRow): void {
     const shiftingId = this.getCustomerShiftingId(customer);
-    if (!shiftingId) { this.deleteError = 'No shifting id found for this customer.'; return; }
+    if (!shiftingId) { this.showError('No shifting id found for this customer.'); return; }
     this.downloadingQuotationId = shiftingId;
     this.templateService.getInvoicePdf(shiftingId).subscribe({
       next: (blob) => {
         this.downloadBlob(blob, `invoice-${shiftingId}.pdf`);
-        this.deleteMessage = 'Invoice PDF downloaded successfully.';
+        this.showMessage('Invoice PDF downloaded successfully.');
         this.downloadingQuotationId = null;
       },
       error: (error) => {
         console.error('Invoice PDF download failed:', error);
-        this.deleteError = 'Unable to generate invoice PDF.';
+        this.showError('Unable to generate invoice PDF.');
         this.downloadingQuotationId = null;
       }
     });
@@ -696,17 +697,17 @@ export class CustomerComponent implements OnInit {
 
   generateLRCopy(customer: CustomerRow): void {
     const shiftingId = this.getCustomerShiftingId(customer);
-    if (!shiftingId) { this.deleteError = 'No shifting id found for this customer.'; return; }
+    if (!shiftingId) { this.showError('No shifting id found for this customer.'); return; }
     this.downloadingQuotationId = shiftingId;
     this.templateService.getLRCopyPdf(shiftingId).subscribe({
       next: (blob) => {
         this.downloadBlob(blob, `lr-copy-${shiftingId}.pdf`);
-        this.deleteMessage = 'LR Copy downloaded successfully.';
+        this.showMessage('LR Copy downloaded successfully.');
         this.downloadingQuotationId = null;
       },
       error: (error) => {
         console.error('LR Copy download failed:', error);
-        this.deleteError = 'Unable to generate LR Copy.';
+        this.showError('Unable to generate LR Copy.');
         this.downloadingQuotationId = null;
       }
     });
@@ -714,17 +715,17 @@ export class CustomerComponent implements OnInit {
 
   generateItemList(customer: CustomerRow): void {
     const shiftingId = this.getCustomerShiftingId(customer);
-    if (!shiftingId) { this.deleteError = 'No shifting id found for this customer.'; return; }
+    if (!shiftingId) { this.showError('No shifting id found for this customer.'); return; }
     this.downloadingQuotationId = shiftingId;
     this.templateService.getItemListPdf(shiftingId).subscribe({
       next: (blob) => {
         this.downloadBlob(blob, `item-list-${shiftingId}.pdf`);
-        this.deleteMessage = 'Item List downloaded successfully.';
+        this.showMessage('Item List downloaded successfully.');
         this.downloadingQuotationId = null;
       },
       error: (error) => {
         console.error('Item List download failed:', error);
-        this.deleteError = 'Unable to generate Item List.';
+        this.showError('Unable to generate Item List.');
         this.downloadingQuotationId = null;
       }
     });
@@ -737,7 +738,7 @@ export class CustomerComponent implements OnInit {
     this.deleteError = '';
 
     if (!shiftingId) {
-      this.deleteError = 'No shifting id found for this customer.';
+      this.showError('No shifting id found for this customer.');
       return;
     }
 
@@ -745,12 +746,12 @@ export class CustomerComponent implements OnInit {
     this.templateService.getQuotationPdf(shiftingId).subscribe({
       next: (blob) => {
         this.downloadBlob(blob, `quotation-${shiftingId}.pdf`);
-        this.deleteMessage = 'Quotation PDF downloaded successfully.';
+        this.showMessage('Quotation PDF downloaded successfully.');
         this.downloadingQuotationId = null;
       },
       error: (error) => {
         console.error('Quotation PDF download failed:', error);
-        this.deleteError = 'Unable to generate quotation PDF.';
+        this.showError('Unable to generate quotation PDF.');
         this.downloadingQuotationId = null;
       }
     });
@@ -776,6 +777,20 @@ export class CustomerComponent implements OnInit {
     anchor.download = fileName;
     anchor.click();
     window.URL.revokeObjectURL(url);
+  }
+
+  private showMessage(msg: string): void {
+    this.deleteMessage = msg;
+    this.deleteError = '';
+    clearTimeout(this.messageTimer);
+    this.messageTimer = setTimeout(() => this.deleteMessage = '', 3000);
+  }
+
+  private showError(msg: string): void {
+    this.deleteError = msg;
+    this.deleteMessage = '';
+    clearTimeout(this.messageTimer);
+    this.messageTimer = setTimeout(() => this.deleteError = '', 3000);
   }
 
   private getEmptyShiftingForm(): any {
