@@ -5,6 +5,7 @@ import { LoginService } from './services/login.service';
 import { StaffuserServiceService } from './services/staffuser-service';
 import { GenericDataDTO } from './models/generic-data-dto';
 import { AccessMenuItem, AccessMenuSection, AccessMenuService } from './services/access-menu.service';
+import { PwaUpdateService } from './services/pwa-update.service';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,7 @@ export class AppComponent implements OnInit {
     private loginService: LoginService,
     private staffuserservice: StaffuserServiceService,
     private accessMenuService: AccessMenuService,
+    private pwaUpdateService: PwaUpdateService,
   ) {}
 
   ngOnInit(): void {

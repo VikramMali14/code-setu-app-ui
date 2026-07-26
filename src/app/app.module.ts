@@ -1,5 +1,7 @@
 import { APP_INITIALIZER, Component, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -154,6 +156,10 @@ import { WsDetailsComponent } from './component/shifting-workspace/details/ws-de
     MatTooltipModule,
     ImageCropperModule,
     GoogleMapsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
     // Standalone components
     HomeComponent,
     DashboardComponent,

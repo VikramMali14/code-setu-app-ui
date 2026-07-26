@@ -21,6 +21,7 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/manifest.webmanifest",
               {
                 "glob": "env.js",
                 "input": "src/assets/",
@@ -38,6 +39,8 @@
           },
           "configurations": {
             "production": {
+              "serviceWorker": true,
+              "ngswConfigPath": "src/ngsw-config.json",
               "optimization": true,
               "budgets": [
                 {
