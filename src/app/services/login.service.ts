@@ -48,6 +48,10 @@ export class LoginService {
     return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/login`, creadential);
   }
 
+  googleLogin(idToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/google/login`, { idToken });
+  }
+
   refereseToken() {
     return this.http.get<AuthResponse>(`${this.BASE_URL}/cargosetu/refreshtoken`);
   }

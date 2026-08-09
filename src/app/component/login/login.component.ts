@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthResponse } from 'src/app/models/authresponse';
@@ -11,6 +11,9 @@ import { JwttokenService } from 'src/app/services/jwttoken.service';
 import { CompanyService } from 'src/app/services/company.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
+import { ENV } from 'src/assets/env';
+
+declare const google: any;
 
 @Component({
   selector: 'app-login',
@@ -26,7 +29,7 @@ import { DialogboxComponent } from '../dialogbox/dialogbox.component';
     ])
   ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   isLoading = false; // Add this property
 
   credential = {
@@ -54,6 +57,98 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCountryCodes();
+  }
+
+  ngAfterViewInit(): void {
+    this.initGoogleSignIn();
+  }
+
+  private googleInitialized = false;
+
+  private initGoogleSignIn(): void {
+    const clientId = ENV?.GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      console.warn('GOOGLE_CLIENT_ID is not configured; Google login is disabled.');
+      return;
+    }
+    if (typeof google === 'undefined') {
+      // GSI script may not have loaded yet - retry shortly.
+      setTimeout(() => this.initGoogleSignIn(), 300);
+      return;
+    }
+
+    if (!this.googleInitialized) {
+      google.accounts.id.initialize({
+        client_id: clientId,
+        callback: (response: any) => this.handleGoogleCredential(response)
+      });
+      this.googleInitialized = true;
+    }
+
+    this.renderGoogleButton();
+  }
+
+  private renderGoogleButton(): void {
+    // The OTP tab's content isn't in the DOM until it's selected at least once
+    // (mat-tab-group lazily renders inactive tabs), so retry until the div shows up.
+    const target = document.getElementById('googleSignInDiv');
+    if (target) {
+      target.innerHTML = '';
+      // Match the real (invisible) button's width to our styled button underneath
+      // so the click-through area lines up exactly with what the user sees.
+      const width = Math.min(Math.round(target.parentElement?.offsetWidth || 280), 400);
+      google.accounts.id.renderButton(target, {
+        theme: 'outline',
+        size: 'large',
+        width,
+        text: 'continue_with'
+      });
+    } else {
+      setTimeout(() => this.renderGoogleButton(), 300);
+    }
+  }
+
+  onTabChange(): void {
+    if (this.googleInitialized) {
+      this.renderGoogleButton();
+    }
+  }
+
+  handleGoogleCredential(response: any) {
+    if (!response?.credential) {
+      alert('Google sign-in failed. Please try again.');
+      return;
+    }
+    this.isLoading = true;
+    this.loginService.googleLogin(response.credential).pipe(
+      switchMap((tokenResponse: AuthResponse) => {
+        return this.loginService.loginAndFetchUser(tokenResponse.accessToken);
+      })
+    ).subscribe({
+      next: () => {
+        this.companyService.getCurrentCompany().subscribe({
+          next: (res) => {
+            if (res && res.responseCode === 200 && res.data) {
+              this.router.navigate(['/dashboard']);
+            } else {
+              this.showNoCompanyDialog();
+            }
+          },
+          error: (err) => {
+            console.warn('getCurrentCompany failed, likely no company bound:', err);
+            this.showNoCompanyDialog();
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Google login failed', err);
+        alert(err.error?.message || 'Google login failed');
+        this.isLoading = false;
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
   }
 
   otp = {

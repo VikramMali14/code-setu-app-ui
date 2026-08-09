@@ -76,40 +76,55 @@
   }
 }
 /* ==============================
-   GOOGLE BUTTON – FIXED
+   GOOGLE BUTTON
+   Google's real button is functional but invisible, stacked exactly
+   on top of our styled button so it receives the actual click
+   (Google doesn't allow CSS-restyling their rendered button directly).
 ================================ */
 
-/* Target Material + your class */
-.google-btn.mat-mdc-stroked-button {
+.google-btn-wrapper {
+  position: relative;
   width: 100%;
   height: 44px;
-
-  border-radius: 8px;
-  font-weight: 500;
-  text-transform: none;
-
-  display: inline-flex; /* override Material defaults */
-  align-items: center;
-  justify-content: center;
+  margin-top: 14px;
 }
 
-/* VERY IMPORTANT: inner content */
-.google-btn.mat-mdc-stroked-button .mdc-button__label {
+.google-visual-btn {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  font-weight: 600;
+  background: var(--app-action-gradient, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
+  color: #fff !important;
+  border: none;
+  border-radius: 4px;
+  pointer-events: none; /* clicks pass through to the real button on top */
 }
 
-/* Google icon */
-.google-btn img {
+.google-visual-btn .google-icon {
   width: 18px;
   height: 18px;
+  flex-shrink: 0;
+  display: block;
+  background: #fff;
+  border-radius: 50%;
+  padding: 2px;
+  box-sizing: border-box;
 }
 
-/* Optional hover (safe) */
-.google-btn.mat-mdc-stroked-button:hover {
-  background-color: #f8f9ff;
+.google-real-btn {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  overflow: hidden;
+  z-index: 2;
 }
 
 .divider {
