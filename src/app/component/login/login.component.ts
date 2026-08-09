@@ -94,13 +94,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
     const target = document.getElementById('googleSignInDiv');
     if (target) {
       target.innerHTML = '';
-      // Match the real (invisible) button's width to our styled button underneath
-      // so the click-through area lines up exactly with what the user sees.
-      const width = Math.min(Math.round(target.parentElement?.offsetWidth || 280), 400);
       google.accounts.id.renderButton(target, {
         theme: 'outline',
         size: 'large',
-        width,
+        width: 280,
         text: 'continue_with'
       });
     } else {
