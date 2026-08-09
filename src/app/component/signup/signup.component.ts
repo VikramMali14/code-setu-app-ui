@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { debounceTime, switchMap, of, filter } from 'rxjs';
@@ -11,13 +11,16 @@ import { AuthResponse } from 'src/app/models/authresponse';
 import { CompanyService } from 'src/app/services/company.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
+import { ENV } from 'src/assets/env';
+
+declare const google: any;
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, AfterViewInit {
   staffForm!: FormGroup;
   currentStep = 1;
   citySuggestions: any[] = [];
@@ -86,6 +89,78 @@ export class SignupComponent implements OnInit {
     });
 
     this.setupCitySearch();
+  }
+
+  ngAfterViewInit(): void {
+    this.initGoogleSignIn();
+  }
+
+  private googleInitialized = false;
+
+  private initGoogleSignIn(): void {
+    const clientId = ENV?.GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      console.warn('GOOGLE_CLIENT_ID is not configured; Google sign-up is disabled.');
+      return;
+    }
+    if (typeof google === 'undefined') {
+      setTimeout(() => this.initGoogleSignIn(), 300);
+      return;
+    }
+
+    if (!this.googleInitialized) {
+      google.accounts.id.initialize({
+        client_id: clientId,
+        callback: (response: any) => this.handleGoogleCredential(response)
+      });
+      this.googleInitialized = true;
+    }
+
+    const target = document.getElementById('googleSignInDiv');
+    if (target) {
+      target.innerHTML = '';
+      google.accounts.id.renderButton(target, {
+        theme: 'outline',
+        size: 'large',
+        width: 280,
+        text: 'signup_with'
+      });
+    }
+  }
+
+  handleGoogleCredential(response: any) {
+    if (!response?.credential) {
+      alert('Google sign-in failed. Please try again.');
+      return;
+    }
+    this.submitting = true;
+    this.loginService.googleSignup(response.credential).pipe(
+      switchMap((tokenResponse: AuthResponse) => {
+        return this.loginService.loginAndFetchUser(tokenResponse.accessToken);
+      })
+    ).subscribe({
+      next: (userDetails: any) => {
+        this.loginService.setUserData(userDetails);
+        this.companyService.getCurrentCompany().subscribe({
+          next: (res) => {
+            if (res && res.responseCode === 200 && res.data) {
+              this.router.navigate(['/dashboard']);
+            } else {
+              this.showNoCompanyDialog();
+            }
+          },
+          error: () => this.showNoCompanyDialog()
+        });
+      },
+      error: (err) => {
+        console.error('Google sign-up failed', err);
+        alert(err.error?.message || 'Google sign-up failed');
+        this.submitting = false;
+      },
+      complete: () => {
+        this.submitting = false;
+      }
+    });
   }
 
   // Password matching logic

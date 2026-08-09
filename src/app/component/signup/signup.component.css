@@ -29,6 +29,36 @@
     flex-direction: column;
 }
 
+/* --- Google Sign-In (rendered by Google Identity Services) --- */
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 16px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #dcdcdc;
+}
+
+.divider span {
+    font-size: 12px;
+    font-weight: 500;
+    color: #888;
+    padding: 0 6px;
+}
+
+.google-btn {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
 .logo-container {
     display: flex;
     align-items: center;

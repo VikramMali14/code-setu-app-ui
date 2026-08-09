@@ -52,6 +52,10 @@ export class LoginService {
     return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/google/login`, { idToken });
   }
 
+  googleSignup(idToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/google/signup`, { idToken });
+  }
+
   refereseToken() {
     return this.http.get<AuthResponse>(`${this.BASE_URL}/cargosetu/refreshtoken`);
   }
