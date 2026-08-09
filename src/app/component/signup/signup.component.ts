@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors }
 import { HttpClient } from '@angular/common/http';
 import { debounceTime, switchMap, of, filter } from 'rxjs';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
-import { Route, Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
 import { GenericDataDTO } from 'src/app/models/generic-data-dto';
 import { LoginService } from 'src/app/services/login.service';
@@ -49,7 +49,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
     private showpopupservice: ShowpopupService,
     private loginService: LoginService,
     private companyService: CompanyService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -89,6 +90,11 @@ export class SignupComponent implements OnInit, AfterViewInit {
     });
 
     this.setupCitySearch();
+
+    const emailFromQuery = this.route.snapshot.queryParamMap.get('email');
+    if (emailFromQuery) {
+      this.staffForm.get('basicInfo.email')?.setValue(emailFromQuery);
+    }
   }
 
   ngAfterViewInit(): void {

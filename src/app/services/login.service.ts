@@ -48,6 +48,10 @@ export class LoginService {
     return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/login`, creadential);
   }
 
+  checkUserExists(email: string): Observable<{ exists: boolean }> {
+    return this.http.post<{ exists: boolean }>(`${this.BASE_URL}/auth/check-user`, { email });
+  }
+
   googleLogin(idToken: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.BASE_URL}/auth/google/login`, { idToken });
   }

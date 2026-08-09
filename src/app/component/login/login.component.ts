@@ -39,6 +39,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   };
 
   hidePassword = true;
+  userExists: boolean | null = null;
+  checkingEmail = false;
 
   countryCodes: any[] = [
     { name: 'India', code: '+91', cca2: 'IN' },
@@ -154,6 +156,29 @@ export class LoginComponent implements OnInit, AfterViewInit {
     code: ''
   };
   otpSent = false;
+
+  checkEmailExists() {
+    const email = this.credential.email?.trim();
+    if (!email) {
+      this.userExists = null;
+      return;
+    }
+    this.checkingEmail = true;
+    this.loginService.checkUserExists(email).subscribe({
+      next: (res) => {
+        this.userExists = res.exists;
+        this.checkingEmail = false;
+        if (!res.exists) {
+          this.router.navigate(['/signup'], { queryParams: { email } });
+        }
+      },
+      error: () => {
+        // Don't block login on a failed check - let the actual login call be the source of truth.
+        this.userExists = null;
+        this.checkingEmail = false;
+      }
+    });
+  }
 
   loginWithEmail() {
     if (!this.credential.email || !this.credential.password) {
