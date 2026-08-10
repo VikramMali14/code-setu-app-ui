@@ -198,7 +198,7 @@ export class RolesDetailsComponent implements OnInit {
             this.showpopup.showResponsePopup(
               response.responseMessege,
               response.responseCode
-            ); 
+            );
             this.loadRoles();
             this.cancelForm();
           },
@@ -213,7 +213,7 @@ export class RolesDetailsComponent implements OnInit {
             this.showpopup.showResponsePopup(
               response.responseMessege,
               response.responseCode
-            ); 
+            );
             this.loadRoles();
             this.cancelForm();
           },

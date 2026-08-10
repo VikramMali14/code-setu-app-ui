@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AppThemeSettings, ThemeService } from 'src/app/services/theme.service';
-
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-theme-customizer',
   templateUrl: './theme-customizer.component.html',

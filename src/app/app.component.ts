@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LoginService } from './services/login.service';
@@ -6,13 +6,14 @@ import { StaffuserServiceService } from './services/staffuser-service';
 import { GenericDataDTO } from './models/generic-data-dto';
 import { AccessMenuItem, AccessMenuSection, AccessMenuService } from './services/access-menu.service';
 import { PwaUpdateService } from './services/pwa-update.service';
+import { CompanyService } from './services/company.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'cargo-set-ui';
   showScrollButton = false;
   isInternalApp = false;
@@ -36,6 +37,7 @@ export class AppComponent implements OnInit {
     private staffuserservice: StaffuserServiceService,
     private accessMenuService: AccessMenuService,
     private pwaUpdateService: PwaUpdateService,
+    private companyService: CompanyService,
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +70,18 @@ export class AppComponent implements OnInit {
         this.redirectLoggedInHome(event.urlAfterRedirects);
         this.showProfileMenu = false; // Close profile menu on route change
         this.closeSidebarOnMobile(); // Close sidebar on mobile after navigation
+        this.checkCompanyStatus(event.urlAfterRedirects);
       });
+
+    this.companyService.companyStatus$.subscribe(() => {
+      this.checkCompanyStatus(this.router.url);
+    });
+
+    document.addEventListener('click', this.blockFeatureClick, true);
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('click', this.blockFeatureClick, true);
   }
 
   @HostListener('window:scroll')
@@ -172,6 +185,7 @@ export class AppComponent implements OnInit {
   }
 
   logout(): void {
+    this.companyService.clearCompanyStatus();
     this.loginService.logout();
     this.closeProfileMenu();
   }
@@ -208,6 +222,44 @@ export class AppComponent implements OnInit {
     this.closeProfileMenu();
     this.router.navigate(['/staffuser']);
     this.closeSidebarOnMobile();
+  }
+
+  private checkCompanyStatus(url: string): void {
+    if (!this.loginService.isLoggedIn()) return;
+
+    const path = this.getPath(url);
+    const skipRoutes = ['/company-create', '/company-edit', '/company-list', '/login', '/signup'];
+    if (skipRoutes.some(r => path.startsWith(r))) return;
+
+    if (this.companyService.getCompanyStatus() === false) {
+      setTimeout(() => this.companyService.promptCreateCompany(), 200);
+    }
+  }
+
+  // App-wide guard: while a logged-in user has no company, block any feature
+  // usage (clicks in content areas) so nothing can be created/edited/deleted.
+  private blockFeatureClick = (event: MouseEvent): void => {
+    if (!this.loginService.isLoggedIn()) return;
+    if (this.companyService.getCompanyStatus() !== false) return;
+
+    const path = this.getPath(this.router.url);
+    const skipRoutes = ['/company-create', '/company-edit', '/company-list', '/login', '/signup'];
+    if (skipRoutes.some(r => path.startsWith(r))) return;
+
+    const target = event.target as Element | null;
+    if (!target || typeof target.closest !== 'function') return;
+
+    // Allow overlay dialogs (the Create Company popup itself), the sidebar
+    // (module navigation, profile + logout), the header and public chrome.
+    if (target.closest('.cdk-overlay-container')) return;
+    if (target.closest('.admin-sidebar') || target.closest('.sidebar-overlay')) return;
+    if (target.closest('.admin-topbar')) return;
+    if (target.closest('app-nav-bar') || target.closest('app-footer')) return;
+
+    // Block the rest (content area actions) and re-prompt.
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.companyService.promptCreateCompany();
   }
 
   private setLayout(url: string): void {

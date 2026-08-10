@@ -136,6 +136,8 @@ export class CompanyComponent implements OnInit {
         next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
 
+          this.companyService.setCompanyStatus(true);
+
           this.loadCompanies();
           this.cancelForm();
         },
@@ -148,13 +150,16 @@ export class CompanyComponent implements OnInit {
       this.companyService.createCompany(payload).subscribe({
         next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
-          
+
+          this.companyService.setCompanyStatus(true);
+
           // Refresh JWT token after company creation
           this.loginService.refereseToken().subscribe({
             next: (tokenResponse: any) => {
               console.log('Token refreshed successfully', tokenResponse);
-              if (tokenResponse?.token) {
-                localStorage.setItem('token', tokenResponse.token);
+              const newToken = tokenResponse.accessToken || tokenResponse.token;
+              if (newToken) {
+                localStorage.setItem('token', newToken);
               }
             },
             error: (err) => console.error('Token refresh failed:', err)

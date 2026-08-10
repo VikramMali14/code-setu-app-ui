@@ -125,19 +125,23 @@ export class LoginComponent implements OnInit, AfterViewInit {
       })
     ).subscribe({
       next: () => {
-        this.companyService.getCurrentCompany().subscribe({
-          next: (res) => {
-            if (res && res.responseCode === 200 && res.data) {
-              this.router.navigate(['/dashboard']);
-            } else {
-              this.showNoCompanyDialog();
+        this.router.navigate(['/dashboard']);
+
+        setTimeout(() => {
+          this.companyService.getCurrentCompany().subscribe({
+            next: (res) => {
+              if (res && res.responseCode === 200 && res.data) {
+                this.companyService.setCompanyStatus(true);
+              } else {
+                this.companyService.setCompanyStatus(false);
+              }
+            },
+            error: (err) => {
+              console.warn('getCurrentCompany failed, likely no company bound:', err);
+              this.companyService.setCompanyStatus(false);
             }
-          },
-          error: (err) => {
-            console.warn('getCurrentCompany failed, likely no company bound:', err);
-            this.showNoCompanyDialog();
-          }
-        });
+          });
+        }, 1500);
       },
       error: (err) => {
         console.error('Google login failed', err);
@@ -194,19 +198,23 @@ export class LoginComponent implements OnInit, AfterViewInit {
     ).subscribe({
       next: (userDetails) => {
         console.log('User Details fetched:', userDetails);
-        this.companyService.getCurrentCompany().subscribe({
-          next: (res) => {
-            if (res && res.responseCode === 200 && res.data) {
-              this.router.navigate(['/dashboard']);
-            } else {
-              this.showNoCompanyDialog();
+        this.router.navigate(['/dashboard']);
+
+        setTimeout(() => {
+          this.companyService.getCurrentCompany().subscribe({
+            next: (res) => {
+              if (res && res.responseCode === 200 && res.data) {
+                this.companyService.setCompanyStatus(true);
+              } else {
+                this.companyService.setCompanyStatus(false);
+              }
+            },
+            error: (err) => {
+              console.warn('getCurrentCompany failed, likely no company bound:', err);
+              this.companyService.setCompanyStatus(false);
             }
-          },
-          error: (err) => {
-            console.warn('getCurrentCompany failed, likely no company bound:', err);
-            this.showNoCompanyDialog();
-          }
-        });
+          });
+        }, 1500);
       },
       error: (err) => {
         console.error('API Error:', err);
@@ -276,19 +284,23 @@ export class LoginComponent implements OnInit, AfterViewInit {
       next: (userDetails) => {
         this.isLoading = false;
         console.log('User Details fetched:', userDetails);
-        this.companyService.getCurrentCompany().subscribe({
-          next: (res) => {
-            if (res && res.responseCode === 200 && res.data) {
-              this.router.navigate(['/dashboard']);
-            } else {
-              this.showNoCompanyDialog();
+        this.router.navigate(['/dashboard']);
+
+        setTimeout(() => {
+          this.companyService.getCurrentCompany().subscribe({
+            next: (res) => {
+              if (res && res.responseCode === 200 && res.data) {
+                this.companyService.setCompanyStatus(true);
+              } else {
+                this.companyService.setCompanyStatus(false);
+              }
+            },
+            error: (err) => {
+              console.warn('getCurrentCompany failed, likely no company bound:', err);
+              this.companyService.setCompanyStatus(false);
             }
-          },
-          error: (err) => {
-            console.warn('getCurrentCompany failed, likely no company bound:', err);
-            this.showNoCompanyDialog();
-          }
-        });
+          });
+        }, 1500);
       },
       error: (err) => {
         console.error('Verify OTP failed', err);

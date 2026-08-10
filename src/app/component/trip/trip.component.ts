@@ -8,7 +8,8 @@ import { DriverService } from 'src/app/services/driver.service';
 import { VehicleService } from 'src/app/services/vehicle.service';
 import { CustomersService } from 'src/app/services/customers.service';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
-
+import { FormsModule } from '@angular/forms';
+import { CommonModule, DecimalPipe } from '@angular/common';
 export const TRIP_STATUS_TRANSITIONS: Record<TripStatus, TripStatus[]> = {
   CREATED:              ['DRIVER_ASSIGNED', 'CANCELLED'],
   DRIVER_ASSIGNED:      ['VEHICLE_ASSIGNED', 'CANCELLED'],
