@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { JwttokenService } from './jwttoken.service';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { StaffuserServiceService } from './staffuser-service';
-import { tap } from 'rxjs/operators'; // Required to use tap in .pipe()
+import { tap, switchMap } from 'rxjs/operators';
 import { ENV } from 'src/assets/env';
 import { AuthResponse } from '../models/authresponse';
 import { GenericDataDTO } from '../models/generic-data-dto';
@@ -61,13 +61,31 @@ export class LoginService {
   }
 
   refereseToken() {
-    return this.http.get<AuthResponse>(`${this.BASE_URL}/cargosetu/refreshtoken`);
+    return this.http.get<AuthResponse>(`${this.BASE_URL}/api/v2/cargosetu/refreshtoken`);
+  }
+
+  // Refresh the JWT and rebuild the full local session (token, user_session, user)
+  // so that a freshly created/updated company binds to the current session.
+  refreshSession(): Observable<any> {
+    return this.refereseToken().pipe(
+      switchMap((tokenResponse: any) => {
+        const newToken = tokenResponse?.accessToken || tokenResponse?.token || tokenResponse?.data?.accessToken;
+        if (!newToken) {
+          return throwError(() => new Error('No access token in refresh response'));
+        }
+        localStorage.setItem('token', newToken);
+        return this.loginAndFetchUser(newToken);
+      }),
+      tap((userDetails: any) => {
+        this.setUserData(userDetails);
+      })
+    );
   }
   // loginUser(token: string) {
   //   if (!token) return false;
 
   //   localStorage.setItem('token', token);
-  //   this.loggedInSubject.next(true);   
+  //   this.loggedInSubject.next(true);
 
   //   return true;
   // }

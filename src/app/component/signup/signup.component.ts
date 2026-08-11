@@ -186,6 +186,23 @@ export class SignupComponent implements OnInit, AfterViewInit {
     return !!(control && control.invalid && (control.dirty || control.touched));
   }
 
+  restrictMobileNumber(event: Event): void {
+    this.restrictDigits(event, 'otherInfo.mobileNumber', 10);
+  }
+
+  restrictPincode(event: Event): void {
+    this.restrictDigits(event, 'addressInfo.pincode', 6);
+  }
+
+  private restrictDigits(event: Event, controlPath: string, maxLength: number): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/[^0-9]/g, '').slice(0, maxLength);
+    this.staffForm.get(controlPath)?.setValue(digits, { emitEvent: false });
+    if (input.value !== digits) {
+      input.value = digits;
+    }
+  }
+
   setupCitySearch() {
     this.staffForm.get('addressInfo.city')?.valueChanges.pipe(
       debounceTime(400),

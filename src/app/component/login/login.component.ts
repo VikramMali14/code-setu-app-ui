@@ -11,6 +11,7 @@ import { JwttokenService } from 'src/app/services/jwttoken.service';
 import { CompanyService } from 'src/app/services/company.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
+import { ShowpopupService } from 'src/app/services/showpopup.service';
 import { ENV } from 'src/assets/env';
 
 declare const google: any;
@@ -54,7 +55,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private router: Router,
     private http: HttpClient,
     private companyService: CompanyService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private showPopup: ShowpopupService
   ) { }
 
   ngOnInit(): void {
@@ -115,7 +117,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   handleGoogleCredential(response: any) {
     if (!response?.credential) {
-      alert('Google sign-in failed. Please try again.');
+      this.showPopup.showError('Google sign-in failed. Please try again.');
       return;
     }
     this.isLoading = true;
@@ -145,7 +147,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         console.error('Google login failed', err);
-        alert(err.error?.message || 'Google login failed');
+        this.showPopup.showApiError(err, 'Google login failed');
         this.isLoading = false;
       },
       complete: () => {
@@ -186,7 +188,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   loginWithEmail() {
     if (!this.credential.email || !this.credential.password) {
-      alert('Missing fields');
+      this.showPopup.showError('Missing fields');
       return;
     }
     this.isLoading = true;
@@ -218,7 +220,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         console.error('API Error:', err);
-        alert('Login or Profile fetch failed');
+        this.showPopup.showApiError(err, 'Login or Profile fetch failed');
         this.isLoading = false;
       },
       complete: () => {
@@ -252,7 +254,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   sendOtp() {
     if (!this.otp.mobile) {
-      alert('Enter mobile number');
+      this.showPopup.showError('Enter mobile number');
       return;
     }
     this.isLoading = true;
@@ -260,19 +262,19 @@ export class LoginComponent implements OnInit, AfterViewInit {
       next: (res) => {
         this.isLoading = false;
         this.otpSent = true;
-        alert('Your mockOtp is : ' + res.mockOtp);
+        this.showPopup.showSuccess('Your mockOtp is : ' + res.mockOtp);
       },
       error: (err) => {
         this.isLoading = false;
         console.error('Send OTP failed', err);
-        alert(err.error?.message || 'Failed to send OTP. Is the number registered?');
+        this.showPopup.showApiError(err, 'Failed to send OTP. Is the number registered?');
       }
     });
   }
 
   verifyOtp() {
     if (!this.otp.code || this.otp.code.length !== 6) {
-      alert('Invalid OTP');
+      this.showPopup.showError('Invalid OTP');
       return;
     }
     this.isLoading = true;
@@ -304,7 +306,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         console.error('Verify OTP failed', err);
-        alert(err.error?.message || 'Invalid or expired OTP');
+        this.showPopup.showApiError(err, 'Invalid or expired OTP');
         this.isLoading = false;
       }
     });

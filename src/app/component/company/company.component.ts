@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { CompanyService } from 'src/app/services/company.service';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
 import { LoginService } from 'src/app/services/login.service';
-import { ViewcomponentComponent } from '../viewcomponent/viewcomponent.component';
 
 @Component({
   selector: 'app-company',
@@ -15,21 +14,16 @@ import { ViewcomponentComponent } from '../viewcomponent/viewcomponent.component
 
 export class CompanyComponent implements OnInit {
   @ViewChild('confirmDialog') confirmDialogTemplate!: TemplateRef<any>;
-  @ViewChild('viewDialog') viewDialogTemplate!: TemplateRef<any>;
 
   companyList: any[] = [];
-  selectedCompany: any = null;
   assetTypes: string[] = ['LOGO', 'SEAL/Signature', 'STAMP'];
   companyForm!: FormGroup;
 
   showForm = false;
   isEditMode = false;
-  searchText = '';
   isLoading = false;
   selectedAssetFile: File | null = null;
   selectedAssetFileName = '';
-  currentPageNumber = 0;
-  pageSize = 5;
   addedAssets: { assetType: string; file: File; fileName: string }[] = [];
 
   countryCodes: any[] = [
@@ -89,13 +83,22 @@ export class CompanyComponent implements OnInit {
   }
 
   loadCompanies() {
+    this.isLoading = true;
     this.companyService.getCompany().subscribe({
       next: (res: any) => {
         this.companyList = res.dataList || res.data || [];
-        this.syncCurrentPage();
+        if (Array.isArray(this.companyList)) {
+          // keep only the primary (first) company for the profile view
+          this.companyList = this.companyList.slice(0, 1);
+        }
+        if (this.companyList.length > 0) {
+          this.companyService.setCompanyStatus(true);
+        }
+        this.isLoading = false;
       },
       error: (err) => {
         console.error(err);
+        this.isLoading = false;
       }
     });
   }
@@ -137,8 +140,9 @@ export class CompanyComponent implements OnInit {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
 
           this.companyService.setCompanyStatus(true);
+          this.applyCompanyResponse(response);
+          this.refreshSessionAfterCompanyChange();
 
-          this.loadCompanies();
           this.cancelForm();
         },
         error: err => console.error(err)
@@ -152,26 +156,51 @@ export class CompanyComponent implements OnInit {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
 
           this.companyService.setCompanyStatus(true);
+          this.applyCompanyResponse(response);
+          this.refreshSessionAfterCompanyChange();
 
-          // Refresh JWT token after company creation
-          this.loginService.refereseToken().subscribe({
-            next: (tokenResponse: any) => {
-              console.log('Token refreshed successfully', tokenResponse);
-              const newToken = tokenResponse.accessToken || tokenResponse.token;
-              if (newToken) {
-                localStorage.setItem('token', newToken);
-              }
-            },
-            error: (err) => console.error('Token refresh failed:', err)
-          });
-          
-          this.loadCompanies();
           this.cancelForm();
         },
         error: err => console.error(err)
       });
 
     }
+  }
+
+  // Show the company profile immediately from the create/update response data.
+  private applyCompanyResponse(response: any): void {
+    const data = response?.data || response?.dataList?.[0];
+    if (data && typeof data === 'object') {
+      this.companyList = [data];
+    }
+  }
+
+  // Refresh the JWT and rebuild the session (token, user_session, user) so the
+  // newly created/updated company is bound to the current logged-in session.
+  private refreshSessionAfterCompanyChange(): void {
+    const currentToken = localStorage.getItem('token');
+    if (!currentToken) return;
+
+    this.loginService.refreshSession().subscribe({
+      next: (userDetails: any) => {
+        console.log('Session refreshed successfully after company change', userDetails);
+        // Re-pull the current company so the profile reflects the fresh token/data.
+        this.loadCurrentCompany();
+      },
+      error: (err) => console.error('Session refresh failed:', err)
+    });
+  }
+
+  private loadCurrentCompany(): void {
+    this.companyService.getCurrentCompany().subscribe({
+      next: (res: any) => {
+        if (res && res.responseCode === 200 && res.data) {
+          this.companyList = [res.data];
+          this.companyService.setCompanyStatus(true);
+        }
+      },
+      error: (err) => console.warn('getCurrentCompany failed:', err)
+    });
   }
 
   editCompany(company: any) {
@@ -286,70 +315,23 @@ export class CompanyComponent implements OnInit {
   //   });
   // }
 
-  get filteredCompanyList() {
-
-    if (!this.searchText) return this.companyList;
-
-    return this.companyList.filter(x =>
-      x.companyName?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-      x.companyEmail?.toLowerCase().includes(this.searchText.toLowerCase()) ||
-      x.city?.toLowerCase().includes(this.searchText.toLowerCase())
-    );
+  get hasCompany(): boolean {
+    return this.companyList.length > 0;
   }
 
-  filteredCompanies() {
-    return this.filteredCompanyList;
+  get currentCompany(): any {
+    return this.companyList[0] || null;
   }
 
-  get totalRecords(): number {
-    return this.filteredCompanyList.length;
-  }
-
-  get totalPages(): number {
-    return Math.ceil(this.totalRecords / this.pageSize);
-  }
-
-  get paginatedCompanies() {
-    const start = this.currentPageNumber * this.pageSize;
-    return this.filteredCompanyList.slice(start, start + this.pageSize);
-  }
-
-  get pageRecords(): number {
-    return this.paginatedCompanies.length;
-  }
-
-  goToPage(pageNumber: number): void {
-    this.currentPageNumber = pageNumber;
-    this.syncCurrentPage();
-  }
-
-  changePageSize(newSize: number): void {
-    this.pageSize = newSize;
-    this.currentPageNumber = 0;
-  }
-
-  onSearchChange(): void {
-    this.currentPageNumber = 0;
-  }
-
-  private syncCurrentPage(): void {
-    const lastPage = Math.max(this.totalPages - 1, 0);
-    if (this.currentPageNumber > lastPage) {
-      this.currentPageNumber = lastPage;
-    }
-  }
-
-  focusSearch(): void {
-    setTimeout(() => {
-      const searchInput = document.querySelector('.search-box input') as HTMLInputElement;
-      searchInput?.focus();
-    }, 100);
+  joinAddressParts(parts: any[]): string {
+    return parts.filter(Boolean).join(', ');
   }
 
   deleteCompany(id: number) {
     // Open the inline template as a dialog
     const dialogRef = this.dialog.open(this.confirmDialogTemplate, {
-      width: '350px'
+      width: '380px',
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(confirmed => {
@@ -357,39 +339,12 @@ export class CompanyComponent implements OnInit {
         this.companyService.deleteCompany(id).subscribe({
           next: (response: any) => {
             this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode);
-            this.loadCompanies();
+            this.companyList = [];
+            this.companyService.setCompanyStatus(false);
+            this.refreshSessionAfterCompanyChange();
           },
           error: err => console.error(err)
         });
-      }
-    });
-  }
-
-  viewCompany(company: any) {
-    if (!company) {
-      return;
-    }
-    this.selectedCompany = company;
-    this.dialog.open(ViewcomponentComponent, {
-      width: '600px',
-      data: {
-        title: 'Company Details',
-        details: [
-          { label: 'Name', value: company.companyName },
-          { label: 'Email', value: company.companyEmail, type: 'email' },
-          { label: 'WhatsApp', value: company.whatsappNumber },
-          { label: 'Contact 1', value: company.contactNo1 },
-          { label: 'Contact 2', value: company.contactNo2 },
-          { label: 'City', value: company.city },
-          { label: 'State', value: company.state },
-          { label: 'Country', value: company.country },
-          { label: 'Branch', value: company.branch },
-          { label: 'Main Branch', value: company.mainBranch },
-          { label: 'PAN', value: company.panNumber },
-          { label: 'GST', value: company.gstNumber },
-          { label: 'Website', value: company.website, type: 'link' },
-          { label: 'Status', value: company.isActive ? 'Active' : 'Inactive', type: 'status' }
-        ]
       }
     });
   }

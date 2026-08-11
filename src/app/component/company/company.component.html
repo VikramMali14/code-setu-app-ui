@@ -1,48 +1,165 @@
 <!-- company.component.html -->
 <div class="page-wrapper">
 
-  <!-- Header Card -->
-  <div class="top-card">
-    <div class="gradient-line"></div>
-
-    <div class="card-header">
-      <div>
-        <h1>Company Management</h1>
-        <p class="sub-title">Manage all company records in one place</p>
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-icon">
+        <span class="material-icons">business</span>
       </div>
-
+      <div class="header-titles">
+        <h1>Company</h1>
+        <p *ngIf="hasCompany && !showForm">Manage your organisation profile</p>
+        <p *ngIf="!hasCompany && !showForm">Set up your organisation to get started</p>
+        <p *ngIf="showForm">{{ isEditMode ? 'Update your organisation details' : 'Tell us about your organisation' }}</p>
+      </div>
     </div>
 
-    <!-- Action Cards -->
-    <div class="action-grid">
-      <div class="action-card active-card" (click)="openCreateForm()">
-        <div class="icon-box">
-          <span class="material-icons">business</span>
-        </div>
-        <div class="card-content">
-          <h3>Create Company</h3>
-          <p>Add new company details</p>
-        </div>
-        <div class="back-nav" style="margin-bottom: 20px;">
-      <a routerLink="/"
-        style="text-decoration: none; color: #64748b; font-size: 14px; display: flex; align-items: center; gap: 5px;">
-        <i class="fas fa-arrow-left"></i> Back to Home
-      </a>
+    <a routerLink="/" class="back-home-link">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+  </div>
+
+  <!-- ============================================================
+       EMPTY STATE — no company created yet, show Create Company CTA
+       ============================================================ -->
+  <div class="empty-state" *ngIf="!hasCompany && !showForm && !isLoading">
+    <div class="empty-icon">
+      <span class="material-icons">domain_add</span>
     </div>
+    <h2>Create Your Company</h2>
+    <p>Your company isn't set up yet. Create your company profile to start managing shipments, customers and operations.</p>
+    <button class="btn-primary btn-lg" (click)="openCreateForm()">
+      <span class="material-icons">add_business</span>
+      Create Your Company
+    </button>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading company details...</p>
+  </div>
+
+  <!-- ============================================================
+       COMPANY PROFILE — company exists, show data + actions
+       ============================================================ -->
+  <div class="company-profile" *ngIf="hasCompany && !showForm && !isLoading">
+    <!-- Profile Banner -->
+    <div class="profile-banner">
+      <div class="banner-actions">
+        <button class="btn-outline" (click)="editCompany(currentCompany)">
+          <span class="material-icons">edit</span> Edit Company
+        </button>
+        <button class="btn-danger-outline" (click)="deleteCompany(currentCompany.companyId)">
+          <span class="material-icons">delete_outline</span> Request to Delete
+        </button>
+      </div>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="profile-card">
+      <div class="profile-head">
+        <div class="company-logo">
+          <span>{{ (currentCompany.companyName || 'C') | slice:0:1 }}</span>
+        </div>
+        <div class="company-meta">
+          <h2>{{ currentCompany.companyName }}</h2>
+          <div class="meta-line">
+            <span *ngIf="currentCompany.companyEmail"><i class="fas fa-envelope"></i> {{ currentCompany.companyEmail }}</span>
+            <span *ngIf="currentCompany.website"><i class="fas fa-globe"></i> {{ currentCompany.website }}</span>
+          </div>
+          <div class="meta-line" *ngIf="currentCompany.contactNo1">
+            <span><i class="fas fa-phone-alt"></i> {{ currentCompany.contactNo1 }}</span>
+            <span *ngIf="currentCompany.whatsappNumber"><i class="fab fa-whatsapp"></i> {{ currentCompany.whatsappNumber }}</span>
+          </div>
+          <div class="meta-line" *ngIf="currentCompany.city || currentCompany.state || currentCompany.country">
+            <span><i class="fas fa-map-marker-alt"></i> {{ joinAddressParts([currentCompany.city, currentCompany.state, currentCompany.country]) }}</span>
+          </div>
+        </div>
+        <div class="status-pill" [class.inactive]="!currentCompany.isActive">
+          <span class="dot"></span>
+          {{ currentCompany.isActive ? 'Active' : 'Inactive' }}
+        </div>
       </div>
 
-   
+      <!-- Details Grid -->
+      <div class="details-grid">
+        <div class="detail-item" *ngIf="currentCompany.companyEmail">
+          <span class="detail-label">Company Email</span>
+          <span class="detail-value">{{ currentCompany.companyEmail }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.contactNo2">
+          <span class="detail-label">Alternate Contact</span>
+          <span class="detail-value">{{ currentCompany.contactNo2 }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.landlineNo">
+          <span class="detail-label">Landline</span>
+          <span class="detail-value">{{ currentCompany.landlineNo }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.tollFreeNumber">
+          <span class="detail-label">Toll Free</span>
+          <span class="detail-value">{{ currentCompany.tollFreeNumber }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.address">
+          <span class="detail-label">Address</span>
+          <span class="detail-value">{{ currentCompany.address }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.city">
+          <span class="detail-label">City</span>
+          <span class="detail-value">{{ currentCompany.city }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.state">
+          <span class="detail-label">State</span>
+          <span class="detail-value">{{ currentCompany.state }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.country">
+          <span class="detail-label">Country</span>
+          <span class="detail-value">{{ currentCompany.country }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.branch">
+          <span class="detail-label">Branch</span>
+          <span class="detail-value">{{ currentCompany.branch }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.mainBranch">
+          <span class="detail-label">Main Branch</span>
+          <span class="detail-value">{{ currentCompany.mainBranch }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.panNumber">
+          <span class="detail-label">PAN Number</span>
+          <span class="detail-value">{{ currentCompany.panNumber }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.gstNumber">
+          <span class="detail-label">GST Number</span>
+          <span class="detail-value">{{ currentCompany.gstNumber }}</span>
+        </div>
+        <div class="detail-item" *ngIf="currentCompany.isActive !== undefined && currentCompany.isActive !== null">
+          <span class="detail-label">Status</span>
+          <span class="detail-value status-text" [class.text-active]="currentCompany.isActive" [class.text-inactive]="!currentCompany.isActive">
+            {{ currentCompany.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="profile-actions">
+        <button class="btn-primary" (click)="editCompany(currentCompany)">
+          <span class="material-icons">edit</span> Edit Company
+        </button>
+        <button class="btn-danger-outline" (click)="deleteCompany(currentCompany.companyId)">
+          <span class="material-icons">delete_outline</span> Request to Delete
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Form Card -->
-  <div class="list-card" *ngIf="showForm">
-    <div class="gradient-line"></div>
-
-    <div class="card-header">
+  <!-- ============================================================
+       CREATE / EDIT FORM
+       ============================================================ -->
+  <div class="form-card" *ngIf="showForm">
+    <div class="form-card-head">
       <h2>{{ isEditMode ? 'Edit Company' : 'Create Company' }}</h2>
-
-      <button class="circle-btn close-btn" (click)="cancelForm()">
+      <button class="close-btn" (click)="cancelForm()">
         <span class="material-icons">close</span>
       </button>
     </div>
@@ -235,84 +352,21 @@
     </form>
   </div>
 
-  <!-- Company List -->
-  <div class="list-card">
-    <div class="gradient-line"></div>
-
-    <div class="card-header">
-      <h2>Company List</h2>
-
-      <div class="search-box">
-        <span class="material-icons">search</span>
-        <input type="text" [(ngModel)]="searchText" (ngModelChange)="onSearchChange()" placeholder="Search company..."
-          #searchInput>
-      </div>
-    </div>
-
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let company of paginatedCompanies">
-            <td><strong>{{ company.companyName }}</strong></td>
-            <td>{{ company.companyEmail }}</td>
-            <td>{{ company.city }}</td>
-            <td>{{ company.state }}</td>
-            <td>
-              <span class="status-badge" [class.active]="company.isActive" [class.inactive]="!company.isActive">
-                {{ company.isActive ? 'Active' : 'Inactive' }}
-              </span>
-            </td>
-            <td class="action-td">
-              <button class="table-btn view-btn" (click)="viewCompany(company)" title="View Details">
-                <span class="material-icons">visibility</span>
-              </button>
-              <button class="table-btn edit-btn" (click)="editCompany(company)">
-                <span class="material-icons">edit</span>
-              </button>
-              <!-- <button class="table-btn delete-btn" (click)="deleteCompany(company.companyId)">
-                <span class="material-icons">delete</span>
-              </button> -->
-            </td>
-          </tr>
-
-          <tr *ngIf="filteredCompanies().length === 0">
-            <td colspan="7" class="empty-row">
-              {{ searchText ? 'No companies match your search' : 'No companies found. Create one to get started!' }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <app-shared-pagination [currentPage]="currentPageNumber" [totalPages]="totalPages" [totalRecords]="totalRecords"
-      [pageSize]="pageSize" [pageRecords]="pageRecords" (pageChange)="goToPage($event)"
-      (sizeChange)="changePageSize($event)">
-    </app-shared-pagination>
-  </div>
-
 </div>
-<!-- Inside your existing component.html -->
+
+<!-- Confirm delete dialog -->
 <ng-template #confirmDialog>
-  <h2 mat-dialog-title>Confirm Action</h2>
-  <mat-dialog-content>
-    <p>Are you sure you want to delete this company?</p>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <!-- mat-dialog-close returns the value to the subscriber -->
-    <button mat-button [mat-dialog-close]="false">Cancel</button>
-    <button mat-raised-button color="warn" [mat-dialog-close]="true">Delete</button>
-  </mat-dialog-actions>
+  <div class="confirm-dialog">
+    <h2 mat-dialog-title>Request to Delete Company</h2>
+    <mat-dialog-content>
+      <div class="confirm-warning">
+        <span class="material-icons">warning_amber</span>
+        <p>Are you sure you want to request deletion of <strong>{{ currentCompany?.companyName }}</strong>? This action cannot be undone.</p>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button [mat-dialog-close]="false">Cancel</button>
+      <button mat-raised-button color="warn" [mat-dialog-close]="true">Delete</button>
+    </mat-dialog-actions>
+  </div>
 </ng-template>
-
-

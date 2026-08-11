@@ -10,7 +10,7 @@ export class ShowpopupService {
 
   private display(message: string, type: 'success' | 'error' | 'info') {
     this.snackBar.open(message, 'Close', {
-      duration: 5000,
+      duration: 4000,
       horizontalPosition: 'right',
       verticalPosition: 'top',
       panelClass: [`pop-${type}`] // This applies the CSS class
@@ -33,6 +33,23 @@ export class ShowpopupService {
     const theme = this.getThemeByCode(code);
     const displayMessage = message?.toString() || "No message provided";
     this.display(displayMessage, theme);
+  }
+
+  // Extract the most relevant message from an HTTP error and show it as an error alert.
+  showApiError(err: any, fallback?: string) {
+    const message = this.extractApiError(err, fallback);
+    this.showError(message);
+  }
+
+  extractApiError(err: any, fallback?: string): string {
+    const msg =
+      err?.error?.responseMessage ||
+      err?.error?.responseMessege ||
+      err?.error?.message ||
+      err?.message || 
+      fallback ||
+      'Something went wrong';
+    return msg?.toString() || 'Something went wrong';
   }
 
   // Helper methods for direct use

@@ -77,7 +77,8 @@
             </select>
             <div class="input-wrapper">
               <i class="fas fa-phone input-icon"></i>
-              <input type="tel" class="form-input" formControlName="mobileNumber" placeholder="9876543210">
+              <input type="tel" class="form-input" formControlName="mobileNumber" placeholder="9876543210"
+                (input)="restrictMobileNumber($event)" maxlength="10">
             </div>
           </div>
           <small class="error-msg" *ngIf="isInvalid('otherInfo', 'mobileNumber')">10-digit mobile number
@@ -111,7 +112,8 @@
           <div class="form-group">
             <label>Pincode <span class="required">*</span></label>
             <div class="input-wrapper"><i class="fas fa-map-pin input-icon"></i>
-              <input type="text" class="form-input" formControlName="pincode" placeholder="400001">
+              <input type="text" class="form-input" formControlName="pincode" placeholder="400001"
+                (input)="restrictPincode($event)" maxlength="6">
             </div>
             <small class="error-msg" *ngIf="isInvalid('addressInfo', 'pincode')">6-digit pincode required</small>
           </div>
