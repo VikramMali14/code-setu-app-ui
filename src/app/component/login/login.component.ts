@@ -1,13 +1,9 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthResponse } from 'src/app/models/authresponse';
 import { LoginService } from 'src/app/services/login.service';
-import { LoaderComponent } from '../loader/loader.component';
-import { switchMap, tap } from 'rxjs';
-import { StaffuserServiceService } from 'src/app/services/staffuser-service';
-import { JwttokenService } from 'src/app/services/jwttoken.service';
+import { switchMap } from 'rxjs';
 import { CompanyService } from 'src/app/services/company.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
@@ -30,8 +26,8 @@ declare const google: any;
     ])
   ]
 })
-export class LoginComponent implements OnInit, AfterViewInit {
-  isLoading = false; // Add this property
+export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
+  isLoading = false;
 
   credential = {
     email: '',
@@ -43,24 +39,47 @@ export class LoginComponent implements OnInit, AfterViewInit {
   userExists: boolean | null = null;
   checkingEmail = false;
 
+  // Static country code list – avoids CORS-blocked restcountries.com API call
   countryCodes: any[] = [
-    { name: 'India', code: '+91', cca2: 'IN' },
-    { name: 'USA', code: '+1', cca2: 'US' },
-    { name: 'UK', code: '+44', cca2: 'GB' },
-    { name: 'UAE', code: '+971', cca2: 'AE' }
+    { name: 'India',         code: '+91',  cca2: 'IN' },
+    { name: 'USA',           code: '+1',   cca2: 'US' },
+    { name: 'UK',            code: '+44',  cca2: 'GB' },
+    { name: 'UAE',           code: '+971', cca2: 'AE' },
+    { name: 'Australia',     code: '+61',  cca2: 'AU' },
+    { name: 'Canada',        code: '+1',   cca2: 'CA' },
+    { name: 'Germany',       code: '+49',  cca2: 'DE' },
+    { name: 'France',        code: '+33',  cca2: 'FR' },
+    { name: 'Singapore',     code: '+65',  cca2: 'SG' },
+    { name: 'Japan',         code: '+81',  cca2: 'JP' },
+    { name: 'China',         code: '+86',  cca2: 'CN' },
+    { name: 'South Africa',  code: '+27',  cca2: 'ZA' },
+    { name: 'Brazil',        code: '+55',  cca2: 'BR' },
+    { name: 'Mexico',        code: '+52',  cca2: 'MX' },
+    { name: 'Bangladesh',    code: '+880', cca2: 'BD' },
+    { name: 'Pakistan',      code: '+92',  cca2: 'PK' },
+    { name: 'Nepal',         code: '+977', cca2: 'NP' },
+    { name: 'Sri Lanka',     code: '+94',  cca2: 'LK' },
   ];
+
+  // Timer handle used to debounce the email-existence check on blur
+  private emailBlurTimer: any = null;
 
   constructor(
     private loginService: LoginService,
     private router: Router,
-    private http: HttpClient,
     private companyService: CompanyService,
     private dialog: MatDialog,
     private showPopup: ShowpopupService
   ) { }
 
   ngOnInit(): void {
-    this.loadCountryCodes();
+    // Country codes are now static – no API call needed
+  }
+
+  ngOnDestroy(): void {
+    if (this.emailBlurTimer) {
+      clearTimeout(this.emailBlurTimer);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -164,26 +183,44 @@ export class LoginComponent implements OnInit, AfterViewInit {
   otpSent = false;
 
   checkEmailExists() {
+    // Clear any previous pending check
+    if (this.emailBlurTimer) {
+      clearTimeout(this.emailBlurTimer);
+    }
+
     const email = this.credential.email?.trim();
     if (!email) {
       this.userExists = null;
       return;
     }
-    this.checkingEmail = true;
-    this.loginService.checkUserExists(email).subscribe({
-      next: (res) => {
-        this.userExists = res.exists;
-        this.checkingEmail = false;
-        if (!res.exists) {
-          this.router.navigate(['/signup'], { queryParams: { email } });
-        }
-      },
-      error: () => {
-        // Don't block login on a failed check - let the actual login call be the source of truth.
-        this.userExists = null;
-        this.checkingEmail = false;
+
+    // Wait 150 ms before checking – if the user just tabbed to the password
+    // field, document.activeElement will already be the password input and we
+    // skip the redirect so the user can finish entering their password.
+    this.emailBlurTimer = setTimeout(() => {
+      const focused = document.activeElement as HTMLElement;
+      const loginForm = document.querySelector('form');
+      if (loginForm && loginForm.contains(focused)) {
+        // Focus moved to another field inside the same form – skip redirect
+        return;
       }
-    });
+
+      this.checkingEmail = true;
+      this.loginService.checkUserExists(email).subscribe({
+        next: (res) => {
+          this.userExists = res.exists;
+          this.checkingEmail = false;
+          if (!res.exists) {
+            this.router.navigate(['/signup'], { queryParams: { email } });
+          }
+        },
+        error: () => {
+          // Don't block login on a failed check – let the actual login call decide.
+          this.userExists = null;
+          this.checkingEmail = false;
+        }
+      });
+    }, 150);
   }
 
   loginWithEmail() {
@@ -312,29 +349,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     });
   }
 
-  loadCountryCodes() {
-    this.http.get<any[]>('https://restcountries.com/v3.1/all?fields=name,idd,cca2').subscribe({
-      next: (countries) => {
-        if (Array.isArray(countries)) {
-          this.countryCodes = countries
-            .map(c => {
-              const root = c.idd?.root || '';
-              const suffix = c.idd?.suffixes?.[0] || '';
-              return {
-                name: c.name?.common || '',
-                code: root + suffix,
-                cca2: c.cca2 || ''
-              };
-            })
-            .filter(c => c.name && c.code)
-            .sort((a, b) => a.name.localeCompare(b.name));
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load country codes', err);
-      }
-    });
-  }
 }
+
 
 

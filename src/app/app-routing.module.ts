@@ -8,6 +8,7 @@ import { ServicesComponent } from './component/services/services.component';
 import { AboutComponent } from './component/about/about.component';
 import { ContectUsComponent } from './component/contect-us/contect-us.component';
 import { AuthGuard } from './services/guard/auth.guard';
+import { PermissionGuard } from './services/guard/permission.guard';
 import { FooterComponent } from './component/footer/footer.component';
 import { RoleComponent } from './component/component/role/role.component';
 import { UpdateroleComponent } from './component/updaterole/updaterole.component';
@@ -39,33 +40,33 @@ const routes: Routes = [
   { path: 'about', component: AboutComponent, pathMatch: 'full' },
   { path: 'contactus', component: ContectUsComponent, pathMatch: 'full' },
   { path: 'home', component: HomeComponent, pathMatch: 'full' },
-  { path: 'createrole', component: RoleComponent, pathMatch: 'full' },
-  { path: 'updaterole', component: UpdateroleComponent, pathMatch: 'full' },
-  { path: 'roles', component: RolesDetailsComponent, pathMatch: 'full' },
-  { path: 'permission-list', component: PermissionComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'createrole', component: RoleComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'ROLE', action: 'CREATE' } },
+  { path: 'updaterole', component: UpdateroleComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'ROLE', action: 'MODIFY' } },
+  { path: 'roles', component: RolesDetailsComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'ROLE', action: 'READ' } },
+  { path: 'permission-list', component: PermissionComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'PERMISSION', action: 'READ' } },
   { path: 'feature', component: FeaturescreenComponent, pathMatch: 'full' },
-  { path: 'staffdetails', component: StaffDetailsComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'staffuser', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'staffdetails', component: StaffDetailsComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'STAFF', action: 'READ' } },
+  { path: 'staffuser', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'STAFF', action: 'CREATE' } },
 
-  { path: 'department', component: DepartmentComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'plan', component: PlanscreenComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'department', component: DepartmentComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'DEPARTMENT', action: 'READ' } },
+  { path: 'plan', component: PlanscreenComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'PLAN', action: 'READ' } },
   { path: 'createPlan', redirectTo: 'createplan', pathMatch: 'full' },
   { path: 'createPLan', redirectTo: 'createplan', pathMatch: 'full' },
-  { path: 'createplan', component: CreateplanComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'customers', component: CustomerComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'staffuser/:staffId', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'company-list', component: CompanyComponent , pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'company-create', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'company-edit/:id', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'createplan', component: CreateplanComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'PLAN', action: 'CREATE' } },
+  { path: 'customers', component: CustomerComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'CUSTOMER', action: 'READ' } },
+  { path: 'staffuser/:staffId', component: StaffuserComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'STAFF', action: 'MODIFY' } },
+  { path: 'company-list', component: CompanyComponent , pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'COMPANY', action: 'READ' } },
+{ path: 'company-create', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'COMPANY', action: 'CREATE' } },
+{ path: 'company-edit/:id', component: CompanyComponent,  pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'COMPANY', action: 'MODIFY' } },
 { path: 'vehicle', redirectTo: 'vehicle-management', pathMatch: 'full' },
-{ path: 'vehicle-management', component: VehicleManagementComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'vehicle-management/vehicles', component: VehicleComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'vehicle-management/drivers', component: DriverComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'vehicle-management/assignments', component: AssignmentComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'system-configuration', component: SyetemconfigurationComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'quotations', component: QuotaionComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'trips', component: TripComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-{ path: 'customer/:customerId/shifting/:shiftId', component: ShiftingWorkspaceComponent, canActivate: [AuthGuard] },
+{ path: 'vehicle-management', component: VehicleManagementComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'VEHICLE', action: 'READ' } },
+{ path: 'vehicle-management/vehicles', component: VehicleComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'VEHICLE', action: 'READ' } },
+{ path: 'vehicle-management/drivers', component: DriverComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'VEHICLE', action: 'READ' } },
+{ path: 'vehicle-management/assignments', component: AssignmentComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'VEHICLE', action: 'READ' } },
+{ path: 'system-configuration', component: SyetemconfigurationComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'SYSTEMCONFIG', action: 'READ' } },
+{ path: 'quotations', component: QuotaionComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'QUOTATION', action: 'READ' } },
+{ path: 'trips', component: TripComponent, pathMatch: 'full', canActivate: [AuthGuard, PermissionGuard], data: { module: 'TRIP', action: 'READ' } },
+{ path: 'customer/:customerId/shifting/:shiftId', component: ShiftingWorkspaceComponent, canActivate: [AuthGuard, PermissionGuard], data: { module: 'SHIFTING', action: 'READ' } },
 
 ];
 

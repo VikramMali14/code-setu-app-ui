@@ -10,7 +10,9 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RoleserviceService } from 'src/app/services/role/roleservice.service';
 import { DepartmentService } from 'src/app/services/department.service';
+import { CompanyService } from 'src/app/services/company.service';
 import { forkJoin } from 'rxjs';
+import { MOBILE_COUNTRIES, MobileCountry, getMobileDigits } from 'src/app/models/mobile-codes';
 
 
 @Component({
@@ -39,6 +41,7 @@ export class StaffuserComponent implements OnInit {
 
   roles: any[] = [];
   departments: any[] = [];
+  mobileCountries: MobileCountry[] = MOBILE_COUNTRIES;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -48,7 +51,7 @@ export class StaffuserComponent implements OnInit {
     private route: ActivatedRoute,
     private roleservice: RoleserviceService,
     private departmentservice: DepartmentService,
-
+    private companyService: CompanyService,
     private shoepopup: ShowpopupService
   ) {
     // this.initializeForm();
@@ -75,6 +78,7 @@ export class StaffuserComponent implements OnInit {
     this.buildForm();
     this.loadRoles();
     this.loadDepartments();
+    this.resolveCompanyId();
 
     this.route.params.subscribe(params => {
       if (params['staffId']) {
@@ -82,6 +86,20 @@ export class StaffuserComponent implements OnInit {
         this.staffId = +params['staffId'];
         this.loadStaffById();
       }
+    });
+  }
+
+  currentCompanyId: number | null = null;
+
+  private resolveCompanyId(): void {
+    this.companyService.getCurrentCompany().subscribe({
+      next: (res: any) => {
+        if (res && res.responseCode === 200 && res.data) {
+          this.currentCompanyId = res.data.companyId ?? res.data.id ?? null;
+          this.staffForm?.patchValue({ companyId: this.currentCompanyId });
+        }
+      },
+      error: () => this.currentCompanyId = null
     });
   }
 
@@ -123,37 +141,82 @@ export class StaffuserComponent implements OnInit {
 
   buildForm() {
     this.staffForm = this.fb.group({
+      staffId: [null],
+      uuid: [''],
       userName: ['', Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: [''],
       mobileCode: ['+91'],
-      mobileNumber: ['', Validators.required],
+      mobileNumber: ['', [Validators.required]],
+
+      alternateMobile: [''],
 
       address: [''],
       city: [''],
       state: [''],
-      pincode: [''],
+      pincode: ['', [Validators.pattern('^[0-9]{6}$')]],
 
       roleId: ['', Validators.required],
       departmentId: ['', Validators.required],
-      companyId: [101],
+      companyId: [null],
 
       staffType: ['PERMANENT'],
       isActive: [true],
+      salary: [null],
 
       licenseNumber: [''],
-      licenseExpiryDate: ['']
+      licenseExpiryDate: [''],
+      profileImageUrl: ['']
     });
+
+    // Keep mobile validation in sync with the selected country code.
+    this.staffForm.get('mobileCode')?.valueChanges.subscribe(() => {
+      this.refreshMobileValidators();
+    });
+  }
+
+  get mobileDigits(): number {
+    return getMobileDigits(this.staffForm?.get('mobileCode')?.value);
+  }
+
+  getMobileInputPattern(): RegExp {
+    return new RegExp(`^[0-9]{${this.mobileDigits}}$`);
+  }
+
+  private refreshMobileValidators(): void {
+    const mobileControl = this.staffForm?.get('mobileNumber');
+    if (!mobileControl) return;
+    mobileControl.setValidators([
+      Validators.required,
+      Validators.pattern(this.getMobileInputPattern())
+    ]);
+    mobileControl.updateValueAndValidity();
+    const alt = this.staffForm.get('alternateMobile');
+    if (alt) {
+      alt.setValidators([Validators.pattern(this.getMobileInputPattern())]);
+      alt.updateValueAndValidity();
+    }
+  }
+
+  onMobileInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/[^0-9]/g, '').slice(0, this.mobileDigits);
+    if (input.value !== digits) {
+      input.value = digits;
+    }
   }
   loadStaffById() {
     this.staffservice.getStaffById(this.staffId).subscribe({
       next: (res) => {
 
         const data = res.data || res;
+        this.staffId = data.staffId ?? data.id ?? this.staffId;
 
         this.staffForm.patchValue({
+          staffId: this.staffId,
+          uuid: data.uuid,
           userName: data.userName,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -161,21 +224,26 @@ export class StaffuserComponent implements OnInit {
           mobileCode: data.mobileCode,
           mobileNumber: data.mobileNumber,
 
+          alternateMobile: data.alternateMobile,
+
           address: data.address,
           city: data.city,
           state: data.state,
           pincode: data.pincode,
 
-          roleId: data.roles?.[0]?.roleId ?? data.roles?.[0]?.rolesId,
+          roleId: data.roles?.[0]?.roleId ?? data.roleIds?.[0] ?? data.roles?.[0]?.rolesId,
           departmentId: data.department?.departmentId ?? data.department?.id,
-          companyId: data.companyId,
+          companyId: data.companyId ?? this.currentCompanyId,
 
           staffType: data.staffType,
           isActive: data.isActive,
+          salary: data.salary,
 
           licenseNumber: data.licenseNumber,
-          licenseExpiryDate: data.licenseExpiryDate
+          licenseExpiryDate: data.licenseExpiryDate,
+          profileImageUrl: data.profileImageUrl
         });
+        this.refreshMobileValidators();
       }
     });
   }
@@ -317,19 +385,30 @@ export class StaffuserComponent implements OnInit {
     // Map the API data to your Form Controls
     this.staffForm.patchValue({
 
+      staffId: data.staffId,
+      uuid: data.uuid,
       userName: data.userName,
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
       mobileCode: data.mobileCode,
       mobileNumber: data.mobileNumber,
+      alternateMobile: data.alternateMobile,
       state: data.state,
       city: data.city,
       address: data.address,
       pincode: data.pincode,
+      roleId: data.roles?.[0]?.roleId ?? data.roleIds?.[0],
+      departmentId: data.department?.departmentId ?? data.department?.id,
+      companyId: data.companyId ?? this.currentCompanyId,
       staffType: data.staffType,
-      isActive: data.isActive
+      isActive: data.isActive,
+      salary: data.salary,
+      licenseNumber: data.licenseNumber,
+      licenseExpiryDate: data.licenseExpiryDate,
+      profileImageUrl: data.profileImageUrl
     });
+    this.refreshMobileValidators();
     this.cd.detectChanges(); // Force UI update
 
 
@@ -402,29 +481,29 @@ export class StaffuserComponent implements OnInit {
 
     const form = this.staffForm.value;
 
-    const payload = {
+    const payload: any = {
 
+      staffId: form.staffId,
+      uuid: form.uuid,
       userName: form.userName,
       firstName: form.firstName,
       lastName: form.lastName,
       email: form.email,
-      password: form.password,
+      password: form.password || undefined,
       mobileCode: form.mobileCode,
       mobileNumber: form.mobileNumber,
+      alternateMobile: form.alternateMobile || undefined,
 
-      roles: [
-        {
-          roleId: form.roleId,
-          roleName: ''
-        }
-      ],
+      // Roles: send ids only (backend StaffDTO uses roleIds)
+      roles: [],
+      roleIds: form.roleId ? [Number(form.roleId)] : [],
 
       department: {
         departmentId: form.departmentId,
         departmentName: ''
       },
 
-      companyId: form.companyId,
+      companyId: form.companyId ?? this.currentCompanyId,
 
       address: form.address,
       city: form.city,
@@ -433,17 +512,22 @@ export class StaffuserComponent implements OnInit {
 
       staffType: form.staffType,
       isActive: form.isActive,
+      salary: form.salary ?? 0,
 
       licenseNumber: form.licenseNumber,
-      licenseExpiryDate: form.licenseExpiryDate
+      licenseExpiryDate: form.licenseExpiryDate,
+      profileImageUrl: form.profileImageUrl || undefined
     };
 
     if (this.isEditMode) {
-      this.staffservice.updateStaff(payload).subscribe({
-        next: () => {
-          this.staffId
+      this.staffservice.updateStaffRecord(this.staffId, payload).subscribe({
+        next: (res: any) => {
           this.isLoading = false;
-          this.snackBar.open('Staff Updated Successfully', 'Close', { duration: 3000 });
+          if (res && res.responseMessege) {
+            this.shoepopup.showResponsePopup(res.responseMessege, res.responseCode);
+          } else {
+            this.snackBar.open('Staff Updated Successfully', 'Close', { duration: 3000 });
+          }
           this.router.navigate(['/staffdetails']);
         },
         error: () => this.isLoading = false
@@ -451,10 +535,14 @@ export class StaffuserComponent implements OnInit {
 
     } else {
 
-      this.staffservice.createStaff(payload).subscribe({
-        next: () => {
+      this.staffservice.createStaffRecord(payload).subscribe({
+        next: (res: any) => {
           this.isLoading = false;
-          this.snackBar.open('Staff Created Successfully', 'Close', { duration: 3000 });
+          if (res && res.responseMessege) {
+            this.shoepopup.showResponsePopup(res.responseMessege, res.responseCode);
+          } else {
+            this.snackBar.open('Staff Created Successfully', 'Close', { duration: 3000 });
+          }
           this.router.navigate(['/staffdetails']);
         },
         error: () => this.isLoading = false

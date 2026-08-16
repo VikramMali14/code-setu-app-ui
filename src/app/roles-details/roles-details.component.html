@@ -19,7 +19,7 @@
         </div>
       </div>
 
-      <button class="circle-btn" (click)="openCreateForm()">
+      <button *appHasPermission="{ module: 'ROLE', action: 'CREATE' }" class="circle-btn" (click)="openCreateForm()">
         <span class="material-icons">add</span>
       </button>
 
@@ -177,11 +177,11 @@
 
             <td class="action-td">
 
-              <button class="table-btn edit-btn" (click)="editRole(item)">
+              <button *appHasPermission="{ module: 'ROLE', action: 'MODIFY' }" class="table-btn edit-btn" (click)="editRole(item)">
                 <span class="material-icons">edit</span>
               </button>
 
-              <button class="table-btn delete-btn" (click)="deleteRole(item.rolesId)">
+              <button *appHasPermission="{ module: 'ROLE', action: 'DELETE' }" class="table-btn delete-btn" (click)="deleteRole(item.rolesId)">
                 <span class="material-icons">delete</span>
               </button>
 

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+export type PermissionAction = 'READ' | 'CREATE' | 'MODIFY' | 'UPDATE' | 'DELETE' | 'ALL';
+
 export interface AccessMenuItem {
   id: string;
   label: string;
@@ -29,10 +31,10 @@ export class AccessMenuService {
       icon: 'dashboard',
       items: [
         { id: 'dashboard', label: 'Dashboard', subtitle: 'Role based workspace', icon: 'dashboard', route: '/dashboard', accent: 'blue' },
-        { id: 'customers', label: 'Customers', subtitle: 'Create and manage CRM entries', icon: 'groups', route: '/customers', accent: 'blue' },
-        { id: 'vehicles', label: 'Vehicles', subtitle: 'Fleet tracking', icon: 'local_shipping', route: '/vehicle', accent: 'orange' },
-        { id: 'staff', label: 'Staff', subtitle: 'Staff profiles and access', icon: 'badge', route: '/staffdetails', accent: 'green' },
-        { id: 'company', label: 'Company', subtitle: 'Company profile and setup', icon: 'corporate_fare', route: '/company-list', accent: 'blue'},
+        { id: 'customers', label: 'Customers', subtitle: 'Create and manage CRM entries', icon: 'groups', route: '/customers', accent: 'blue', permissions: ['CUSTOMER', 'CUSTOMER_READ', 'CUSTOMER_VIEW', 'MANAGE_CUSTOMER'] },
+        { id: 'vehicles', label: 'Vehicles', subtitle: 'Fleet tracking', icon: 'local_shipping', route: '/vehicle', accent: 'orange', permissions: ['VEHICLE', 'VEHICLE_READ', 'VEHICLE_VIEW', 'MANAGE_VEHICLE'] },
+        { id: 'staff', label: 'Staff', subtitle: 'Staff profiles and access', icon: 'badge', route: '/staffdetails', accent: 'green', permissions: ['STAFF', 'STAFF_READ', 'STAFF_VIEW', 'MANAGE_STAFF'] },
+        { id: 'company', label: 'Company', subtitle: 'Company profile and setup', icon: 'corporate_fare', route: '/company-list', accent: 'blue', permissions: ['COMPANY', 'COMPANY_READ', 'COMPANY_VIEW', 'MANAGE_COMPANY'] },
         { id: 'plans', label: 'Plans', subtitle: 'Subscription plans', icon: 'category', route: '/plan', accent: 'pink', permissions: ['PLAN', 'PLAN_VIEW', 'MANAGE_PLAN'] },
         { id: 'reports', label: 'Reports', subtitle: 'Business reports', icon: 'bar_chart', accent: 'green', comingSoon: true, permissions: ['REPORT', 'REPORT_VIEW', 'VIEW_REPORTS'] }
       ]
@@ -93,6 +95,42 @@ export class AccessMenuService {
       const normalized = this.normalize(permission);
       return access.permissions.has(normalized) || access.permissions.has(this.normalize(item.id));
     });
+  }
+
+  hasPermission(module: string, action: PermissionAction = 'READ'): boolean {
+    const access = this.getCurrentAccess();
+    if (access.isSuperAdmin) {
+      return true;
+    }
+
+    if (!access.hasAccessData) {
+      return true; // Default fallback if no permissions populated yet
+    }
+
+    const mod = this.normalize(module);
+    const act = action.toUpperCase();
+    let searchAction = act;
+    if (act === 'MODIFY') searchAction = 'UPDATE';
+
+    const specificCode = `${mod}_${searchAction}`;
+    const allCode = `${mod}_ALL`;
+    const viewCode = `${mod}_VIEW`;
+    const readCode = `${mod}_READ`;
+    const updateDeleteCode = `${mod}_UPDATE_DELETE`;
+
+    if (access.permissions.has(specificCode) || access.permissions.has(allCode)) {
+      return true;
+    }
+
+    if (act === 'READ' && (access.permissions.has(viewCode) || access.permissions.has(readCode) || access.permissions.has(mod))) {
+      return true;
+    }
+
+    if ((act === 'MODIFY' || act === 'UPDATE' || act === 'DELETE') && access.permissions.has(updateDeleteCode)) {
+      return true;
+    }
+
+    return false;
   }
 
   private getCurrentAccess(): { permissions: Set<string>; isSuperAdmin: boolean; hasAccessData: boolean } {

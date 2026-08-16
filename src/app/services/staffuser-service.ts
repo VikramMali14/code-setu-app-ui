@@ -21,6 +21,16 @@ export class StaffuserServiceService {
    updateStaff(payload: any): Observable<any> {
     return this.http.post(`${this.BASE_URL}/auth/user/register`, payload);
   }
+  // Staff management endpoints (matches backend StaffDTO)
+  createStaffRecord(payload: any): Observable<any> {
+    return this.http.post(`${this.BASE_URL}/api/v2/cargosetu/staff`, payload);
+  }
+  updateStaffRecord(staffId: any, payload: any): Observable<any> {
+    return this.http.put(`${this.BASE_URL}/api/v2/cargosetu/staff/${staffId}`, payload);
+  }
+  deleteStaff(staffId: any): Observable<any> {
+    return this.http.delete(`${this.BASE_URL}/api/v2/cargosetu/staff/${staffId}`);
+  }
   // staff.service.ts
   private staffDetailsSubject = new BehaviorSubject<any>(null);
   staffDetails$ = this.staffDetailsSubject.asObservable(); // Components subscribe to this

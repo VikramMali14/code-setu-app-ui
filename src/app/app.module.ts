@@ -86,12 +86,14 @@ import { WsChargesComponent } from './component/shifting-workspace/charges/charg
 import { WsDocumentsComponent } from './component/shifting-workspace/documents/workspace-documents.component';
 import { WsTimelineComponent } from './component/shifting-workspace/timeline/timeline.component';
 import { WsDetailsComponent } from './component/shifting-workspace/details/ws-details.component';
+import { HasPermissionDirective } from './directives/has-permission.directive';
 
 // import { DownloadscreenComponent } from './component/downloadscreen/downloadscreen.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    HasPermissionDirective,
     LoginComponent,
     NavBarComponent,
     SignupComponent,
