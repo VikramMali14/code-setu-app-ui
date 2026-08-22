@@ -108,7 +108,10 @@ export class RolesDetailsComponent implements OnInit {
     const permissionGroup: any = {};
 
     this.permissionList.forEach(p => {
-      permissionGroup[p.id] = [false];
+      const pId = p.id || p.permissionId;
+      if (pId != null) {
+        permissionGroup[pId] = [false];
+      }
     });
 
     this.roleForm.setControl(
@@ -150,12 +153,11 @@ export class RolesDetailsComponent implements OnInit {
     this.createPermissionControls();
 
     if (role.permissions) {
-
       role.permissions.forEach((x: any) => {
-
-        this.roleForm.get('permissions.' + x.id)
-          ?.setValue(true);
-
+        const pId = x.id || x.permissionId || (typeof x === 'number' ? x : null);
+        if (pId != null) {
+          this.roleForm.get(['permissions', pId.toString()])?.setValue(true);
+        }
       });
     }
   }
@@ -172,23 +174,23 @@ export class RolesDetailsComponent implements OnInit {
 
     const raw = this.roleForm.value;
 
-    const selectedPermissions =
+    const selectedPermissionIds =
       Object.keys(raw.permissions)
         .filter(id => raw.permissions[id] === true)
-        .map(id => ({ id: +id }));
+        .map(id => +id);
 
     const payload = {
       code: raw.code,
       roleName: raw.roleName,
-      discription: raw.discription,
+      description: raw.discription,
       scope: raw.scope,
-      permissions: selectedPermissions
+      permissionIds: selectedPermissionIds
     };
 
     if (this.isEditMode) {
 
       const updatePayload = {
-        rolesId: this.selectedId,
+        roleId: this.selectedId,
         ...payload
       };
 

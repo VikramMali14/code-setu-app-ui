@@ -98,7 +98,7 @@
 
             <label class="permission-box" *ngFor="let item of $any(group.value)">
 
-              <input type="checkbox" [formControlName]="item.id">
+              <input type="checkbox" [formControlName]="item.id || item.permissionId">
 
               <span>{{ item.name }}</span>
 

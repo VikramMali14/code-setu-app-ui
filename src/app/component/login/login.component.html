@@ -21,8 +21,10 @@
               (blur)="checkEmailExists()" (ngModelChange)="userExists = null">
           </mat-form-field>
           <small class="error-msg" *ngIf="checkingEmail">Checking...</small>
-          <small class="error-msg" *ngIf="userExists === false">No account found with this email. Redirecting to
-            signup...</small>
+          <small class="error-msg" *ngIf="userExists === false">
+            No account found with this email.
+            <a style="cursor:pointer; text-decoration:underline;" (click)="goToSignup()">Sign up instead?</a>
+          </small>
 
           <mat-form-field appearance="outline" class="full" *ngIf="userExists !== false">
             <mat-label>Password</mat-label>

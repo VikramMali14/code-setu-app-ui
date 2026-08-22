@@ -194,14 +194,16 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    // Wait 150 ms before checking – if the user just tabbed to the password
-    // field, document.activeElement will already be the password input and we
-    // skip the redirect so the user can finish entering their password.
+    // Debounce: wait 300ms after blur before checking.
+    // Do NOT auto-redirect — browser autofill can trigger blur before the
+    // user has intentionally interacted with the field, causing spurious
+    // redirects to /signup. We only show a hint message; the user decides.
     this.emailBlurTimer = setTimeout(() => {
+      // Skip the check if focus is still within the login form
+      // (e.g., user tabbed to the password field).
       const focused = document.activeElement as HTMLElement;
       const loginForm = document.querySelector('form');
       if (loginForm && loginForm.contains(focused)) {
-        // Focus moved to another field inside the same form – skip redirect
         return;
       }
 
@@ -210,9 +212,8 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
         next: (res) => {
           this.userExists = res.exists;
           this.checkingEmail = false;
-          if (!res.exists) {
-            this.router.navigate(['/signup'], { queryParams: { email } });
-          }
+          // NOTE: Do NOT redirect here. If the user doesn't exist,
+          // we show a message with a link to signup — the user chooses.
         },
         error: () => {
           // Don't block login on a failed check – let the actual login call decide.
@@ -220,7 +221,12 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
           this.checkingEmail = false;
         }
       });
-    }, 150);
+    }, 300);
+  }
+
+  goToSignup() {
+    const email = this.credential.email?.trim();
+    this.router.navigate(['/signup'], email ? { queryParams: { email } } : {});
   }
 
   loginWithEmail() {

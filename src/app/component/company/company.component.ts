@@ -14,6 +14,8 @@ import { LoginService } from 'src/app/services/login.service';
 
 export class CompanyComponent implements OnInit {
   @ViewChild('confirmDialog') confirmDialogTemplate!: TemplateRef<any>;
+  @ViewChild('sameAs1') sameAs1Checkbox!: import('@angular/core').ElementRef<HTMLInputElement>;
+  @ViewChild('sameAs2') sameAs2Checkbox!: import('@angular/core').ElementRef<HTMLInputElement>;
 
   companyList: any[] = [];
   assetTypes: string[] = ['LOGO', 'SEAL/Signature', 'STAMP'];
@@ -49,11 +51,10 @@ export class CompanyComponent implements OnInit {
   }
 
   buildForm() {
-    const codePattern = '^\\+\\d{1,4}$';
-    const numberPattern = '^\\d{10}$';
-    const panPattern = '^[A-Z]{5}[0-9]{4}[A-Z]{1}$';
-    // GST: 2 digits, 10 PAN chars, 1 entity digit, 'Z', 1 checksum char
-    const gstPattern = '^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$';
+    const codePattern = '^\\+?\\d{1,4}$';
+    const numberPattern = '^[0-9]{7,15}$';
+    const panPattern = '^[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}$';
+    const gstPattern = '^[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ][0-9a-zA-Z]{1}$';
 
     this.companyForm = this.fb.group({
       companyId: [null],
@@ -79,6 +80,30 @@ export class CompanyComponent implements OnInit {
       isActive: [true],
       assetType: [''],
       assetFile: [null]
+    });
+
+    this.companyForm.get('whatsappNumber')?.valueChanges.subscribe(() => {
+      if (this.sameAs1Checkbox?.nativeElement) this.sameAs1Checkbox.nativeElement.checked = false;
+      if (this.sameAs2Checkbox?.nativeElement) this.sameAs2Checkbox.nativeElement.checked = false;
+    });
+
+    this.companyForm.get('whatsappCode')?.valueChanges.subscribe(() => {
+      if (this.sameAs1Checkbox?.nativeElement) this.sameAs1Checkbox.nativeElement.checked = false;
+      if (this.sameAs2Checkbox?.nativeElement) this.sameAs2Checkbox.nativeElement.checked = false;
+    });
+
+    // Monitor and log invalid controls for easier troubleshooting
+    this.companyForm.statusChanges.subscribe(status => {
+      if (status === 'INVALID') {
+        const errorsList: string[] = [];
+        const controls = this.companyForm.controls;
+        for (const name in controls) {
+          if (controls[name].invalid) {
+            errorsList.push(`${name}: invalid (errors: ${JSON.stringify(controls[name].errors)}, value: "${controls[name].value}")`);
+          }
+        }
+        console.warn('❌ Company form is INVALID. Reasons:\n' + errorsList.join('\n'));
+      }
     });
   }
 
@@ -123,6 +148,8 @@ export class CompanyComponent implements OnInit {
     this.companyForm.reset();
     this.clearAssetFile();
     this.addedAssets = [];
+    if (this.sameAs1Checkbox?.nativeElement) this.sameAs1Checkbox.nativeElement.checked = false;
+    if (this.sameAs2Checkbox?.nativeElement) this.sameAs2Checkbox.nativeElement.checked = false;
   }
 
   submitForm() {
@@ -134,7 +161,7 @@ export class CompanyComponent implements OnInit {
 
     if (this.isEditMode) {
 
-      const payload = this.getCompanyPayload();
+      const payload = this.buildCompanyFormData();
       this.companyService.updateCompany(payload).subscribe({
         next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
@@ -150,7 +177,7 @@ export class CompanyComponent implements OnInit {
 
     } else {
 
-      const payload = this.buildCreateCompanyFormData();
+      const payload = this.buildCompanyFormData();
       this.companyService.createCompany(payload).subscribe({
         next: (response: any) => {
           this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode)
@@ -224,13 +251,34 @@ export class CompanyComponent implements OnInit {
         contactNo1Code: parsedContact1.code,
         contactNo1Number: parsedContact1.number,
         contactNo2Code: parsedContact2.code,
-        contactNo2Number: parsedContact2.number
+        contactNo2Number: parsedContact2.number,
+        assetType: ''
       });
       this.clearAssetFile();
       this.addedAssets = [];
     } catch (e) {
       console.error("Error patching company form:", e);
     }
+  }
+
+  copyWhatsAppTo(targetField: string, event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (isChecked) {
+      const whatsappCode = this.companyForm.get('whatsappCode')?.value;
+      const whatsappNumber = this.companyForm.get('whatsappNumber')?.value;
+      
+      this.companyForm.patchValue({
+        [`${targetField}Code`]: whatsappCode,
+        [`${targetField}Number`]: whatsappNumber
+      });
+    }
+  }
+
+  toUpperCase(controlName: string, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const upperValue = input.value.toUpperCase();
+    this.companyForm.get(controlName)?.setValue(upperValue, { emitEvent: false });
+    input.value = upperValue;
   }
 
   onAssetFileChange(event: Event): void {
@@ -241,6 +289,8 @@ export class CompanyComponent implements OnInit {
     this.selectedAssetFileName = file?.name || '';
     this.companyForm.patchValue({ assetFile: file });
     this.companyForm.get('assetFile')?.updateValueAndValidity();
+    
+    this.checkAndAutoAddAsset();
   }
 
   clearAssetFile(): void {
@@ -258,11 +308,13 @@ export class CompanyComponent implements OnInit {
     return payload;
   }
 
-  addAssetToList(): void {
+  checkAndAutoAddAsset(): void {
     const type = this.companyForm.get('assetType')?.value;
     if (type && this.selectedAssetFile) {
       if (this.addedAssets.some(x => x.assetType === type)) {
         this.shoepopup.showResponsePopup(`An asset of type ${type} has already been added.`, 400);
+        this.companyForm.patchValue({ assetType: '' });
+        this.clearAssetFile();
         return;
       }
       this.addedAssets.push({
@@ -279,7 +331,7 @@ export class CompanyComponent implements OnInit {
     this.addedAssets.splice(index, 1);
   }
 
-  private buildCreateCompanyFormData(): FormData {
+  private buildCompanyFormData(): FormData {
     const formData = new FormData();
     const payload = this.getCompanyPayload();
 
@@ -375,24 +427,37 @@ export class CompanyComponent implements OnInit {
 
   parsePhoneNumber(fullNo: any): { code: string, number: string } {
     if (fullNo === null || fullNo === undefined) return { code: '+91', number: '' };
-    const str = fullNo.toString().trim();
+    let str = fullNo.toString().replace(/[^\d+]/g, '').trim();
     if (!str) return { code: '+91', number: '' };
-    if (str.startsWith('+')) {
-      const match = this.countryCodes.find(c => c.code && typeof c.code === 'string' && str.startsWith(c.code));
+
+    let code = '+91';
+    if (!str.startsWith('+')) {
+      const match = this.countryCodes.find(c => {
+        if (!c.code) return false;
+        const cleanCode = c.code.replace('+', '');
+        return str.startsWith(cleanCode) && str.length > 10;
+      });
       if (match) {
-        return {
-          code: match.code,
-          number: str.substring(match.code.length)
-        };
+        code = match.code;
+        const cleanCode = match.code.replace('+', '');
+        str = str.substring(cleanCode.length);
       }
-      const matchRegex = str.match(/^(\+\d{1,4})(\d+)$/);
-      if (matchRegex) {
-        return {
-          code: matchRegex[1],
-          number: matchRegex[2]
-        };
+    } else {
+      const match = this.countryCodes.find(c => c.code && str.startsWith(c.code));
+      if (match) {
+        code = match.code;
+        str = str.substring(match.code.length);
       }
     }
-    return { code: '+91', number: str };
+
+    // Recursively strip duplicate country code digits from the front if str length is greater than 10
+    const codeDigits = code.replace('+', '');
+    while (str.startsWith(codeDigits) && str.length > 10) {
+      str = str.substring(codeDigits.length);
+    }
+
+    return { code: code, number: str };
   }
 }
+
+

@@ -210,6 +210,10 @@
             </select>
             <input type="text" formControlName="contactNo1Number" placeholder="Primary contact">
           </div>
+          <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; font-size: 0.85rem; cursor: pointer; margin-top: 6px;">
+            <input #sameAs1 type="checkbox" style="width: auto; height: auto;" (change)="copyWhatsAppTo('contactNo1', $event)">
+            Same as WhatsApp
+          </label>
           <span class="validation-error" *ngIf="(companyForm.get('contactNo1Number')?.invalid || companyForm.get('contactNo1Code')?.invalid) && companyForm.get('contactNo1Number')?.touched">
             <span *ngIf="companyForm.get('contactNo1Number')?.errors?.['required']">Contact number is required</span>
             <span *ngIf="companyForm.get('contactNo1Number')?.errors?.['pattern']">Enter a valid 10-digit mobile number</span>
@@ -226,6 +230,10 @@
             </select>
             <input type="text" formControlName="contactNo2Number" placeholder="Secondary contact">
           </div>
+          <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; font-size: 0.85rem; cursor: pointer; margin-top: 6px;">
+            <input #sameAs2 type="checkbox" style="width: auto; height: auto;" (change)="copyWhatsAppTo('contactNo2', $event)">
+            Same as WhatsApp
+          </label>
           <span class="validation-error" *ngIf="(companyForm.get('contactNo2Number')?.invalid || companyForm.get('contactNo2Code')?.invalid) && companyForm.get('contactNo2Number')?.touched">
             Enter a valid 10-digit mobile number
           </span>
@@ -244,7 +252,7 @@
 
         <div class="form-group">
           <label>PAN Number *</label>
-          <input type="text" formControlName="panNumber" placeholder="ABCDE1234F">
+          <input type="text" formControlName="panNumber" placeholder="ABCDE1234F" (input)="toUpperCase('panNumber', $event)">
           <span class="validation-error" *ngIf="companyForm.get('panNumber')?.invalid && companyForm.get('panNumber')?.touched">
             Enter a valid PAN number (e.g., ABCDE1234F)
           </span>
@@ -252,7 +260,7 @@
 
         <div class="form-group">
           <label>GST Number *</label>
-          <input type="text" formControlName="gstNumber" placeholder="GST number">
+          <input type="text" formControlName="gstNumber" placeholder="GST number" (input)="toUpperCase('gstNumber', $event)">
           <span class="validation-error" *ngIf="companyForm.get('gstNumber')?.invalid && companyForm.get('gstNumber')?.touched">
             Enter a valid GST number
           </span>
@@ -297,14 +305,12 @@
 
         <div class="form-group">
           <label>Asset Type *</label>
-          <mat-form-field appearance="outline" class="asset-type-select">
-            <mat-select formControlName="assetType" placeholder="Select asset type">
-              <mat-option [value]="''">Select asset type</mat-option>
-              <mat-option *ngFor="let type of assetTypes" [value]="type">
-                {{ type }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <select formControlName="assetType" (change)="checkAndAutoAddAsset()">
+            <option value="">Select asset type</option>
+            <option *ngFor="let type of assetTypes" [value]="type">
+              {{ type }}
+            </option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -314,14 +320,6 @@
             <span>{{ selectedAssetFileName || 'Choose asset file' }}</span>
             <input type="file" accept="image/*,.pdf" (change)="onAssetFileChange($event)">
           </label>
-        </div>
-
-        <div class="form-group add-asset-grid-cell">
-          <label class="invisible-label-spacing">Add Asset</label>
-          <button type="button" class="add-asset-btn" (click)="addAssetToList()" [disabled]="!companyForm.get('assetType')?.value || !selectedAssetFile">
-            <span class="material-icons">add</span>
-            Add Asset
-          </button>
         </div>
       </div>
 

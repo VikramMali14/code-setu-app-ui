@@ -130,14 +130,36 @@ export class StaffuserComponent implements OnInit {
     this.showUpdateForm = false;
   }
   loadStaffData() {
-    // Load existing staff data from service or route params
-    // Example: Get from localStorage or API
     const savedData = localStorage.getItem('currentStaff');
     if (savedData) {
       const staffData = JSON.parse(savedData);
       this.staffForm.patchValue(staffData);
     }
   }
+
+
+  getCountryFlag(code: string): string {
+    const flags: { [key: string]: string } = {
+      '+91': '🇮🇳',
+      '+1': '🇺🇸',
+      '+44': '🇬🇧',
+      '+971': '🇦🇪',
+      '+61': '🇦🇺',
+      '+65': '🇸🇬',
+      '+60': '🇲🇾',
+      '+82': '🇰🇷',
+      '+81': '🇯🇵',
+      '+49': '🇩🇪',
+      '+33': '🇫🇷',
+      '+39': '🇮🇹',
+      '+34': '🇪🇸',
+      '+55': '🇧🇷',
+      '+7': '🇷🇺',
+      '+86': '🇨🇳'
+    };
+    return flags[code] || '🌐';
+  }
+
 
   buildForm() {
     this.staffForm = this.fb.group({
@@ -214,6 +236,9 @@ export class StaffuserComponent implements OnInit {
         const data = res.data || res;
         this.staffId = data.staffId ?? data.id ?? this.staffId;
 
+        const parsedMobile = this.parsePhone(data.mobileNumber || (data.mobileCode + data.mobileNumber), data.mobileCode || '+91');
+        const parsedAltMobile = this.parsePhone(data.alternateMobile, '+91');
+
         this.staffForm.patchValue({
           staffId: this.staffId,
           uuid: data.uuid,
@@ -221,10 +246,10 @@ export class StaffuserComponent implements OnInit {
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
-          mobileCode: data.mobileCode,
-          mobileNumber: data.mobileNumber,
+          mobileCode: parsedMobile.code,
+          mobileNumber: parsedMobile.number,
 
-          alternateMobile: data.alternateMobile,
+          alternateMobile: parsedAltMobile.number,
 
           address: data.address,
           city: data.city,
@@ -247,6 +272,7 @@ export class StaffuserComponent implements OnInit {
       }
     });
   }
+
   onSubmit() {
     if (this.staffForm.valid) {
       this.isSubmitting = true;
@@ -382,6 +408,9 @@ export class StaffuserComponent implements OnInit {
     }
   }
   patchStaffData(data: any) {
+    const parsedMobile = this.parsePhone(data.mobileNumber || (data.mobileCode + data.mobileNumber), data.mobileCode || '+91');
+    const parsedAltMobile = this.parsePhone(data.alternateMobile, '+91');
+
     // Map the API data to your Form Controls
     this.staffForm.patchValue({
 
@@ -391,9 +420,9 @@ export class StaffuserComponent implements OnInit {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
-      mobileCode: data.mobileCode,
-      mobileNumber: data.mobileNumber,
-      alternateMobile: data.alternateMobile,
+      mobileCode: parsedMobile.code,
+      mobileNumber: parsedMobile.number,
+      alternateMobile: parsedAltMobile.number,
       state: data.state,
       city: data.city,
       address: data.address,
@@ -525,12 +554,20 @@ export class StaffuserComponent implements OnInit {
           this.isLoading = false;
           if (res && res.responseMessege) {
             this.shoepopup.showResponsePopup(res.responseMessege, res.responseCode);
+          } else if (res && res.responseMessage) {
+            this.shoepopup.showResponsePopup(res.responseMessage, res.responseCode);
           } else {
             this.snackBar.open('Staff Updated Successfully', 'Close', { duration: 3000 });
           }
           this.router.navigate(['/staffdetails']);
         },
-        error: () => this.isLoading = false
+        error: (err: any) => {
+          this.isLoading = false;
+          console.error(err);
+          const errorMsg = err?.error?.responseMessage || err?.error?.responseMessege || err?.message || 'Failed to update staff';
+          const errorCode = err?.error?.responseCode || err?.status || 400;
+          this.shoepopup.showResponsePopup(errorMsg, errorCode);
+        }
       });
 
     } else {
@@ -540,12 +577,20 @@ export class StaffuserComponent implements OnInit {
           this.isLoading = false;
           if (res && res.responseMessege) {
             this.shoepopup.showResponsePopup(res.responseMessege, res.responseCode);
+          } else if (res && res.responseMessage) {
+            this.shoepopup.showResponsePopup(res.responseMessage, res.responseCode);
           } else {
             this.snackBar.open('Staff Created Successfully', 'Close', { duration: 3000 });
           }
           this.router.navigate(['/staffdetails']);
         },
-        error: () => this.isLoading = false
+        error: (err: any) => {
+          this.isLoading = false;
+          console.error(err);
+          const errorMsg = err?.error?.responseMessage || err?.error?.responseMessege || err?.message || 'Failed to create staff';
+          const errorCode = err?.error?.responseCode || err?.status || 400;
+          this.shoepopup.showResponsePopup(errorMsg, errorCode);
+        }
       });
 
     }
@@ -595,4 +640,38 @@ getSelectedDepartmentName(): string {
   );
   return dept?.departmentName || '-';
 }
+
+parsePhone(fullNo: any, defaultCode: string = '+91'): { code: string, number: string } {
+  if (fullNo === null || fullNo === undefined) return { code: defaultCode, number: '' };
+  let str = fullNo.toString().replace(/[^\d+]/g, '').trim();
+  if (!str) return { code: defaultCode, number: '' };
+
+  let code = defaultCode;
+  if (!str.startsWith('+')) {
+    const match = this.mobileCountries.find(c => {
+      if (!c.code) return false;
+      const cleanCode = c.code.replace('+', '');
+      return str.startsWith(cleanCode) && str.length > 10;
+    });
+    if (match) {
+      code = match.code;
+      const cleanCode = match.code.replace('+', '');
+      str = str.substring(cleanCode.length);
+    }
+  } else {
+    const match = this.mobileCountries.find(c => c.code && str.startsWith(c.code));
+    if (match) {
+      code = match.code;
+      str = str.substring(match.code.length);
+    }
+  }
+
+  const codeDigits = code.replace('+', '');
+  while (str.startsWith(codeDigits) && str.length > 10) {
+    str = str.substring(codeDigits.length);
+  }
+
+  return { code: code, number: str };
 }
+}
+

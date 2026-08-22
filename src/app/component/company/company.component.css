@@ -457,7 +457,7 @@
   margin-bottom: 8px;
 }
 
-.form-group input {
+.form-group input, .form-group select {
   height: 44px;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
@@ -471,18 +471,18 @@
   width: 100%;
 }
 
-.form-group input:focus {
+.form-group input:focus, .form-group select:focus {
   border-color: #667eea;
   background: white;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.form-group input.ng-invalid.ng-touched {
+.form-group input.ng-invalid.ng-touched, .form-group select.ng-invalid.ng-touched {
   border-color: #e53e3e;
   background: #fff5f5;
 }
 
-.form-group input.ng-valid.ng-touched {
+.form-group input.ng-valid.ng-touched, .form-group select.ng-valid.ng-touched {
   border-color: #48bb78;
 }
 
@@ -522,78 +522,6 @@
 
 .file-upload-box input {
   display: none;
-}
-
-.asset-type-select {
-  width: 100%;
-  height: 44px;
-}
-
-::ng-deep .asset-type-select .mat-form-field-wrapper {
-  padding-bottom: 0;
-  margin: 0;
-}
-
-::ng-deep .asset-type-select .mat-form-field-flex {
-  height: 44px;
-  align-items: center;
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 0 14px;
-  transition: all 0.3s ease;
-}
-
-::ng-deep .asset-type-select .mat-form-field-infix {
-  width: auto;
-  border-top: 0;
-  padding: 0;
-}
-
-::ng-deep .asset-type-select .mat-select-trigger {
-  height: 44px;
-  display: flex;
-  align-items: center;
-}
-
-::ng-deep .asset-type-select .mat-select-value,
-::ng-deep .asset-type-select .mat-select-placeholder {
-  color: #2d3748;
-  font-size: 0.95rem;
-}
-
-::ng-deep .asset-type-select .mat-select-placeholder {
-  color: #a0aec0;
-}
-
-::ng-deep .asset-type-select .mat-select-arrow {
-  color: #667eea;
-}
-
-::ng-deep .asset-type-select .mat-form-field-outline {
-  color: #e2e8f0;
-}
-
-::ng-deep .asset-type-select .mat-form-field-outline-thick {
-  color: #667eea;
-}
-
-::ng-deep .asset-type-select.mat-focused .mat-form-field-flex {
-  background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-::ng-deep .asset-type-select .mat-form-field-outline-start,
-::ng-deep .asset-type-select .mat-form-field-outline-gap,
-::ng-deep .asset-type-select .mat-form-field-outline-end {
-  border-width: 2px;
-}
-
-::ng-deep .mat-select-panel .mat-option.mat-selected:not(.mat-option-disabled) {
-  color: #667eea;
-}
-
-::ng-deep .mat-select-panel .mat-option:hover:not(.mat-option-disabled) {
-  background: #f8f9ff;
 }
 
 /* ===== FORM ACTIONS ===== */
@@ -645,43 +573,7 @@
 }
 
 /* ===== ADD ASSET LIST ===== */
-.invisible-label-spacing {
-  visibility: hidden;
-  margin-bottom: 8px;
-  font-size: 0.88rem;
-}
 
-.add-asset-grid-cell {
-  justify-content: flex-end;
-}
-
-.add-asset-btn {
-  height: 44px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0 20px;
-  width: 100%;
-}
-
-.add-asset-btn:hover:not(:disabled) {
-  background: #5a6fd6;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-}
-
-.add-asset-btn:disabled {
-  background: #cbd5e0;
-  color: #a0aec0;
-  cursor: not-allowed;
-}
 
 .added-assets-wrapper {
   margin-top: 24px;
