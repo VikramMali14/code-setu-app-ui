@@ -21,6 +21,9 @@ export class AppComponent implements OnInit, OnDestroy {
   showProfileMenu = false;
   menuSections: AccessMenuSection[] = [];
   expandedSections: { [key: string]: boolean } = {};
+  companyLogo: string = '';
+  companyName: string = '';
+
   
   // Sidebar state
   isSidebarCollapsed = false;
@@ -60,7 +63,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.loginService.loggedIn$.subscribe(() => {
       this.setLayout(this.router.url);
       this.redirectLoggedInHome(this.router.url);
+      this.fetchCurrentCompany();
     });
+
+    if (this.loginService.isLoggedIn()) {
+      this.fetchCurrentCompany();
+    }
 
     // Listen to route changes
     this.router.events
@@ -307,6 +315,29 @@ export class AppComponent implements OnInit, OnDestroy {
       if (section.id !== 'main' && this.expandedSections[section.id] === undefined) {
         this.expandedSections[section.id] = true;
       }
+    });
+  }
+
+  private fetchCurrentCompany(): void {
+    this.companyService.getCurrentCompany().subscribe({
+      next: (res: any) => {
+        if (res?.data) {
+          if (res.data.assets && Array.isArray(res.data.assets)) {
+            const logoAsset = res.data.assets.find((a: any) => a.assetType === 'LOGO');
+            if (logoAsset && logoAsset.fileUrl) {
+              this.companyLogo = logoAsset.fileUrl;
+            } else if (res.data.logoBase64) {
+              this.companyLogo = res.data.logoBase64;
+            }
+          } else if (res.data.logoBase64) {
+            this.companyLogo = res.data.logoBase64;
+          }
+          if (res.data.companyName) {
+            this.companyName = res.data.companyName;
+          }
+        }
+      },
+      error: (err: any) => console.warn('Failed to fetch company details', err)
     });
   }
 }

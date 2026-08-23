@@ -211,7 +211,7 @@ export class CustomerComponent implements OnInit {
 
   loadCompanyList(): void {
     this.companyLoadError = '';
-    this.companyService.getCompany().subscribe({
+    this.companyService.getCurrentCompany().subscribe({
       next: response => {
         this.companyList = this.extractCompanies(response);
       },
@@ -566,6 +566,8 @@ export class CustomerComponent implements OnInit {
     if (Array.isArray(response?.dataList)) return response.dataList;
     if (Array.isArray(response?.data)) return response.data;
     if (Array.isArray(response)) return response;
+    // Fallback if data is a single object (e.g. from getCurrentCompany)
+    if (response?.data && typeof response.data === 'object') return [response.data];
     return [];
   }
 

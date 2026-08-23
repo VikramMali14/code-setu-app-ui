@@ -3,7 +3,6 @@
   padding: 30px;
   background: #f4f6f9;
   min-height: 100vh;
-  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -195,20 +194,15 @@
 
 /* ===== COMPANY PROFILE ===== */
 .company-profile {
-  max-width: 1000px;
   margin: 0 auto;
 }
 
-.profile-banner {
-  height: 96px;
-  border-radius: 18px 18px 0 0;
-  background: linear-gradient(120deg, #667eea 0%, #764ba2 55%, #8e6bc5 100%);
-  position: relative;
+.header-right {
   display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
   justify-content: flex-end;
-  align-items: flex-end;
-  padding: 16px 20px;
-  box-shadow: 0 6px 22px rgba(102, 126, 234, 0.3);
 }
 
 .banner-actions {
@@ -218,7 +212,7 @@
 
 .profile-card {
   background: white;
-  border-radius: 0 0 18px 18px;
+  border-radius: 18px;
   padding: 30px;
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.07);
   border: 1px solid #edf0f5;
@@ -227,7 +221,7 @@
 .profile-head {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
   padding-bottom: 26px;
   border-bottom: 1px solid #eef1f5;
   flex-wrap: wrap;
@@ -253,32 +247,69 @@
   min-width: 220px;
 }
 
-.company-meta h2 {
-  margin: 0 0 8px 0;
-  font-size: 1.45rem;
+.company-meta h2.company-name-title {
+  margin: 0 0 16px 0;
+  font-size: 1.6rem;
   font-weight: 700;
   color: #1f2937;
+  letter-spacing: -0.02em;
 }
 
-.meta-line {
+.meta-details-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px 24px;
+}
+
+.meta-item {
   display: flex;
-  gap: 18px;
-  flex-wrap: wrap;
-  margin-top: 4px;
-}
-
-.meta-line span {
-  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  color: #64748b;
-  font-size: 0.9rem;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #4b5563;
 }
 
-.meta-line i {
+.meta-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.meta-item a {
+  color: #4b5563;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.meta-item a:hover {
   color: #667eea;
-  width: 16px;
-  text-align: center;
+  text-decoration: underline;
+}
+
+.meta-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.meta-item:hover .meta-icon {
+  background-color: #ebf4ff;
+  color: #667eea;
+}
+
+.whatsapp-icon {
+  color: #25D366;
+  background-color: #e8f9ed;
+}
+
+.meta-item:hover .whatsapp-icon {
+  background-color: #d1f4de;
+  color: #20b858;
 }
 
 .status-pill {
@@ -396,9 +427,6 @@
   margin-bottom: 24px;
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.07);
   border: 1px solid #edf0f5;
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .form-card-head {
@@ -829,12 +857,19 @@
     font-size: 1.5rem;
   }
 
-  .company-meta h2 {
-    font-size: 1.2rem;
+  .company-meta h2.company-name-title {
+    font-size: 1.3rem;
   }
 
   .details-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
+}
+
+.profile-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 18px;
 }

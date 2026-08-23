@@ -15,9 +15,19 @@
       </div>
     </div>
 
-    <a routerLink="/" class="back-home-link">
-      <i class="fas fa-arrow-left"></i> Back to Home
-    </a>
+    <div class="header-right">
+      <div class="banner-actions" *ngIf="hasCompany && !showForm && !isLoading">
+        <button class="btn-outline" (click)="editCompany(currentCompany)">
+          <span class="material-icons">edit</span> Edit Company
+        </button>
+        <button class="btn-danger-outline" (click)="deleteCompany(currentCompany.companyId)">
+          <span class="material-icons">delete_outline</span> Request to Delete
+        </button>
+      </div>
+      <a routerLink="/" class="back-home-link">
+        <i class="fas fa-arrow-left"></i> Back to Home
+      </a>
+    </div>
   </div>
 
   <!-- ============================================================
@@ -45,42 +55,44 @@
        COMPANY PROFILE — company exists, show data + actions
        ============================================================ -->
   <div class="company-profile" *ngIf="hasCompany && !showForm && !isLoading">
-    <!-- Profile Banner -->
-    <div class="profile-banner">
-      <div class="banner-actions">
-        <button class="btn-outline" (click)="editCompany(currentCompany)">
-          <span class="material-icons">edit</span> Edit Company
-        </button>
-        <button class="btn-danger-outline" (click)="deleteCompany(currentCompany.companyId)">
-          <span class="material-icons">delete_outline</span> Request to Delete
-        </button>
-      </div>
-    </div>
-
     <!-- Profile Card -->
     <div class="profile-card">
       <div class="profile-head">
         <div class="company-logo">
-          <span>{{ (currentCompany.companyName || 'C') | slice:0:1 }}</span>
+          <img *ngIf="getCompanyLogoUrl(currentCompany); else noLogo" [src]="getCompanyLogoUrl(currentCompany)" alt="Company Logo" class="profile-logo-img">
+          <ng-template #noLogo>
+            <span>{{ (currentCompany.companyName || 'C') | slice:0:1 }}</span>
+          </ng-template>
         </div>
         <div class="company-meta">
-          <h2>{{ currentCompany.companyName }}</h2>
-          <div class="meta-line">
-            <span *ngIf="currentCompany.companyEmail"><i class="fas fa-envelope"></i> {{ currentCompany.companyEmail }}</span>
-            <span *ngIf="currentCompany.website"><i class="fas fa-globe"></i> {{ currentCompany.website }}</span>
-          </div>
-          <div class="meta-line" *ngIf="currentCompany.contactNo1">
-            <span><i class="fas fa-phone-alt"></i> {{ currentCompany.contactNo1 }}</span>
-            <span *ngIf="currentCompany.whatsappNumber"><i class="fab fa-whatsapp"></i> {{ currentCompany.whatsappNumber }}</span>
-          </div>
-          <div class="meta-line" *ngIf="currentCompany.city || currentCompany.state || currentCompany.country">
-            <span><i class="fas fa-map-marker-alt"></i> {{ joinAddressParts([currentCompany.city, currentCompany.state, currentCompany.country]) }}</span>
+          <h2 class="company-name-title">{{ currentCompany.companyName }}</h2>
+          <div class="meta-details-container">
+            <div class="meta-item" *ngIf="currentCompany.companyEmail">
+              <div class="meta-icon"><i class="fas fa-envelope"></i></div>
+              <a href="mailto:{{ currentCompany.companyEmail }}">{{ currentCompany.companyEmail }}</a>
+            </div>
+            <div class="meta-item" *ngIf="currentCompany.website">
+              <div class="meta-icon"><i class="fas fa-globe"></i></div>
+              <a href="javascript:void(0)" (click)="confirmWebsiteRedirect(currentCompany.website)">{{ currentCompany.website }}</a>
+            </div>
+            <div class="meta-item" *ngIf="currentCompany.contactNo1">
+              <div class="meta-icon"><i class="fas fa-phone-alt"></i></div>
+              <a href="tel:{{ currentCompany.contactNo1 }}">{{ currentCompany.contactNo1 }}</a>
+            </div>
+            <div class="meta-item" *ngIf="currentCompany.whatsappNumber">
+              <div class="meta-icon whatsapp-icon"><i class="fab fa-whatsapp"></i></div>
+              <a href="https://wa.me/{{ currentCompany.whatsappNumber }}" target="_blank">{{ currentCompany.whatsappNumber }}</a>
+            </div>
+            <div class="meta-item full-width" *ngIf="currentCompany.city || currentCompany.state || currentCompany.country">
+              <div class="meta-icon"><i class="fas fa-map-marker-alt"></i></div>
+              <span>{{ joinAddressParts([currentCompany.city, currentCompany.state, currentCompany.country]) }}</span>
+            </div>
           </div>
         </div>
-        <div class="status-pill" [class.inactive]="!currentCompany.isActive">
+        <!-- <div class="status-pill" [class.inactive]="!currentCompany.isActive">
           <span class="dot"></span>
           {{ currentCompany.isActive ? 'Active' : 'Inactive' }}
-        </div>
+        </div> -->
       </div>
 
       <!-- Details Grid -->

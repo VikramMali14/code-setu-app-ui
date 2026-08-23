@@ -21,7 +21,8 @@
 
     <aside class="admin-sidebar" [class.collapsed]="isSidebarCollapsed">
       <div class="sidebar-brand">
-        <img src="assets/images/logo-with-name.png" alt="CargoSetu">
+        <img [src]="companyLogo || 'assets/images/APP_Icon.png'" alt="Logo" class="sidebar-logo">
+        <span class="sidebar-brand-name" *ngIf="!isSidebarCollapsed">{{ companyLogo ? (companyName || 'CargoSetu Pvt.') : 'CargoSetu Pvt.' }}</span>
       </div>
 
       <nav class="sidebar-nav">

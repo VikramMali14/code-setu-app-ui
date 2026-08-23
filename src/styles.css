@@ -143,7 +143,7 @@ html, body { height: 100%; }
 body { margin: 0;
      font-family: var(--app-font-family) !important; }
 
-body *:not(mat-icon):not(.mat-icon):not(.material-icons):not(.material-icons-outlined):not(.material-icons-round):not(.material-icons-sharp):not(.material-icons-two-tone) {
+body *:not(mat-icon):not(.mat-icon):not(.material-icons):not(.material-icons-outlined):not(.material-icons-round):not(.material-icons-sharp):not(.material-icons-two-tone):not(.fa):not(.fas):not(.far):not(.fab):not(.fa-solid):not(.fa-regular):not(.fa-brands) {
   font-family: var(--app-font-family) !important;
 }
 

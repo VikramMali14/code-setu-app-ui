@@ -109,14 +109,12 @@ export class CompanyComponent implements OnInit {
 
   loadCompanies() {
     this.isLoading = true;
-    this.companyService.getCompany().subscribe({
+    this.companyService.getCurrentCompany().subscribe({
       next: (res: any) => {
-        this.companyList = res.dataList || res.data || [];
-        if (Array.isArray(this.companyList)) {
-          // keep only the primary (first) company for the profile view
-          this.companyList = this.companyList.slice(0, 1);
-        }
+        let data = res.dataList || res.data;
+        this.companyList = Array.isArray(data) ? data : (data ? [data] : []);
         if (this.companyList.length > 0) {
+          this.companyList = this.companyList.slice(0, 1);
           this.companyService.setCompanyStatus(true);
         }
         this.isLoading = false;
@@ -230,6 +228,16 @@ export class CompanyComponent implements OnInit {
     });
   }
 
+  getCompanyLogoUrl(company: any): string | null {
+    if (company?.assets && Array.isArray(company.assets)) {
+      const logoAsset = company.assets.find((a: any) => a.assetType === 'LOGO');
+      if (logoAsset && logoAsset.fileUrl) {
+        return logoAsset.fileUrl;
+      }
+    }
+    return company?.logoBase64 || null;
+  }
+
   editCompany(company: any) {
     console.log("Editing company:", company);
     if (!company || !this.companyForm) {
@@ -258,6 +266,14 @@ export class CompanyComponent implements OnInit {
       this.addedAssets = [];
     } catch (e) {
       console.error("Error patching company form:", e);
+    }
+  }
+  confirmWebsiteRedirect(url: string) {
+    if (!url) return;
+    const finalUrl = url.startsWith('http') ? url : `https://${url}`;
+    const wantToRedirect = window.confirm(`Do you want to visit ${finalUrl}? This will open in a new tab.`);
+    if (wantToRedirect) {
+      window.open(finalUrl, '_blank');
     }
   }
 
