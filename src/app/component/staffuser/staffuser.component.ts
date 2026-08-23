@@ -12,7 +12,7 @@ import { RoleserviceService } from 'src/app/services/role/roleservice.service';
 import { DepartmentService } from 'src/app/services/department.service';
 import { CompanyService } from 'src/app/services/company.service';
 import { forkJoin } from 'rxjs';
-import { MOBILE_COUNTRIES, MobileCountry, getMobileDigits } from 'src/app/models/mobile-codes';
+import { MOBILE_COUNTRIES, MobileCountry, getCountryFlag as countryFlag, getMobileDigits, getMobilePattern, sanitizeMobileNumber } from 'src/app/models/mobile-codes';
 
 
 @Component({
@@ -139,25 +139,7 @@ export class StaffuserComponent implements OnInit {
 
 
   getCountryFlag(code: string): string {
-    const flags: { [key: string]: string } = {
-      '+91': '🇮🇳',
-      '+1': '🇺🇸',
-      '+44': '🇬🇧',
-      '+971': '🇦🇪',
-      '+61': '🇦🇺',
-      '+65': '🇸🇬',
-      '+60': '🇲🇾',
-      '+82': '🇰🇷',
-      '+81': '🇯🇵',
-      '+49': '🇩🇪',
-      '+33': '🇫🇷',
-      '+39': '🇮🇹',
-      '+34': '🇪🇸',
-      '+55': '🇧🇷',
-      '+7': '🇷🇺',
-      '+86': '🇨🇳'
-    };
-    return flags[code] || '🌐';
+    return countryFlag(code);
   }
 
 
@@ -196,6 +178,13 @@ export class StaffuserComponent implements OnInit {
     // Keep mobile validation in sync with the selected country code.
     this.staffForm.get('mobileCode')?.valueChanges.subscribe(() => {
       this.refreshMobileValidators();
+      const code = this.staffForm.get('mobileCode')?.value;
+      ['mobileNumber', 'alternateMobile'].forEach(field => {
+        const control = this.staffForm.get(field);
+        if (control?.value) {
+          control.setValue(sanitizeMobileNumber(control.value, code), { emitEvent: false });
+        }
+      });
     });
   }
 
@@ -203,8 +192,12 @@ export class StaffuserComponent implements OnInit {
     return getMobileDigits(this.staffForm?.get('mobileCode')?.value);
   }
 
+  get mobilePlaceholder(): string {
+    return '0'.repeat(this.mobileDigits);
+  }
+
   getMobileInputPattern(): RegExp {
-    return new RegExp(`^[0-9]{${this.mobileDigits}}$`);
+    return getMobilePattern(this.staffForm?.get('mobileCode')?.value);
   }
 
   private refreshMobileValidators(): void {
@@ -224,9 +217,10 @@ export class StaffuserComponent implements OnInit {
 
   onMobileInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const digits = input.value.replace(/[^0-9]/g, '').slice(0, this.mobileDigits);
+    const digits = sanitizeMobileNumber(input.value, this.staffForm?.get('mobileCode')?.value);
     if (input.value !== digits) {
       input.value = digits;
+      this.staffForm?.get('mobileNumber')?.setValue(digits);
     }
   }
   loadStaffById() {

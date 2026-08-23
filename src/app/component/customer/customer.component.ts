@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CustomerModels } from 'src/app/models/customer-models';
+import { MOBILE_COUNTRIES, MobileCountry, DEFAULT_MOBILE_CODE, getMobileDigits, getMobilePattern, sanitizeMobileNumber } from 'src/app/models/mobile-codes';
 import { CompanyService } from 'src/app/services/company.service';
 import { CustomersService } from 'src/app/services/customers.service';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
@@ -72,12 +72,7 @@ export class CustomerComponent implements OnInit {
   currentPageNumber = 0;
   totalPages = 0;
 
-  countryCodes: any[] = [
-    { name: 'India', code: '+91', cca2: 'IN' },
-    { name: 'USA', code: '+1', cca2: 'US' },
-    { name: 'UK', code: '+44', cca2: 'GB' },
-    { name: 'UAE', code: '+971', cca2: 'AE' }
-  ];
+  countryCodes: MobileCountry[] = MOBILE_COUNTRIES;
 
   constructor(
     private companyService: CompanyService,
@@ -85,12 +80,10 @@ export class CustomerComponent implements OnInit {
     private staffService: StaffuserServiceService,
     private templateService: TemplateService,
     private dialog: MatDialog,
-    private http: HttpClient,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.loadCountryCodes();
     this.loadCustomers();
     this.loadStaffList();
     this.loadCompanyList();
@@ -274,6 +267,8 @@ export class CustomerComponent implements OnInit {
       if (!this.newCustomer.firstName?.trim()) { this.showCreateSnackbar('First name is required', true); return false; }
       if (!this.newCustomer.lastName?.trim())  { this.showCreateSnackbar('Last name is required', true); return false; }
       if (!this.newCustomer.mobileNumber?.trim())  { this.showCreateSnackbar('Mobile number is required', true); return false; }
+      if (this.isMobileInvalid(this.newCustomer, 'mobileNumber', 'mobileCode')) { this.showCreateSnackbar(`Mobile number must be ${this.mobileDigits(this.newCustomer.mobileCode)} digits for ${this.newCustomer.mobileCode}`, true); return false; }
+      if (this.isMobileInvalid(this.newCustomer, 'alternateMobileNumber', 'alternateMobileCode')) { this.showCreateSnackbar(`Alternate mobile must be ${this.mobileDigits(this.newCustomer.alternateMobileCode)} digits for ${this.newCustomer.alternateMobileCode}`, true); return false; }
       if (!this.newCustomer.email?.trim())     { this.showCreateSnackbar('Email is required', true); return false; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.newCustomer.email)) { this.showCreateSnackbar('Enter a valid email address', true); return false; }
     }
@@ -459,6 +454,8 @@ export class CustomerComponent implements OnInit {
       if (!this.customerToUpdate.firstName?.trim()) { this.showUpdateSnackbar('First name is required', true); return false; }
       if (!this.customerToUpdate.lastName?.trim())  { this.showUpdateSnackbar('Last name is required', true); return false; }
       if (!this.customerToUpdate.mobileNumber?.trim())  { this.showUpdateSnackbar('Mobile number is required', true); return false; }
+      if (this.isMobileInvalid(this.customerToUpdate, 'mobileNumber', 'mobileCode')) { this.showUpdateSnackbar(`Mobile number must be ${this.mobileDigits(this.customerToUpdate.mobileCode)} digits for ${this.customerToUpdate.mobileCode}`, true); return false; }
+      if (this.isMobileInvalid(this.customerToUpdate, 'alternateMobileNumber', 'alternateMobileCode')) { this.showUpdateSnackbar(`Alternate mobile must be ${this.mobileDigits(this.customerToUpdate.alternateMobileCode)} digits for ${this.customerToUpdate.alternateMobileCode}`, true); return false; }
       if (!this.customerToUpdate.email?.trim())     { this.showUpdateSnackbar('Email is required', true); return false; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.customerToUpdate.email)) { this.showUpdateSnackbar('Enter a valid email address', true); return false; }
     }
@@ -859,9 +856,9 @@ export class CustomerComponent implements OnInit {
       customerId: null,
       firstName: '',
       lastName: '',
-      mobileCode: '+91',
+      mobileCode: DEFAULT_MOBILE_CODE,
       mobileNumber: '',
-      alternateMobileCode: '+91',
+      alternateMobileCode: DEFAULT_MOBILE_CODE,
       alternateMobileNumber: '',
       mobileNo: '',
       alternateMobileNo: '',
@@ -872,28 +869,36 @@ export class CustomerComponent implements OnInit {
     };
   }
 
-  loadCountryCodes() {
-    this.http.get<any[]>('https://restcountries.com/v3.1/all?fields=name,idd,cca2').subscribe({
-      next: (countries) => {
-        if (Array.isArray(countries)) {
-          this.countryCodes = countries
-            .map(c => {
-              const root = c.idd?.root || '';
-              const suffix = c.idd?.suffixes?.[0] || '';
-              return {
-                name: c.name?.common || '',
-                code: root + suffix,
-                cca2: c.cca2 || ''
-              };
-            })
-            .filter(c => c.name && c.code)
-            .sort((a, b) => a.name.localeCompare(b.name));
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load country codes', err);
-      }
-    });
+  /** Allowed digits for a mobile code, from the shared mobile-codes config. */
+  mobileDigits(code: string): number {
+    return getMobileDigits(code);
+  }
+
+  mobilePlaceholder(code: string): string {
+    return '0'.repeat(getMobileDigits(code));
+  }
+
+  /** True when the number is present but does not match the code's digit count. */
+  isMobileInvalid(model: any, numberField: string, codeField: string): boolean {
+    const value = model?.[numberField];
+    if (!value) return false;
+    return !getMobilePattern(model?.[codeField]).test(value);
+  }
+
+  /** Keeps typing digit-only and capped at the selected country's length. */
+  onMobileInput(model: any, numberField: string, codeField: string, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = sanitizeMobileNumber(input.value, model?.[codeField]);
+    if (input.value !== digits) {
+      input.value = digits;
+    }
+    if (model) model[numberField] = digits;
+  }
+
+  /** Re-trims an already typed number when the country code changes. */
+  onMobileCodeChange(model: any, numberField: string, codeField: string): void {
+    if (!model) return;
+    model[numberField] = sanitizeMobileNumber(model[numberField], model[codeField]);
   }
 
   parsePhoneNumber(fullNo: string): { code: string, number: string } {

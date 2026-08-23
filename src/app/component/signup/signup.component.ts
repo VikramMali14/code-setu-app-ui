@@ -12,6 +12,7 @@ import { CompanyService } from 'src/app/services/company.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { ENV } from 'src/assets/env';
+import { MOBILE_COUNTRIES, MobileCountry, DEFAULT_MOBILE_CODE, getMobileDigits, getMobilePattern, sanitizeMobileNumber } from 'src/app/models/mobile-codes';
 
 declare const google: any;
 
@@ -27,12 +28,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
   submitting = false;
   hidePassword = true;
   hideConfirmPassword = true;
-  countryCodes = [
-    { name: 'India', code: '+91' },
-    { name: 'USA', code: '+1' },
-    { name: 'UK', code: '+44' },
-    { name: 'UAE', code: '+971' }
-  ];
+  countryCodes: MobileCountry[] = MOBILE_COUNTRIES;
   isLoading = false; // Add this property
 
   credential = {
@@ -66,8 +62,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
       // STEP 2: Contact Info
       otherInfo: this.fb.group({
-        mobileNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-        mobileCode: ['+91', Validators.required],
+        mobileNumber: ['', [Validators.required, Validators.pattern(getMobilePattern(DEFAULT_MOBILE_CODE))]],
+        mobileCode: [DEFAULT_MOBILE_CODE, Validators.required],
         staffType: ['STAFF'],
         departmentId: [1],
         isActive: [true]
@@ -90,6 +86,13 @@ export class SignupComponent implements OnInit, AfterViewInit {
     });
 
     this.setupCitySearch();
+
+    // Changing the country code re-applies the digit rule and trims the number.
+    this.staffForm.get('otherInfo.mobileCode')?.valueChanges.subscribe(() => {
+      this.refreshMobileValidators();
+      const mobile = this.staffForm.get('otherInfo.mobileNumber');
+      mobile?.setValue(sanitizeMobileNumber(mobile.value, this.mobileCode), { emitEvent: false });
+    });
 
     const emailFromQuery = this.route.snapshot.queryParamMap.get('email');
     if (emailFromQuery) {
@@ -186,8 +189,27 @@ export class SignupComponent implements OnInit, AfterViewInit {
     return !!(control && control.invalid && (control.dirty || control.touched));
   }
 
+  get mobileCode(): string {
+    return this.staffForm?.get('otherInfo.mobileCode')?.value;
+  }
+
+  get mobileDigits(): number {
+    return getMobileDigits(this.mobileCode);
+  }
+
+  get mobilePlaceholder(): string {
+    return '0'.repeat(this.mobileDigits);
+  }
+
+  private refreshMobileValidators(): void {
+    const mobile = this.staffForm?.get('otherInfo.mobileNumber');
+    if (!mobile) return;
+    mobile.setValidators([Validators.required, Validators.pattern(getMobilePattern(this.mobileCode))]);
+    mobile.updateValueAndValidity({ emitEvent: false });
+  }
+
   restrictMobileNumber(event: Event): void {
-    this.restrictDigits(event, 'otherInfo.mobileNumber', 10);
+    this.restrictDigits(event, 'otherInfo.mobileNumber', this.mobileDigits);
   }
 
   restrictPincode(event: Event): void {

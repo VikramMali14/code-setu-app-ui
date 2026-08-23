@@ -65,24 +65,32 @@
         <div class="form-field">
           <label>Mobile Number <span class="req">*</span></label>
           <div class="mobile-split-container">
-            <select name="upMobileCode" class="mobile-code-select" [(ngModel)]="customerToUpdate.mobileCode">
-              <option *ngFor="let c of countryCodes" [value]="c.code">
-                {{c.cca2 ? c.cca2 + ' (' + c.code + ')' : c.code + ' (' + c.name + ')'}}
-              </option>
+            <select name="upMobileCode" class="mobile-code-select" [(ngModel)]="customerToUpdate.mobileCode"
+              (ngModelChange)="onMobileCodeChange(customerToUpdate, 'mobileNumber', 'mobileCode')">
+              <option *ngFor="let c of countryCodes" [value]="c.code">{{ c.flag }} {{ c.code }}</option>
             </select>
-            <input name="upMobileNo" placeholder="Mobile Number" [(ngModel)]="customerToUpdate.mobileNumber">
+            <input name="upMobileNo" type="tel" inputmode="numeric" placeholder="Mobile Number"
+              [(ngModel)]="customerToUpdate.mobileNumber" [maxLength]="mobileDigits(customerToUpdate.mobileCode)"
+              (input)="onMobileInput(customerToUpdate, 'mobileNumber', 'mobileCode', $event)">
           </div>
+          <small class="field-error" *ngIf="isMobileInvalid(customerToUpdate, 'mobileNumber', 'mobileCode')">
+            Mobile number must be {{ mobileDigits(customerToUpdate.mobileCode) }} digits for {{ customerToUpdate.mobileCode }}
+          </small>
         </div>
         <div class="form-field">
           <label>Alternate Mobile</label>
           <div class="mobile-split-container">
-            <select name="upAlternateMobileCode" class="mobile-code-select" [(ngModel)]="customerToUpdate.alternateMobileCode">
-              <option *ngFor="let c of countryCodes" [value]="c.code">
-                {{c.cca2 ? c.cca2 + ' (' + c.code + ')' : c.code + ' (' + c.name + ')'}}
-              </option>
+            <select name="upAlternateMobileCode" class="mobile-code-select" [(ngModel)]="customerToUpdate.alternateMobileCode"
+              (ngModelChange)="onMobileCodeChange(customerToUpdate, 'alternateMobileNumber', 'alternateMobileCode')">
+              <option *ngFor="let c of countryCodes" [value]="c.code">{{ c.flag }} {{ c.code }}</option>
             </select>
-            <input name="upAlternateMobileNo" placeholder="Alternate Mobile" [(ngModel)]="customerToUpdate.alternateMobileNumber">
+            <input name="upAlternateMobileNo" type="tel" inputmode="numeric" placeholder="Alternate Mobile"
+              [(ngModel)]="customerToUpdate.alternateMobileNumber" [maxLength]="mobileDigits(customerToUpdate.alternateMobileCode)"
+              (input)="onMobileInput(customerToUpdate, 'alternateMobileNumber', 'alternateMobileCode', $event)">
           </div>
+          <small class="field-error" *ngIf="isMobileInvalid(customerToUpdate, 'alternateMobileNumber', 'alternateMobileCode')">
+            Alternate mobile must be {{ mobileDigits(customerToUpdate.alternateMobileCode) }} digits for {{ customerToUpdate.alternateMobileCode }}
+          </small>
         </div>
         <div class="form-field">
           <label>Email <span class="req">*</span></label>
@@ -307,24 +315,32 @@
         <div class="form-field">
           <label>Mobile Number <span class="req">*</span></label>
           <div class="mobile-split-container">
-            <select name="mobileCode" class="mobile-code-select" [(ngModel)]="newCustomer.mobileCode">
-              <option *ngFor="let c of countryCodes" [value]="c.code">
-                {{c.cca2 ? c.cca2 + ' (' + c.code + ')' : c.code + ' (' + c.name + ')'}}
-              </option>
+            <select name="mobileCode" class="mobile-code-select" [(ngModel)]="newCustomer.mobileCode"
+              (ngModelChange)="onMobileCodeChange(newCustomer, 'mobileNumber', 'mobileCode')">
+              <option *ngFor="let c of countryCodes" [value]="c.code">{{ c.flag }} {{ c.code }}</option>
             </select>
-            <input name="mobileNo" placeholder="Mobile Number" [(ngModel)]="newCustomer.mobileNumber">
+            <input name="mobileNo" type="tel" inputmode="numeric" placeholder="Mobile Number"
+              [(ngModel)]="newCustomer.mobileNumber" [maxLength]="mobileDigits(newCustomer.mobileCode)"
+              (input)="onMobileInput(newCustomer, 'mobileNumber', 'mobileCode', $event)">
           </div>
+          <small class="field-error" *ngIf="isMobileInvalid(newCustomer, 'mobileNumber', 'mobileCode')">
+            Mobile number must be {{ mobileDigits(newCustomer.mobileCode) }} digits for {{ newCustomer.mobileCode }}
+          </small>
         </div>
         <div class="form-field">
           <label>Alternate Mobile</label>
           <div class="mobile-split-container">
-            <select name="alternateMobileCode" class="mobile-code-select" [(ngModel)]="newCustomer.alternateMobileCode">
-              <option *ngFor="let c of countryCodes" [value]="c.code">
-                {{c.cca2 ? c.cca2 + ' (' + c.code + ')' : c.code + ' (' + c.name + ')'}}
-              </option>
+            <select name="alternateMobileCode" class="mobile-code-select" [(ngModel)]="newCustomer.alternateMobileCode"
+              (ngModelChange)="onMobileCodeChange(newCustomer, 'alternateMobileNumber', 'alternateMobileCode')">
+              <option *ngFor="let c of countryCodes" [value]="c.code">{{ c.flag }} {{ c.code }}</option>
             </select>
-            <input name="alternateMobileNo" placeholder="Alternate Mobile" [(ngModel)]="newCustomer.alternateMobileNumber">
+            <input name="alternateMobileNo" type="tel" inputmode="numeric" placeholder="Alternate Mobile"
+              [(ngModel)]="newCustomer.alternateMobileNumber" [maxLength]="mobileDigits(newCustomer.alternateMobileCode)"
+              (input)="onMobileInput(newCustomer, 'alternateMobileNumber', 'alternateMobileCode', $event)">
           </div>
+          <small class="field-error" *ngIf="isMobileInvalid(newCustomer, 'alternateMobileNumber', 'alternateMobileCode')">
+            Alternate mobile must be {{ mobileDigits(newCustomer.alternateMobileCode) }} digits for {{ newCustomer.alternateMobileCode }}
+          </small>
         </div>
         <div class="form-field">
           <label>Email <span class="req">*</span></label>

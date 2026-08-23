@@ -60,7 +60,8 @@
 
             <mat-form-field appearance="outline" class="mobile-number-field">
               <mat-label>Mobile Number</mat-label>
-              <input matInput formControlName="mobileNumber" (input)="onMobileInput($event)" [maxLength]="mobileDigits">
+              <input matInput type="tel" inputmode="numeric" formControlName="mobileNumber"
+                     [placeholder]="mobilePlaceholder" (input)="onMobileInput($event)" [maxLength]="mobileDigits">
               <mat-error *ngIf="staffForm.get('mobileNumber')?.hasError('required')">Mobile number is required</mat-error>
               <mat-error *ngIf="staffForm.get('mobileNumber')?.hasError('pattern')">Mobile number must be {{ mobileDigits }} digits</mat-error>
             </mat-form-field>
