@@ -30,6 +30,19 @@
     </div>
   </div>
 
+  <!-- Deletion-request notice: persists after a delete request so the
+       3-day window and the backend response stay visible. -->
+  <div class="deletion-notice" *ngIf="deletionNotice">
+    <span class="material-icons">schedule</span>
+    <div class="deletion-notice-text">
+      <strong>Company Deletion Pending</strong>
+      <p>{{ deletionNotice }}</p>
+      <p class="deletion-notice-window">Deletion request successful. This company profile and its entire data history will be permanently erased in  <strong>3 days</strong>.</p>
+    </div>
+    <button type="button" class="deletion-notice-close" (click)="dismissDeletionNotice()" title="Dismiss">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
   <!-- ============================================================
        EMPTY STATE — no company created yet, show Create Company CTA
        ============================================================ -->
@@ -128,14 +141,6 @@
         <div class="detail-item" *ngIf="currentCompany.country">
           <span class="detail-label">Country</span>
           <span class="detail-value">{{ currentCompany.country }}</span>
-        </div>
-        <div class="detail-item" *ngIf="currentCompany.branch">
-          <span class="detail-label">Branch</span>
-          <span class="detail-value">{{ currentCompany.branch }}</span>
-        </div>
-        <div class="detail-item" *ngIf="currentCompany.mainBranch">
-          <span class="detail-label">Main Branch</span>
-          <span class="detail-value">{{ currentCompany.mainBranch }}</span>
         </div>
         <div class="detail-item" *ngIf="currentCompany.panNumber">
           <span class="detail-label">PAN Number</span>
@@ -300,15 +305,6 @@
           <input type="text" formControlName="country" placeholder="Country">
         </div>
 
-        <div class="form-group">
-          <label>Branch</label>
-          <input type="text" formControlName="branch" placeholder="Branch name">
-        </div>
-
-        <div class="form-group">
-          <label>Main Branch</label>
-          <input type="text" formControlName="mainBranch" placeholder="Main branch">
-        </div>
 
         <div class="form-group">
           <label>Website</label>
@@ -318,7 +314,6 @@
         <div class="form-group">
           <label>Asset Type *</label>
           <select formControlName="assetType" (change)="checkAndAutoAddAsset()">
-            <option value="">Select asset type</option>
             <option *ngFor="let type of assetTypes" [value]="type">
               {{ type }}
             </option>

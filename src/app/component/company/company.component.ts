@@ -19,6 +19,10 @@ export class CompanyComponent implements OnInit {
 
   companyList: any[] = [];
   assetTypes: string[] = ['LOGO', 'SEAL/Signature', 'STAMP'];
+  /** Pre-selected asset type so the field is never left empty. */
+  readonly defaultAssetType = 'LOGO';
+  /** Backend message for a pending deletion request; null hides the notice. */
+  deletionNotice: string | null = null;
   companyForm!: FormGroup;
 
   showForm = false;
@@ -70,11 +74,9 @@ export class CompanyComponent implements OnInit {
       country: ['India'],
       state: [''],
       city: [''],
-      branch: [''],
-      mainBranch: [''],
       website: [''],
       isActive: [true],
-      assetType: [''],
+      assetType: [this.defaultAssetType],
       assetFile: [null]
     });
 
@@ -140,7 +142,8 @@ export class CompanyComponent implements OnInit {
       whatsappCode: DEFAULT_MOBILE_CODE,
       contactNo1Code: DEFAULT_MOBILE_CODE,
       contactNo2Code: DEFAULT_MOBILE_CODE,
-      isActive: true
+      isActive: true,
+      assetType: this.nextAssetType()
     });
     this.clearAssetFile();
     this.addedAssets = [];
@@ -149,6 +152,7 @@ export class CompanyComponent implements OnInit {
   cancelForm() {
     this.showForm = false;
     this.companyForm.reset();
+    this.companyForm.patchValue({ assetType: this.defaultAssetType });
     this.clearAssetFile();
     this.addedAssets = [];
     if (this.sameAs1Checkbox?.nativeElement) this.sameAs1Checkbox.nativeElement.checked = false;
@@ -175,7 +179,10 @@ export class CompanyComponent implements OnInit {
 
           this.cancelForm();
         },
-        error: err => console.error(err)
+        error: err => {
+          console.error(err);
+          this.shoepopup.showApiError(err, 'Failed to update the company.');
+        }
       });
 
     } else {
@@ -191,7 +198,10 @@ export class CompanyComponent implements OnInit {
 
           this.cancelForm();
         },
-        error: err => console.error(err)
+        error: err => {
+          console.error(err);
+          this.shoepopup.showApiError(err, 'Failed to create the company.');
+        }
       });
 
     }
@@ -265,7 +275,7 @@ export class CompanyComponent implements OnInit {
         contactNo1Number: parsedContact1.number,
         contactNo2Code: parsedContact2.code,
         contactNo2Number: parsedContact2.number,
-        assetType: ''
+        assetType: this.nextAssetType()
       });
       this.clearAssetFile();
       this.addedAssets = [];
@@ -329,12 +339,22 @@ export class CompanyComponent implements OnInit {
     return payload;
   }
 
+  /**
+   * Default selection for the Asset Type field: the first type not already
+   * added, so the field is pre-filled without immediately clashing with an
+   * asset the user has queued. Falls back to the first configured type.
+   */
+  nextAssetType(): string {
+    const unused = this.assetTypes.find(type => !this.addedAssets.some(a => a.assetType === type));
+    return unused || this.assetTypes[0] || this.defaultAssetType;
+  }
+
   checkAndAutoAddAsset(): void {
     const type = this.companyForm.get('assetType')?.value;
     if (type && this.selectedAssetFile) {
       if (this.addedAssets.some(x => x.assetType === type)) {
         this.shoepopup.showResponsePopup(`An asset of type ${type} has already been added.`, 400);
-        this.companyForm.patchValue({ assetType: '' });
+        this.companyForm.patchValue({ assetType: this.nextAssetType() });
         this.clearAssetFile();
         return;
       }
@@ -343,7 +363,7 @@ export class CompanyComponent implements OnInit {
         file: this.selectedAssetFile,
         fileName: this.selectedAssetFileName
       });
-      this.companyForm.patchValue({ assetType: '' });
+      this.companyForm.patchValue({ assetType: this.nextAssetType() });
       this.clearAssetFile();
     }
   }
@@ -411,15 +431,29 @@ export class CompanyComponent implements OnInit {
       if (confirmed) {
         this.companyService.deleteCompany(id).subscribe({
           next: (response: any) => {
-            this.shoepopup.showResponsePopup(response.responseMessege, response.responseCode);
+            // Show whatever the backend reported, whichever spelling it used.
+            const backendMessage =
+              response?.responseMessage ||
+              response?.responseMessege ||
+              response?.message ||
+              'Your company deletion request has been submitted.';
+            this.shoepopup.showResponsePopup(backendMessage, response?.responseCode ?? 200);
+            this.deletionNotice = backendMessage;
             this.companyList = [];
             this.companyService.setCompanyStatus(false);
             this.refreshSessionAfterCompanyChange();
           },
-          error: err => console.error(err)
+          error: err => {
+            console.error(err);
+            this.shoepopup.showApiError(err, 'Failed to submit the company deletion request.');
+          }
         });
       }
     });
+  }
+
+  dismissDeletionNotice(): void {
+    this.deletionNotice = null;
   }
 
   /** Currently selected country code for a phone field. */

@@ -739,6 +739,81 @@
   line-height: 1.5;
 }
 
+/* Persistent notice shown after a deletion request is submitted */
+.deletion-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 5px solid #f59e0b;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 0 0 20px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+}
+
+.deletion-notice > .material-icons {
+  color: #d97706;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.deletion-notice-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.deletion-notice-text strong {
+  display: block;
+  color: #92400e;
+  font-size: 0.98rem;
+  margin-bottom: 4px;
+}
+
+.deletion-notice-text p {
+  margin: 0;
+  color: #78350f;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.deletion-notice-window {
+  margin-top: 6px !important;
+  font-weight: 600;
+}
+
+.deletion-notice-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #92400e;
+  padding: 2px;
+  line-height: 1;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.deletion-notice-close:hover {
+  background: rgba(146, 64, 14, 0.1);
+}
+
+.deletion-notice-close .material-icons {
+  font-size: 20px;
+}
+
+body.app-dark-theme .deletion-notice {
+  background: rgba(245, 158, 11, 0.13);
+  border-color: rgba(251, 191, 36, 0.45);
+}
+
+body.app-dark-theme .deletion-notice-text strong,
+body.app-dark-theme .deletion-notice-text p,
+body.app-dark-theme .deletion-notice-close {
+  color: #fde68a;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .page-wrapper {

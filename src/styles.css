@@ -701,108 +701,157 @@ body.app-dark-theme .expired-status {
   color: #fecaca !important;
   border-color: rgba(248, 113, 113, 0.55) !important;
 }
-/* Success - Green */
-.pop-success {
-  --mdc-snackbar-container-color: #2e7d32 !important;
-  --mat-snack-bar-button-color: #ffffff !important;
-  background-color: #2e7d32 !important;
-  color: white !important;
-  border-left: 6px solid #1b5e20 !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4) !important;
-  min-width: 320px !important;
-}
+/* =========================================================
+   RESPONSE POPUPS (snackbar) — success / error / info
+   One shared card design; only the accent colour and icon
+   change per state, so every popup reads the same way.
+   ========================================================= */
 
-.pop-success .mdc-snackbar__surface {
-  background-color: #2e7d32 !important;
-}
-
-.pop-success .mdc-snackbar__label {
-  color: white !important;
-  font-weight: 500 !important;
-}
-
-.pop-success .mat-mdc-button {
-  color: white !important;
-}
-
-/* Error/Fail - Red */
-.pop-error {
-  --mdc-snackbar-container-color: #d32f2f !important;
-  --mat-snack-bar-button-color: #ffffff !important;
-  background-color: #d32f2f !important;
-  color: white !important;
-  border-left: 6px solid #b71c1c !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4) !important;
-  min-width: 320px !important;
-}
-
-.pop-error .mdc-snackbar__surface {
-  background-color: #d32f2f !important;
-}
-
-.pop-error .mdc-snackbar__label {
-  color: white !important;
-  font-weight: 500 !important;
-}
-
-.pop-error .mat-mdc-button {
-  color: white !important;
-}
-
-/* Info - Blue */
+.pop-success,
+.pop-error,
 .pop-info {
-  --mdc-snackbar-container-color: #0288d1 !important;
-  --mat-snack-bar-button-color: #ffffff !important;
-  background-color: #0288d1 !important;
-  color: white !important;
-  border-left: 6px solid #01579b !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(2, 136, 209, 0.4) !important;
-  min-width: 320px !important;
+  --pop-accent: #64748b;
+  --pop-accent-soft: rgba(100, 116, 139, 0.12);
+  --pop-icon: 'info';
+  --mdc-snackbar-container-color: #ffffff !important;
+  --mdc-snackbar-supporting-text-color: #1e293b !important;
+  --mat-snack-bar-button-color: var(--pop-accent) !important;
+  min-width: 340px !important;
+  max-width: 460px !important;
 }
 
+.pop-success .mdc-snackbar__surface,
+.pop-error .mdc-snackbar__surface,
 .pop-info .mdc-snackbar__surface {
-  background-color: #0288d1 !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-left: 4px solid var(--pop-accent) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.1),
+              0 4px 6px -4px rgba(15, 23, 42, 0.1) !important;
+  padding: 2px 6px 2px 4px !important;
+  animation: popSlideIn 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.pop-success .mdc-snackbar__label,
+.pop-error .mdc-snackbar__label,
 .pop-info .mdc-snackbar__label {
-  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  color: #1e293b !important;
+  font-size: 0.92rem !important;
   font-weight: 500 !important;
+  line-height: 1.45 !important;
+  letter-spacing: 0 !important;
+  padding: 14px 8px 14px 12px !important;
+  word-break: break-word;
 }
 
-.pop-info .mat-mdc-button {
-  color: white !important;
-}
-
-/* Optional: Add icons before text */
-.pop-success .mdc-snackbar__label::before {
-  content: '✓ ';
-  font-weight: bold;
-  margin-right: 6px;
-}
-
-.pop-error .mdc-snackbar__label::before {
-  content: '✕ ';
-  font-weight: bold;
-  margin-right: 6px;
-}
-
+/* Circular accent badge carrying the state icon */
+.pop-success .mdc-snackbar__label::before,
+.pop-error .mdc-snackbar__label::before,
 .pop-info .mdc-snackbar__label::before {
-  content: 'ℹ ';
-  font-weight: bold;
-  margin-right: 6px;
+  content: var(--pop-icon);
+  font-family: 'Material Icons' !important;
+  font-size: 20px;
+  font-weight: normal !important;
+  line-height: 1;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--pop-accent);
+  background: var(--pop-accent-soft);
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
 }
 
-/* Animation */
-@keyframes slideInRight {
+/* Action ("Close") button */
+.pop-success .mat-mdc-button,
+.pop-error .mat-mdc-button,
+.pop-info .mat-mdc-button {
+  color: var(--pop-accent) !important;
+  font-weight: 600 !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.02em !important;
+  border-radius: 8px !important;
+  min-width: 0 !important;
+  padding: 0 12px !important;
+}
+
+.pop-success .mat-mdc-button:hover,
+.pop-error .mat-mdc-button:hover,
+.pop-info .mat-mdc-button:hover {
+  background: var(--pop-accent-soft) !important;
+}
+
+/* --- Per-state accents --- */
+.pop-success {
+  --pop-accent: #16a34a;
+  --pop-accent-soft: rgba(22, 163, 74, 0.12);
+  --pop-icon: 'check_circle';
+}
+
+.pop-error {
+  --pop-accent: #dc2626;
+  --pop-accent-soft: rgba(220, 38, 38, 0.12);
+  --pop-icon: 'error';
+}
+
+.pop-info {
+  --pop-accent: #2563eb;
+  --pop-accent-soft: rgba(37, 99, 235, 0.12);
+  --pop-icon: 'info';
+}
+
+/* --- Dark theme --- */
+body.app-dark-theme .pop-success,
+body.app-dark-theme .pop-error,
+body.app-dark-theme .pop-info {
+  --mdc-snackbar-container-color: #1e293b !important;
+  --mdc-snackbar-supporting-text-color: #e2e8f0 !important;
+}
+
+body.app-dark-theme .pop-success .mdc-snackbar__surface,
+body.app-dark-theme .pop-error .mdc-snackbar__surface,
+body.app-dark-theme .pop-info .mdc-snackbar__surface {
+  background-color: #1e293b !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  border-left-color: var(--pop-accent) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.45),
+              0 4px 6px -4px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.app-dark-theme .pop-success .mdc-snackbar__label,
+body.app-dark-theme .pop-error .mdc-snackbar__label,
+body.app-dark-theme .pop-info .mdc-snackbar__label {
+  color: #e2e8f0 !important;
+}
+
+body.app-dark-theme .pop-success { --pop-accent: #4ade80; --pop-accent-soft: rgba(74, 222, 128, 0.18); }
+body.app-dark-theme .pop-error   { --pop-accent: #f87171; --pop-accent-soft: rgba(248, 113, 113, 0.18); }
+body.app-dark-theme .pop-info    { --pop-accent: #60a5fa; --pop-accent-soft: rgba(96, 165, 250, 0.18); }
+
+@keyframes popSlideIn {
   from {
-    transform: translateX(100%);
+    transform: translateY(-10px) scale(0.98);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .pop-success,
+  .pop-error,
+  .pop-info {
+    min-width: 0 !important;
+    max-width: 100% !important;
   }
 }
