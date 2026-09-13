@@ -5,6 +5,8 @@ import { CompanyService } from 'src/app/services/company.service';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
 import { LoginService } from 'src/app/services/login.service';
 import { MOBILE_COUNTRIES, MobileCountry, DEFAULT_MOBILE_CODE, getMobileDigits, getMobilePattern, sanitizeMobileNumber } from 'src/app/models/mobile-codes';
+import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
+import { PlaceLookupService, PlaceSuggestion } from 'src/app/services/place-lookup.service';
 
 @Component({
   selector: 'app-company',
@@ -36,13 +38,15 @@ export class CompanyComponent implements OnInit {
 
   /** Phone fields that carry their own country code (`<field>Code` + `<field>Number`). */
   readonly phoneFields = ['whatsapp', 'contactNo1', 'contactNo2'];
+  citySuggestions: PlaceSuggestion[] = [];
 
   constructor(
     private fb: FormBuilder,
     private companyService: CompanyService,
     private shoepopup: ShowpopupService,
     private dialog: MatDialog,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private placeLookup: PlaceLookupService
   ) { }
 
   ngOnInit(): void {
@@ -89,6 +93,15 @@ export class CompanyComponent implements OnInit {
       });
     });
 
+    // Server-driven city lookup — no hardcoded city list.
+    this.companyForm.get('city')?.valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      filter(val => typeof val === 'string'),
+      switchMap(val => this.placeLookup.searchCities(val))
+    ).subscribe(suggestions => {
+      this.citySuggestions = suggestions;
+    });
     this.companyForm.get('whatsappNumber')?.valueChanges.subscribe(() => {
       if (this.sameAs1Checkbox?.nativeElement) this.sameAs1Checkbox.nativeElement.checked = false;
       if (this.sameAs2Checkbox?.nativeElement) this.sameAs2Checkbox.nativeElement.checked = false;
@@ -136,6 +149,8 @@ export class CompanyComponent implements OnInit {
   openCreateForm() {
     this.showForm = true;
     this.isEditMode = false;
+    this.clearAssetFile();
+    this.addedAssets = [];
     this.companyForm.reset();
     this.companyForm.patchValue({
       country: 'India',
@@ -145,8 +160,6 @@ export class CompanyComponent implements OnInit {
       isActive: true,
       assetType: this.nextAssetType()
     });
-    this.clearAssetFile();
-    this.addedAssets = [];
   }
 
   cancelForm() {
@@ -262,6 +275,8 @@ export class CompanyComponent implements OnInit {
     try {
       this.showForm = true;
       this.isEditMode = true;
+      this.clearAssetFile();
+      this.addedAssets = [];
 
       const parsedWhatsapp = this.parsePhoneNumber(company.whatsappNumber);
       const parsedContact1 = this.parsePhoneNumber(company.contactNo1);
@@ -277,8 +292,6 @@ export class CompanyComponent implements OnInit {
         contactNo2Number: parsedContact2.number,
         assetType: this.nextAssetType()
       });
-      this.clearAssetFile();
-      this.addedAssets = [];
     } catch (e) {
       console.error("Error patching company form:", e);
     }
@@ -454,6 +467,19 @@ export class CompanyComponent implements OnInit {
 
   dismissDeletionNotice(): void {
     this.deletionNotice = null;
+  }
+
+  /** Lets a mousedown-selected suggestion register before the list is cleared on blur. */
+  hideCitySuggestionsSoon(): void {
+    setTimeout(() => this.citySuggestions = [], 150);
+  }
+
+  selectCity(place: PlaceSuggestion): void {
+    this.companyForm.patchValue({
+      city: place.name,
+      state: place.state || this.companyForm.get('state')?.value
+    }, { emitEvent: false });
+    this.citySuggestions = [];
   }
 
   /** Currently selected country code for a phone field. */

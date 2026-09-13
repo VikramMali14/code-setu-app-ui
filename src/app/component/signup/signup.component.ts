@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { debounceTime, switchMap, of, filter } from 'rxjs';
 import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
@@ -12,6 +11,7 @@ import { CompanyService } from 'src/app/services/company.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { ENV } from 'src/assets/env';
+import { PlaceLookupService } from 'src/app/services/place-lookup.service';
 import { MOBILE_COUNTRIES, MobileCountry, DEFAULT_MOBILE_CODE, getMobileDigits, getMobilePattern, sanitizeMobileNumber } from 'src/app/models/mobile-codes';
 
 declare const google: any;
@@ -39,7 +39,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
+    private placeLookup: PlaceLookupService,
     private staffService: StaffuserServiceService,
     private router: Router,
     private showpopupservice: ShowpopupService,
@@ -229,9 +229,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
     this.staffForm.get('addressInfo.city')?.valueChanges.pipe(
       debounceTime(400),
       filter(val => typeof val === 'string'),
-      switchMap(val => val?.length > 2 ? this.http.get(`https://photon.komoot.io/api/?q=${val}`) : of(null))
-    ).subscribe((data: any) => {
-      this.citySuggestions = data ? data.features : [];
+      switchMap(val => this.placeLookup.searchCities(val))
+    ).subscribe(suggestions => {
+      this.citySuggestions = suggestions;
     });
   }
 
@@ -270,11 +270,10 @@ export class SignupComponent implements OnInit, AfterViewInit {
     if (this.currentStep > 1) this.currentStep--;
   }
 
-  selectCity(city: any) {
-    const props = city.properties;
+  selectCity(place: any) {
     this.staffForm.get('addressInfo')?.patchValue({
-      city: props.name,
-      state: props.state || '',
+      city: place.name,
+      state: place.state || '',
     }, { emitEvent: false });
     this.citySuggestions = [];
   }

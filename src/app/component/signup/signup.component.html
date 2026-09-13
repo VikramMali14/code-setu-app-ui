@@ -95,8 +95,8 @@
               autocomplete="off">
             <div class="autocomplete-results" *ngIf="citySuggestions.length > 0">
               <div class="autocomplete-item" *ngFor="let city of citySuggestions" (click)="selectCity(city)">
-                <strong>{{city.properties.name}}</strong>
-                <small>{{city.properties.state}}, {{city.properties.country}}</small>
+                <strong>{{city.name}}</strong>
+                <small>{{city.state}}, {{city.country}}</small>
               </div>
             </div>
           </div>

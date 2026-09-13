@@ -83,7 +83,12 @@
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>City</mat-label>
-            <input matInput formControlName="city">
+            <input matInput formControlName="city" [matAutocomplete]="cityAuto" autocomplete="off">
+            <mat-autocomplete #cityAuto="matAutocomplete" (optionSelected)="selectCity($event.option.value)">
+              <mat-option *ngFor="let place of citySuggestions" [value]="place.name">
+                {{ place.name }}<span *ngIf="place.state">, {{ place.state }}</span>
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>State</mat-label>

@@ -12,6 +12,8 @@ import { RoleserviceService } from 'src/app/services/role/roleservice.service';
 import { DepartmentService } from 'src/app/services/department.service';
 import { CompanyService } from 'src/app/services/company.service';
 import { forkJoin } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs/operators';
+import { PlaceLookupService, PlaceSuggestion } from 'src/app/services/place-lookup.service';
 import { MOBILE_COUNTRIES, MobileCountry, getCountryFlag as countryFlag, getMobileDigits, getMobilePattern, sanitizeMobileNumber } from 'src/app/models/mobile-codes';
 
 
@@ -52,7 +54,8 @@ export class StaffuserComponent implements OnInit {
     private roleservice: RoleserviceService,
     private departmentservice: DepartmentService,
     private companyService: CompanyService,
-    private shoepopup: ShowpopupService
+    private shoepopup: ShowpopupService,
+    private placeLookup: PlaceLookupService
   ) {
     // this.initializeForm();
 
@@ -143,6 +146,8 @@ export class StaffuserComponent implements OnInit {
   }
 
 
+  citySuggestions: PlaceSuggestion[] = [];
+
   buildForm() {
     this.staffForm = this.fb.group({
       staffId: [null],
@@ -173,6 +178,16 @@ export class StaffuserComponent implements OnInit {
       licenseNumber: [''],
       licenseExpiryDate: [''],
       profileImageUrl: ['']
+    });
+
+    // Server-driven city lookup — no hardcoded city list.
+    this.staffForm.get('city')?.valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      filter(val => typeof val === 'string'),
+      switchMap(val => this.placeLookup.searchCities(val))
+    ).subscribe(suggestions => {
+      this.citySuggestions = suggestions;
     });
 
     // Keep mobile validation in sync with the selected country code.
@@ -213,6 +228,16 @@ export class StaffuserComponent implements OnInit {
       alt.setValidators([Validators.pattern(this.getMobileInputPattern())]);
       alt.updateValueAndValidity();
     }
+  }
+
+  selectCity(cityName: string): void {
+    // The control already holds cityName via its own value accessor; only
+    // the state needs to be looked up and patched in alongside it.
+    const place = this.citySuggestions.find(p => p.name === cityName);
+    if (place?.state) {
+      this.staffForm.get('state')?.setValue(place.state, { emitEvent: false });
+    }
+    this.citySuggestions = [];
   }
 
   onMobileInput(event: Event): void {

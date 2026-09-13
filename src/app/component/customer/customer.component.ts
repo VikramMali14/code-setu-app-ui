@@ -8,6 +8,7 @@ import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { TemplateService } from 'src/app/services/template.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
+import { PlaceLookupService, PlaceSuggestion } from 'src/app/services/place-lookup.service';
 
 type ConnectionStatus = 'Online' | 'Offline';
 type CustomerRow = CustomerModels & {
@@ -73,6 +74,10 @@ export class CustomerComponent implements OnInit {
   totalPages = 0;
 
   countryCodes: MobileCountry[] = MOBILE_COUNTRIES;
+  // Server-driven city lookup for shifting From/To City (no hardcoded city list).
+  citySuggestions: PlaceSuggestion[] = [];
+  private activeCityTarget: { model: any; field: 'shiftFromCity' | 'shiftToCity' } | null = null;
+  private citySearchTimer: any = null;
 
   constructor(
     private companyService: CompanyService,
@@ -80,7 +85,8 @@ export class CustomerComponent implements OnInit {
     private staffService: StaffuserServiceService,
     private templateService: TemplateService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private placeLookup: PlaceLookupService
   ) { }
 
   ngOnInit(): void {
@@ -312,7 +318,7 @@ export class CustomerComponent implements OnInit {
   }
 
   addExtraCharge(shiftIndex: number): void {
-    this.newCustomer.shiftings[shiftIndex].charges.extracharges.push({ chargeName: '', chargeValue: 0, chargeRate: 0 });
+    this.newCustomer.shiftings[shiftIndex].charges.extracharges.push({ chargeName: '', chargeValue: null, chargeRate: null });
   }
 
   removeExtraCharge(shiftIndex: number, chargeIndex: number): void {
@@ -388,24 +394,24 @@ export class CustomerComponent implements OnInit {
               return {
                 ...s,
                 charges: {
-                  transportCharge:    src.transportCharge    ?? 0,
-                  packingCharge:      src.packingCharge      ?? 0,
-                  loadingCharge:      src.loadingCharge      ?? 0,
-                  unloadingCharge:    src.unloadingCharge    ?? 0,
-                  unpackingCharge:    src.unpackingCharge    ?? 0,
-                  carTransportCharge: src.carTransportCharge ?? 0,
-                  riskInsureCharge:   src.riskInsureCharge   ?? 0,
-                  storageCharge:      src.storageCharge      ?? 0,
-                  statisticalCharge:  src.statisticalCharge  ?? 0,
-                  serviceCharge:      src.serviceCharge      ?? 0,
-                  serviceRate:        src.serviceRate        ?? 0,
+                  transportCharge:    src.transportCharge    ?? null,
+                  packingCharge:      src.packingCharge      ?? null,
+                  loadingCharge:      src.loadingCharge      ?? null,
+                  unloadingCharge:    src.unloadingCharge    ?? null,
+                  unpackingCharge:    src.unpackingCharge    ?? null,
+                  carTransportCharge: src.carTransportCharge ?? null,
+                  riskInsureCharge:   src.riskInsureCharge   ?? null,
+                  storageCharge:      src.storageCharge      ?? null,
+                  statisticalCharge:  src.statisticalCharge  ?? null,
+                  serviceCharge:      src.serviceCharge      ?? null,
+                  serviceRate:        src.serviceRate        ?? null,
                   gstRate:            src.gstRate            ?? 18,
-                  gstCharge:          src.gstCharge          ?? 0,
+                  gstCharge:          src.gstCharge          ?? null,
                   // API may use extraChargesList (capital L) — normalise to extracharges
                   extracharges: (src.extraChargesList || src.extracharges || []).map((e: any) => ({
                     chargeName:  e.chargeName  || '',
-                    chargeValue: e.chargeValue ?? 0,
-                    chargeRate:  e.chargeRate  ?? 0
+                    chargeValue: e.chargeValue ?? null,
+                    chargeRate:  e.chargeRate  ?? null
                   }))
                 }
               };
@@ -495,7 +501,7 @@ export class CustomerComponent implements OnInit {
   }
 
   addUpdateExtraCharge(shiftIndex: number): void {
-    this.customerToUpdate.shiftings[shiftIndex].charges.extracharges.push({ chargeName: '', chargeValue: 0, chargeRate: 0 });
+    this.customerToUpdate.shiftings[shiftIndex].charges.extracharges.push({ chargeName: '', chargeValue: null, chargeRate: null });
   }
 
   removeUpdateExtraCharge(shiftIndex: number, chargeIndex: number): void {
@@ -830,22 +836,22 @@ export class CustomerComponent implements OnInit {
       shiftCompletedById: null,
       customerId: null,
       charges: {
-        transportCharge: 0,
-        packingCharge: 0,
-        loadingCharge: 0,
-        unloadingCharge: 0,
-        unpackingCharge: 0,
-        carTransportCharge: 0,
-        riskInsureCharge: 0,
-        storageCharge: 0,
-        statisticalCharge: 0,
-        serviceCharge: 0,
-        serviceRate: 0,
+        transportCharge: null,
+        packingCharge: null,
+        loadingCharge: null,
+        unloadingCharge: null,
+        unpackingCharge: null,
+        carTransportCharge: null,
+        riskInsureCharge: null,
+        storageCharge: null,
+        statisticalCharge: null,
+        serviceCharge: null,
+        serviceRate: null,
         gstRate: 18,
-        gstCharge: 0,
+        gstCharge: null,
         extracharges: [
-          { chargeName: 'Toll Charge', chargeValue: 0, chargeRate: 0 },
-          { chargeName: 'Lift Handling Charge', chargeValue: 0, chargeRate: 0 }
+          { chargeName: 'Toll Charge', chargeValue: null, chargeRate: null },
+          { chargeName: 'Lift Handling Charge', chargeValue: null, chargeRate: null }
         ]
       }
     };
@@ -899,6 +905,37 @@ export class CustomerComponent implements OnInit {
   onMobileCodeChange(model: any, numberField: string, codeField: string): void {
     if (!model) return;
     model[numberField] = sanitizeMobileNumber(model[numberField], model[codeField]);
+  }
+
+  /** Debounced server-driven lookup for a shifting's From/To City field. */
+  onCityInput(model: any, field: 'shiftFromCity' | 'shiftToCity'): void {
+    this.activeCityTarget = { model, field };
+    clearTimeout(this.citySearchTimer);
+    const term = model?.[field];
+    this.citySearchTimer = setTimeout(() => {
+      this.placeLookup.searchCities(term).subscribe(suggestions => {
+        if (this.activeCityTarget?.model === model && this.activeCityTarget?.field === field) {
+          this.citySuggestions = suggestions;
+        }
+      });
+    }, 400);
+  }
+
+  selectCityForShift(place: PlaceSuggestion): void {
+    if (!this.activeCityTarget) return;
+    const { model, field } = this.activeCityTarget;
+    model[field] = place.name;
+    this.citySuggestions = [];
+    this.activeCityTarget = null;
+  }
+
+  isActiveCityField(model: any, field: 'shiftFromCity' | 'shiftToCity'): boolean {
+    return this.activeCityTarget?.model === model && this.activeCityTarget?.field === field && this.citySuggestions.length > 0;
+  }
+
+  /** Lets a mousedown-selected suggestion register before the list is cleared on blur. */
+  hideCitySuggestionsSoon(): void {
+    setTimeout(() => { this.citySuggestions = []; this.activeCityTarget = null; }, 150);
   }
 
   parsePhoneNumber(fullNo: string): { code: string, number: string } {

@@ -289,9 +289,16 @@
           <input type="text" formControlName="address" placeholder="Full address">
         </div>
 
-        <div class="form-group">
+        <div class="form-group city-autocomplete-group">
           <label>City *</label>
-          <input type="text" formControlName="city" placeholder="City">
+          <input type="text" formControlName="city" placeholder="City" autocomplete="off"
+            (blur)="hideCitySuggestionsSoon()">
+          <div class="autocomplete-results" *ngIf="citySuggestions.length > 0">
+            <div class="autocomplete-item" *ngFor="let place of citySuggestions" (mousedown)="selectCity(place)">
+              <strong>{{ place.name }}</strong>
+              <small *ngIf="place.state || place.country">{{ place.state }}{{ place.state && place.country ? ', ' : '' }}{{ place.country }}</small>
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
