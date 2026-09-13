@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CompanyService } from 'src/app/services/company.service';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
@@ -46,7 +47,8 @@ export class CompanyComponent implements OnInit {
     private shoepopup: ShowpopupService,
     private dialog: MatDialog,
     private loginService: LoginService,
-    private placeLookup: PlaceLookupService
+    private placeLookup: PlaceLookupService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -210,6 +212,15 @@ export class CompanyComponent implements OnInit {
           this.refreshSessionAfterCompanyChange();
 
           this.cancelForm();
+
+          // Only send the user on to plan selection on a genuine success — this
+          // backend answers HTTP 200 even for a validation failure (e.g. a
+          // duplicate company email), with the real outcome in responseCode.
+          const isSuccess = response?.responseCode === 200 || response?.responseCode === 201;
+          const companyId = response?.data?.companyId;
+          if (isSuccess && companyId) {
+            this.router.navigate(['/select-plan'], { queryParams: { companyId } });
+          }
         },
         error: err => {
           console.error(err);
@@ -264,6 +275,11 @@ export class CompanyComponent implements OnInit {
       }
     }
     return company?.logoBase64 || null;
+  }
+
+  /** Persistent entry point back to plan selection — reusable any time, not just right after creation. */
+  goToPlanSelection(companyId: number): void {
+    this.router.navigate(['/select-plan'], { queryParams: { companyId } });
   }
 
   editCompany(company: any) {

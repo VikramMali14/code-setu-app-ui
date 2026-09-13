@@ -163,6 +163,9 @@
         <button class="btn-primary" (click)="editCompany(currentCompany)">
           <span class="material-icons">edit</span> Edit Company
         </button>
+        <button class="btn-primary" (click)="goToPlanSelection(currentCompany.companyId)">
+          <span class="material-icons">payments</span> Manage Plan
+        </button>
         <button class="btn-danger-outline" (click)="deleteCompany(currentCompany.companyId)">
           <span class="material-icons">delete_outline</span> Request to Delete
         </button>
