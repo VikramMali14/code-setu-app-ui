@@ -139,7 +139,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   handleGoogleCredential(response: any) {
     if (!response?.credential) {
-      alert('Google sign-in failed. Please try again.');
+      this.showpopupservice.showError('Google sign-in failed. Please try again.');
       return;
     }
     this.submitting = true;
@@ -167,7 +167,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         console.error('Google sign-up failed', err);
-        alert(err.error?.message || 'Google sign-up failed');
+        this.showpopupservice.showApiError(err, 'Google sign-up failed');
         this.submitting = false;
       },
       complete: () => {

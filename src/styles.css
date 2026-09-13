@@ -703,39 +703,52 @@ body.app-dark-theme .expired-status {
 }
 /* =========================================================
    RESPONSE POPUPS (snackbar) — success / error / info
+   This app runs Angular Material 13, which renders the LEGACY
+   snackbar DOM (<snack-bar-container class="mat-snack-bar-container">
+   > <simple-snack-bar class="mat-simple-snackbar"> > <span>text</span>
+   + <div class="mat-simple-snackbar-action"><button>...</button></div>),
+   NOT the MDC-based `.mdc-snackbar__*` structure — there is no
+   `.mdc-snackbar__surface` / `.mdc-snackbar__label` in this app,
+   so selectors must target `.mat-snack-bar-container` /
+   `.mat-simple-snackbar` directly.
    One shared card design; only the accent colour and icon
    change per state, so every popup reads the same way.
    ========================================================= */
 
 .pop-success,
 .pop-error,
-.pop-info {
+.pop-warning,
+.pop-info,
+.pop-permission {
   --pop-accent: #64748b;
   --pop-accent-soft: rgba(100, 116, 139, 0.12);
   --pop-icon: 'info';
-  --mdc-snackbar-container-color: #ffffff !important;
-  --mdc-snackbar-supporting-text-color: #1e293b !important;
-  --mat-snack-bar-button-color: var(--pop-accent) !important;
-  min-width: 340px !important;
-  max-width: 460px !important;
-}
-
-.pop-success .mdc-snackbar__surface,
-.pop-error .mdc-snackbar__surface,
-.pop-info .mdc-snackbar__surface {
   background-color: #ffffff !important;
+  color: #1e293b !important;
   border: 1px solid #e2e8f0 !important;
   border-left: 4px solid var(--pop-accent) !important;
   border-radius: 12px !important;
   box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.1),
               0 4px 6px -4px rgba(15, 23, 42, 0.1) !important;
-  padding: 2px 6px 2px 4px !important;
+  min-width: 340px !important;
+  max-width: 460px !important;
+  padding: 12px 14px !important;
   animation: popSlideIn 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.pop-success .mdc-snackbar__label,
-.pop-error .mdc-snackbar__label,
-.pop-info .mdc-snackbar__label {
+.pop-success .mat-simple-snackbar,
+.pop-error .mat-simple-snackbar,
+.pop-warning .mat-simple-snackbar,
+.pop-info .mat-simple-snackbar,
+.pop-permission .mat-simple-snackbar {
+  align-items: center !important;
+}
+
+.pop-success .mat-simple-snackbar > span,
+.pop-error .mat-simple-snackbar > span,
+.pop-warning .mat-simple-snackbar > span,
+.pop-info .mat-simple-snackbar > span,
+.pop-permission .mat-simple-snackbar > span {
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
@@ -743,15 +756,15 @@ body.app-dark-theme .expired-status {
   font-size: 0.92rem !important;
   font-weight: 500 !important;
   line-height: 1.45 !important;
-  letter-spacing: 0 !important;
-  padding: 14px 8px 14px 12px !important;
   word-break: break-word;
 }
 
 /* Circular accent badge carrying the state icon */
-.pop-success .mdc-snackbar__label::before,
-.pop-error .mdc-snackbar__label::before,
-.pop-info .mdc-snackbar__label::before {
+.pop-success .mat-simple-snackbar > span::before,
+.pop-error .mat-simple-snackbar > span::before,
+.pop-warning .mat-simple-snackbar > span::before,
+.pop-info .mat-simple-snackbar > span::before,
+.pop-permission .mat-simple-snackbar > span::before {
   content: var(--pop-icon);
   font-family: 'Material Icons' !important;
   font-size: 20px;
@@ -771,21 +784,23 @@ body.app-dark-theme .expired-status {
 }
 
 /* Action ("Close") button */
-.pop-success .mat-mdc-button,
-.pop-error .mat-mdc-button,
-.pop-info .mat-mdc-button {
+.pop-success .mat-simple-snackbar-action button,
+.pop-error .mat-simple-snackbar-action button,
+.pop-warning .mat-simple-snackbar-action button,
+.pop-info .mat-simple-snackbar-action button,
+.pop-permission .mat-simple-snackbar-action button {
   color: var(--pop-accent) !important;
   font-weight: 600 !important;
   font-size: 0.82rem !important;
   letter-spacing: 0.02em !important;
   border-radius: 8px !important;
-  min-width: 0 !important;
-  padding: 0 12px !important;
 }
 
-.pop-success .mat-mdc-button:hover,
-.pop-error .mat-mdc-button:hover,
-.pop-info .mat-mdc-button:hover {
+.pop-success .mat-simple-snackbar-action button:hover,
+.pop-error .mat-simple-snackbar-action button:hover,
+.pop-warning .mat-simple-snackbar-action button:hover,
+.pop-info .mat-simple-snackbar-action button:hover,
+.pop-permission .mat-simple-snackbar-action button:hover {
   background: var(--pop-accent-soft) !important;
 }
 
@@ -802,39 +817,51 @@ body.app-dark-theme .expired-status {
   --pop-icon: 'error';
 }
 
+.pop-warning {
+  --pop-accent: #d97706;
+  --pop-accent-soft: rgba(217, 119, 6, 0.12);
+  --pop-icon: 'warning';
+}
+
 .pop-info {
   --pop-accent: #2563eb;
   --pop-accent-soft: rgba(37, 99, 235, 0.12);
   --pop-icon: 'info';
 }
 
+.pop-permission {
+  --pop-accent: #7c3aed;
+  --pop-accent-soft: rgba(124, 58, 237, 0.12);
+  --pop-icon: 'lock';
+}
+
 /* --- Dark theme --- */
 body.app-dark-theme .pop-success,
 body.app-dark-theme .pop-error,
-body.app-dark-theme .pop-info {
-  --mdc-snackbar-container-color: #1e293b !important;
-  --mdc-snackbar-supporting-text-color: #e2e8f0 !important;
-}
-
-body.app-dark-theme .pop-success .mdc-snackbar__surface,
-body.app-dark-theme .pop-error .mdc-snackbar__surface,
-body.app-dark-theme .pop-info .mdc-snackbar__surface {
+body.app-dark-theme .pop-warning,
+body.app-dark-theme .pop-info,
+body.app-dark-theme .pop-permission {
   background-color: #1e293b !important;
+  color: #e2e8f0 !important;
   border-color: rgba(148, 163, 184, 0.28) !important;
   border-left-color: var(--pop-accent) !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.45),
               0 4px 6px -4px rgba(0, 0, 0, 0.4) !important;
 }
 
-body.app-dark-theme .pop-success .mdc-snackbar__label,
-body.app-dark-theme .pop-error .mdc-snackbar__label,
-body.app-dark-theme .pop-info .mdc-snackbar__label {
+body.app-dark-theme .pop-success .mat-simple-snackbar > span,
+body.app-dark-theme .pop-error .mat-simple-snackbar > span,
+body.app-dark-theme .pop-warning .mat-simple-snackbar > span,
+body.app-dark-theme .pop-info .mat-simple-snackbar > span,
+body.app-dark-theme .pop-permission .mat-simple-snackbar > span {
   color: #e2e8f0 !important;
 }
 
-body.app-dark-theme .pop-success { --pop-accent: #4ade80; --pop-accent-soft: rgba(74, 222, 128, 0.18); }
-body.app-dark-theme .pop-error   { --pop-accent: #f87171; --pop-accent-soft: rgba(248, 113, 113, 0.18); }
-body.app-dark-theme .pop-info    { --pop-accent: #60a5fa; --pop-accent-soft: rgba(96, 165, 250, 0.18); }
+body.app-dark-theme .pop-success    { --pop-accent: #4ade80; --pop-accent-soft: rgba(74, 222, 128, 0.18); }
+body.app-dark-theme .pop-error      { --pop-accent: #f87171; --pop-accent-soft: rgba(248, 113, 113, 0.18); }
+body.app-dark-theme .pop-warning    { --pop-accent: #fbbf24; --pop-accent-soft: rgba(251, 191, 36, 0.18); }
+body.app-dark-theme .pop-info       { --pop-accent: #60a5fa; --pop-accent-soft: rgba(96, 165, 250, 0.18); }
+body.app-dark-theme .pop-permission { --pop-accent: #a78bfa; --pop-accent-soft: rgba(167, 139, 250, 0.18); }
 
 @keyframes popSlideIn {
   from {
@@ -850,7 +877,9 @@ body.app-dark-theme .pop-info    { --pop-accent: #60a5fa; --pop-accent-soft: rgb
 @media (max-width: 600px) {
   .pop-success,
   .pop-error,
-  .pop-info {
+  .pop-warning,
+  .pop-info,
+  .pop-permission {
     min-width: 0 !important;
     max-width: 100% !important;
   }

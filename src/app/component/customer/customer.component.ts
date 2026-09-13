@@ -334,17 +334,26 @@ export class CustomerComponent implements OnInit {
     this.newCustomer.mobileNo = (this.newCustomer.mobileCode || '') + (this.newCustomer.mobileNumber || '');
     this.newCustomer.alternateMobileNo = (this.newCustomer.alternateMobileCode || '') + (this.newCustomer.alternateMobileNumber || '');
     this.customersService.createCustomer(this.newCustomer).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.isCreating = false;
-        this.createMessage = 'Customer created successfully.';
-        this.resetCreateForm();
-        this.showCreateForm = false;
-        this.loadCustomers();
+        // The backend always answers HTTP 200 and embeds the real outcome in
+        // responseCode — a 422 (e.g. a negative charge) lands here too, not in `error`.
+        const code = res?.responseCode;
+        if (code === 200 || code === 201) {
+          this.createMessage = res?.responseMessege || res?.responseMessage || 'Customer created successfully.';
+          this.resetCreateForm();
+          this.showCreateForm = false;
+          this.loadCustomers();
+        } else {
+          this.createError = res?.responseMessege || res?.responseMessage || 'Unable to create customer.';
+          this.showCreateSnackbar(this.createError, true);
+        }
       },
       error: error => {
         console.error('Create customer failed:', error);
         this.isCreating = false;
-        this.createError = error.error?.responseMessege || error.error?.message || 'Unable to create customer.';
+        this.createError = error.error?.responseMessege || error.error?.responseMessage || error.error?.message || 'Unable to create customer.';
+        this.showCreateSnackbar(this.createError, true);
       }
     });
   }
@@ -529,16 +538,25 @@ export class CustomerComponent implements OnInit {
     };
 
     this.customersService.updateCustomer(payload).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.isUpdating = false;
-        this.updateMessage = 'Customer updated successfully.';
-        this.showUpdateForm = false;
-        this.loadCustomers();
+        // The backend always answers HTTP 200 and embeds the real outcome in
+        // responseCode — a 422 (e.g. a negative charge) lands here too, not in `error`.
+        const code = res?.responseCode;
+        if (code === 200 || code === 201) {
+          this.updateMessage = res?.responseMessege || res?.responseMessage || 'Customer updated successfully.';
+          this.showUpdateForm = false;
+          this.loadCustomers();
+        } else {
+          this.updateError = res?.responseMessege || res?.responseMessage || 'Unable to update customer.';
+          this.showUpdateSnackbar(this.updateError, true);
+        }
       },
       error: error => {
         console.error('Update customer failed:', error);
         this.isUpdating = false;
-        this.updateError = error.error?.responseMessege || error.error?.message || 'Unable to update customer.';
+        this.updateError = error.error?.responseMessege || error.error?.responseMessage || error.error?.message || 'Unable to update customer.';
+        this.showUpdateSnackbar(this.updateError, true);
       }
     });
   }

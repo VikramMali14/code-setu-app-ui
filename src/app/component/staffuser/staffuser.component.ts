@@ -7,7 +7,6 @@ import { StaffuserServiceService } from 'src/app/services/staffuser-service';
 import { GenericDataDTO } from 'src/app/models/generic-data-dto';
 import { ShowpopupService } from 'src/app/services/showpopup.service';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { RoleserviceService } from 'src/app/services/role/roleservice.service';
 import { DepartmentService } from 'src/app/services/department.service';
 import { CompanyService } from 'src/app/services/company.service';
@@ -49,7 +48,6 @@ export class StaffuserComponent implements OnInit {
     private router: Router,
     private staffservice: StaffuserServiceService,
     private cd: ChangeDetectorRef,
-    private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private roleservice: RoleserviceService,
     private departmentservice: DepartmentService,
@@ -576,7 +574,7 @@ export class StaffuserComponent implements OnInit {
           } else if (res && res.responseMessage) {
             this.shoepopup.showResponsePopup(res.responseMessage, res.responseCode);
           } else {
-            this.snackBar.open('Staff Updated Successfully', 'Close', { duration: 3000 });
+            this.shoepopup.showSuccess('Staff Updated Successfully');
           }
           this.router.navigate(['/staffdetails']);
         },
@@ -599,7 +597,7 @@ export class StaffuserComponent implements OnInit {
           } else if (res && res.responseMessage) {
             this.shoepopup.showResponsePopup(res.responseMessage, res.responseCode);
           } else {
-            this.snackBar.open('Staff Created Successfully', 'Close', { duration: 3000 });
+            this.shoepopup.showSuccess('Staff Created Successfully');
           }
           this.router.navigate(['/staffdetails']);
         },

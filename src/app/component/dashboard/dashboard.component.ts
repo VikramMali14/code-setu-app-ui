@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { AccessMenuItem, AccessMenuSection, AccessMenuService } from 'src/app/services/access-menu.service';
+import { ShowpopupService } from 'src/app/services/showpopup.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +17,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private accessMenuService: AccessMenuService
+    private accessMenuService: AccessMenuService,
+    private showPopup: ShowpopupService
   ) {}
 
   ngOnInit(): void {
@@ -25,7 +27,7 @@ export class DashboardComponent implements OnInit {
 
   openModule(item: AccessMenuItem): void {
     if (item.comingSoon || !item.route) {
-      alert(`${item.label} module is currently under construction.`);
+      this.showPopup.showInfo(`${item.label} module is currently under construction.`);
       return;
     }
 
